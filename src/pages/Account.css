@@ -1,0 +1,178 @@
+/* Account — on-device pseudonymous profile ("Make it yours.") */
+
+.account-page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 4.5rem;
+}
+
+.account-head {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.account-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+  color: var(--pine-deep);
+  letter-spacing: -0.01em;
+}
+
+.account-sub {
+  margin-top: 0.65rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.account-card {
+  background: var(--paper);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 24px;
+  padding: 1.9rem 1.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(46, 58, 52, 0.06);
+}
+
+.account-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pine);
+  text-align: left;
+}
+
+.account-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 1rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1.5px solid rgba(66, 96, 79, 0.18);
+  border-radius: 14px;
+}
+
+.account-input:focus-visible {
+  outline: 3px solid var(--sage);
+  outline-offset: 1px;
+}
+
+.account-avatars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.account-avatar-btn {
+  width: 52px;
+  height: 52px;
+  font-size: 1.45rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cream);
+  border: 1.5px solid rgba(66, 96, 79, 0.14);
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.account-avatar-btn.is-picked {
+  background: var(--sage);
+  border-color: var(--pine);
+}
+
+.account-avatar {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.account-facts {
+  list-style: none;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--cream);
+  border-radius: 16px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.8);
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.account-primary {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.6rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--paper);
+  background: var(--terra);
+  border: none;
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.3);
+}
+
+.account-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--terra) 86%, black);
+}
+
+.account-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.account-secondary {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.4rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: transparent;
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.account-secondary:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+.account-note {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.55);
+}
+
+.account-primary:focus-visible,
+.account-secondary:focus-visible,
+.account-avatar-btn:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+}

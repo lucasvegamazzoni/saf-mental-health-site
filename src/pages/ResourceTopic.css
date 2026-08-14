@@ -1,0 +1,205 @@
+/* /resources/:topic — topic detail (see Resources.css for the /resources index).
+   Mobile-first; motion only under prefers-reduced-motion: no-preference. */
+
+.resourcetopic-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(2.2rem, 6vh, 4rem) clamp(1.1rem, 4vw, 2rem) 4.5rem;
+}
+
+.resourcetopic-back {
+  display: inline-block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--pine);
+  text-decoration: none;
+  padding: 0.4rem 0.95rem;
+  background: rgba(169, 191, 160, 0.16);
+  border: 1px solid rgba(126, 155, 119, 0.4);
+  border-radius: 999px;
+}
+
+.resourcetopic-back:hover {
+  background: rgba(169, 191, 160, 0.32);
+  color: var(--pine-deep);
+}
+
+.resourcetopic-back:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
+}
+
+.resourcetopic-head {
+  margin-top: 1.7rem;
+}
+
+.resourcetopic-emoji {
+  display: block;
+  font-size: 2.3rem;
+  line-height: 1;
+  margin-bottom: 0.55rem;
+}
+
+.resourcetopic-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 5vw, 2.8rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--pine-deep);
+  margin-bottom: 0.6rem;
+}
+
+.resourcetopic-blurb {
+  color: rgba(46, 58, 52, 0.65);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+.resourcetopic-tips {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 2rem;
+}
+
+.resourcetopic-tip {
+  background: var(--cream);
+  border: 1px solid rgba(46, 58, 52, 0.1);
+  border-radius: 18px;
+  padding: 1.15rem 1.3rem 1.25rem;
+}
+
+.resourcetopic-tip-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+  margin-bottom: 0.4rem;
+}
+
+.resourcetopic-tip-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.75);
+}
+
+/* "Stories that might help" pointer */
+
+.resourcetopic-stories {
+  margin-top: 2.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem 1.2rem;
+  background: rgba(191, 212, 222, 0.32);
+  border: 1px solid rgba(191, 212, 222, 0.9);
+  border-radius: 20px;
+  padding: 1.2rem 1.35rem;
+}
+
+.resourcetopic-stories-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.75);
+  max-width: 46ch;
+}
+
+.resourcetopic-stories-text strong {
+  font-weight: 600;
+  color: var(--pine-deep);
+}
+
+.resourcetopic-stories-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--paper);
+  background: var(--terra);
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.25rem;
+  box-shadow: 0 8px 20px rgba(192, 104, 75, 0.28);
+}
+
+.resourcetopic-stories-link:hover {
+  background: color-mix(in srgb, var(--terra) 86%, black);
+}
+
+.resourcetopic-stories-link:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
+}
+
+.resourcetopic-foot {
+  margin-top: 2rem;
+}
+
+/* Unknown slug */
+
+.resourcetopic-missing {
+  margin: clamp(1rem, 8vh, 4rem) auto 0;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  background: var(--cream);
+  border: 1px solid rgba(46, 58, 52, 0.1);
+  border-radius: 24px;
+  padding: 2.4rem 1.5rem 2.6rem;
+}
+
+.resourcetopic-missing-emoji {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.resourcetopic-missing-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.45rem, 4vw, 1.8rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.resourcetopic-missing-note {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.65);
+  max-width: 38ch;
+}
+
+.resourcetopic-missing .resourcetopic-back {
+  margin-top: 0.5rem;
+}
+
+/* Motion (opt-in only for users who allow it) ----------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .resourcetopic-back,
+  .resourcetopic-stories-link {
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .resourcetopic-stories-link:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* a11y: 44px minimum tap targets for back pill and stories link */
+.resourcetopic-back,
+.resourcetopic-stories-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

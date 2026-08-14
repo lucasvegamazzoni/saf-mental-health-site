@@ -1,0 +1,358 @@
+:root {
+  --cream: #f6eee2;
+  --paper: #fbf7ef;
+  --sky-top: #f4efe6;
+  --sky-bottom: #dcE9ee;
+  --ink: #2e3a34;
+  --pine: #42604f;
+  --pine-deep: #33463c;
+  --sage: #a9bfa0;
+  --sage-deep: #7e9b77;
+  --blue-hill: #bfd4de;
+  --terra: #c0684b;
+  --terra-soft: #d98e62;
+  --gold: #c9a664;
+
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Karla', -apple-system, 'Segoe UI', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hero ------------------------------------------------------------------ */
+
+.hero {
+  position: relative;
+}
+
+.hero__nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem clamp(1.2rem, 4vw, 3rem);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--pine-deep);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.brand svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.talk-pill {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--terra);
+  background: rgba(251, 247, 239, 0.85);
+  border: 1px solid rgba(192, 104, 75, 0.4);
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.talk-pill:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.hero__visuals {
+  position: relative;
+  height: 100svh;
+  min-height: 620px;
+  overflow: clip;
+  background: linear-gradient(to bottom, var(--sky-top) 0%, var(--sky-bottom) 78%);
+}
+
+.hero__layers {
+  position: absolute;
+  inset: 0;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* layer 1 — sky */
+.sun {
+  position: absolute;
+  top: 17%;
+  right: 9%;
+  width: clamp(56px, 7vw, 100px);
+  height: clamp(56px, 7vw, 100px);
+  border-radius: 50%;
+  background: var(--terra);
+  opacity: 0.9;
+}
+
+.ring {
+  position: absolute;
+  top: 11%;
+  left: 10%;
+  width: clamp(90px, 12vw, 180px);
+  height: clamp(90px, 12vw, 180px);
+  border: 1.5px dashed rgba(46, 58, 52, 0.28);
+  border-radius: 50%;
+}
+
+.clouds {
+  position: absolute;
+  top: 4%;
+  left: 0;
+  width: 100%;
+  height: 40%;
+}
+
+/* layer 2 — far hills */
+.hills {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  display: block;
+}
+
+.hills--far {
+  height: 56%;
+}
+
+/* layer 3 — title */
+.layer--title {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 10svh;
+  padding-inline: 1rem;
+  text-align: center;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.9rem, 8.6vw, 7.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--pine-deep);
+}
+
+/* layer 4 — officer + near hills + foliage */
+.hills--near {
+  height: 40%;
+}
+
+.hero__officer {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  transform: translateX(-50%);
+  height: min(66svh, 700px);
+  width: auto;
+  filter: drop-shadow(0 20px 34px rgba(46, 58, 52, 0.22));
+}
+
+.sprig {
+  position: absolute;
+  bottom: -2%;
+  width: clamp(110px, 13vw, 210px);
+  height: auto;
+}
+
+.sprig--left {
+  left: clamp(0.5rem, 4vw, 4rem);
+}
+
+.sprig--right {
+  right: clamp(0.5rem, 4vw, 4rem);
+}
+
+/* stationary overlay — subtitle + CTAs */
+.hero__overlay {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.6rem, 5svh, 3.4rem);
+  transform: translateX(-50%);
+  z-index: 27;
+  width: min(92vw, 720px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+  text-align: center;
+}
+
+.hero__lead {
+  font-size: clamp(0.98rem, 1.4vw, 1.15rem);
+  line-height: 1.55;
+  font-weight: 500;
+  color: #fdfbf6;
+  max-width: 44ch;
+  text-shadow: 0 1px 10px rgba(51, 70, 60, 0.35);
+}
+
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.85rem 1.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn--primary {
+  background: var(--terra);
+  color: #fdfbf6;
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.35);
+}
+
+.btn--primary:hover {
+  background: #b05c40;
+  transform: translateY(-2px);
+}
+
+.btn--ghost {
+  color: #fdfbf6;
+  border: 1.5px solid rgba(253, 251, 246, 0.75);
+  background: rgba(51, 70, 60, 0.18);
+}
+
+.btn--ghost:hover {
+  background: rgba(253, 251, 246, 0.16);
+  transform: translateY(-2px);
+}
+
+.btn:focus-visible,
+.talk-pill:focus-visible,
+.brand:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
+}
+
+/* texture + fade into the next section */
+.hero__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hero__fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14%;
+  z-index: 26;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(251, 247, 239, 0) 0%, var(--paper) 96%);
+}
+
+/* Section after the hero ------------------------------------------------ */
+
+.after {
+  min-height: 72vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  padding: clamp(3rem, 10vh, 7rem) 1.5rem;
+  text-align: center;
+  background: var(--paper);
+}
+
+.after__leaf {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.after h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.2vw, 2.3rem);
+  line-height: 1.25;
+  color: var(--pine);
+  max-width: 26ch;
+}
+
+.after p {
+  color: rgba(46, 58, 52, 0.65);
+  font-size: 1rem;
+  max-width: 52ch;
+  line-height: 1.6;
+}
+
+/* Mobile ---------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .talk-pill {
+    font-size: 0.78rem;
+    padding: 0.45rem 0.85rem;
+  }
+
+  .layer--title {
+    padding-top: 9svh;
+  }
+
+  .hero__officer {
+    height: 56svh;
+    bottom: 10%;
+  }
+
+  .hero__ctas {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .sprig--right {
+    display: none;
+  }
+}

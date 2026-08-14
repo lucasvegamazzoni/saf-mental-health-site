@@ -1,0 +1,474 @@
+/* Home — hero, reassurance strip, teasers, weekly pulse, recognition wall, footnote. */
+
+.home-page {
+  background: var(--paper);
+  overflow-x: clip;
+}
+
+/* Reassurance strip ------------------------------------------------------- */
+
+.home-reassure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.3rem;
+  padding: clamp(3rem, 9vh, 6rem) 1.5rem clamp(2rem, 6vh, 3.5rem);
+  text-align: center;
+  background: var(--paper);
+}
+
+.home-reassure-leaf {
+  width: 2.2rem;
+  height: 2.2rem;
+  color: var(--sage-deep);
+}
+
+.home-reassure h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.2vw, 2.3rem);
+  line-height: 1.25;
+  color: var(--pine);
+  max-width: 26ch;
+}
+
+.home-reassure p {
+  color: rgba(46, 58, 52, 0.65);
+  font-size: 1rem;
+  max-width: 52ch;
+  line-height: 1.6;
+}
+
+/* Teaser cards ------------------------------------------------------------ */
+
+.home-teasers {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+  padding: 0 clamp(1.2rem, 4vw, 3rem) clamp(3rem, 8vh, 5rem);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.home-teaser {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  background: var(--cream);
+  border: 1px solid rgba(46, 58, 52, 0.08);
+  border-radius: 20px;
+  padding: 1.5rem 1.6rem 1.35rem;
+  text-decoration: none;
+}
+
+.home-teaser:hover {
+  border-color: rgba(126, 155, 119, 0.55);
+}
+
+.home-teaser h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.home-teaser p {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: rgba(46, 58, 52, 0.65);
+}
+
+.home-teaser-arrow {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--terra);
+}
+
+/* This week's pulse ------------------------------------------------------- */
+
+.home-pulse {
+  background: var(--cream);
+  padding: clamp(3rem, 8vh, 5rem) clamp(1.2rem, 4vw, 3rem);
+  display: flex;
+  justify-content: center;
+}
+
+.home-pulse-card {
+  width: min(100%, 660px);
+  background: var(--paper);
+  border: 1px solid rgba(46, 58, 52, 0.1);
+  border-radius: 24px;
+  padding: clamp(1.6rem, 4vw, 2.4rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.home-pulse-kicker {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+
+.home-pulse-card h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.35rem, 2.6vw, 1.7rem);
+  line-height: 1.3;
+  color: var(--pine-deep);
+}
+
+.home-pulse-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.home-pulse-option {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--pine);
+  background: rgba(169, 191, 160, 0.22);
+  border: 1px solid rgba(126, 155, 119, 0.45);
+  border-radius: 999px;
+  padding: 0.65rem 1.15rem;
+  cursor: pointer;
+}
+
+.home-pulse-option:hover {
+  background: rgba(169, 191, 160, 0.42);
+  color: var(--pine-deep);
+}
+
+.home-pulse-hint {
+  font-size: 0.82rem;
+  color: rgba(46, 58, 52, 0.55);
+  line-height: 1.5;
+}
+
+.home-pulse-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.home-pulse-sample {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: rgba(46, 58, 52, 0.6);
+}
+
+.home-pulse-sample-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pine-deep);
+  background: rgba(201, 166, 100, 0.28);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+}
+
+.home-pulse-bars {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.home-pulse-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.3rem;
+}
+
+.home-pulse-row-label {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.home-pulse-mine-tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fdfbf6;
+  background: var(--terra);
+  border-radius: 999px;
+  padding: 0.16rem 0.55rem;
+}
+
+.home-pulse-row-pct {
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: rgba(46, 58, 52, 0.65);
+}
+
+.home-pulse-track {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(46, 58, 52, 0.08);
+  overflow: hidden;
+}
+
+.home-pulse-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--sage-deep);
+}
+
+.home-pulse-row.is-mine .home-pulse-fill {
+  background: var(--terra);
+}
+
+.home-pulse-row.is-mine .home-pulse-row-pct {
+  color: var(--terra);
+}
+
+/* Recognition wall -------------------------------------------------------- */
+
+.home-wall {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+  padding: clamp(3rem, 9vh, 5.5rem) clamp(1.2rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.7rem;
+}
+
+.home-wall-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+.home-wall-leaf {
+  width: 1.7rem;
+  height: 1.7rem;
+  color: var(--sage-deep);
+}
+
+.home-wall-head h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: -0.01em;
+  color: var(--pine);
+}
+
+.home-wall-head p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.6);
+  max-width: 52ch;
+}
+
+.home-wall-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.home-wall-card {
+  background: var(--cream);
+  border: 1px solid rgba(46, 58, 52, 0.08);
+  border-radius: 18px;
+  padding: 1.35rem 1.45rem 1.25rem;
+}
+
+.home-wall-quote {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  line-height: 0.6;
+  color: var(--sage-deep);
+  margin-bottom: 0.55rem;
+}
+
+.home-wall-card p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.78);
+  overflow-wrap: anywhere;
+}
+
+.home-wall-form {
+  width: min(100%, 640px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.home-wall-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--pine);
+}
+
+.home-wall-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.home-wall-input {
+  flex: 1 1 220px;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1px solid rgba(46, 58, 52, 0.16);
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+}
+
+.home-wall-input::placeholder {
+  color: rgba(46, 58, 52, 0.4);
+}
+
+.home-wall-submit {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fdfbf6;
+  background: var(--pine);
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.3rem;
+  cursor: pointer;
+}
+
+.home-wall-submit:hover {
+  background: var(--pine-deep);
+}
+
+.home-wall-count {
+  font-size: 0.75rem;
+  color: rgba(46, 58, 52, 0.45);
+  padding-left: 0.4rem;
+}
+
+/* Soft footer ------------------------------------------------------------- */
+
+.home-footnote {
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: clamp(2.6rem, 7vh, 4rem) 1.5rem;
+  text-align: center;
+}
+
+.home-footnote-leaf {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--pine);
+}
+
+.home-footnote-strong {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--pine-deep);
+}
+
+.home-footnote-sub {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.6);
+  max-width: 52ch;
+}
+
+/* Focus ------------------------------------------------------------------- */
+
+.home-teaser:focus-visible,
+.home-pulse-option:focus-visible,
+.home-wall-input:focus-visible,
+.home-wall-submit:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
+}
+
+.home-wall-input:focus-visible {
+  outline-offset: 2px;
+}
+
+/* Motion (opt-in only for users who allow it) ------------------------------ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-teaser,
+  .home-teaser-arrow,
+  .home-pulse-option,
+  .home-wall-submit {
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+      transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .home-teaser:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(46, 58, 52, 0.1);
+  }
+
+  .home-teaser:hover .home-teaser-arrow {
+    transform: translateX(4px);
+  }
+
+  .home-pulse-fill {
+    transform-origin: left center;
+    animation: home-pulse-fill-in 0.6s ease-out both;
+  }
+
+  @keyframes home-pulse-fill-in {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
+/* Wider screens ------------------------------------------------------------ */
+
+@media (min-width: 720px) {
+  .home-teasers {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+  }
+
+  .home-wall-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-wall-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,135 @@
+/* Wellbeing Resources — /resources topic index (detail view: ResourceTopic.css).
+   Mobile-first; motion only under prefers-reduced-motion: no-preference. */
+
+/* /resources — topic index ------------------------------------------------ */
+
+.resources-page {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: clamp(2.4rem, 7vh, 4.5rem) clamp(1.1rem, 4vw, 2rem) 4.5rem;
+}
+
+.resources-head {
+  max-width: 640px;
+}
+
+.resources-leaf {
+  width: 2rem;
+  height: 2rem;
+  color: var(--sage-deep);
+  margin-bottom: 0.6rem;
+}
+
+.resources-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--pine-deep);
+  margin-bottom: 0.75rem;
+}
+
+.resources-lede {
+  color: rgba(46, 58, 52, 0.65);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+.resources-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 2.2rem;
+}
+
+.resources-cell {
+  display: flex;
+}
+
+.resources-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 1.35rem 1.35rem 1.45rem;
+  background: var(--cream);
+  border: 1px solid rgba(46, 58, 52, 0.1);
+  border-radius: 20px;
+  text-decoration: none;
+}
+
+.resources-card:hover {
+  background: #fffdf8;
+  border-color: rgba(126, 155, 119, 0.55);
+}
+
+.resources-card:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
+}
+
+.resources-card-emoji {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.resources-card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.resources-card-blurb {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(46, 58, 52, 0.68);
+}
+
+.resources-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.resources-chip {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: rgba(169, 191, 160, 0.28);
+  border: 1px solid rgba(126, 155, 119, 0.35);
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+}
+
+@media (min-width: 640px) {
+  .resources-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .resources-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.15rem;
+  }
+}
+
+/* Motion (opt-in only for users who allow it) ----------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .resources-card {
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .resources-card:hover {
+    transform: translateY(-2px);
+  }
+}

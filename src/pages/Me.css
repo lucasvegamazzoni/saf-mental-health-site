@@ -1,0 +1,449 @@
+/* Me — the private "Your space" dashboard. Everything lives on-device. */
+
+.me-page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 8vh, 5rem) 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 5vh, 3rem);
+}
+
+.me-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Header ------------------------------------------------------------------ */
+
+.me-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.me-head h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.02em;
+  color: var(--pine-deep);
+}
+
+.me-device-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--pine);
+  background: var(--cream);
+  border: 1px solid rgba(126, 155, 119, 0.4);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+}
+
+.me-device-leaf {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--sage-deep);
+}
+
+/* Sections ----------------------------------------------------------------- */
+
+.me-section-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.me-section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.me-section > .me-section-title {
+  margin-bottom: 1rem;
+}
+
+.me-title-leaf {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--sage-deep);
+  flex: none;
+}
+
+.me-card {
+  background: var(--cream);
+  border: 1px solid rgba(46, 58, 52, 0.1);
+  border-radius: 22px;
+  padding: clamp(1.1rem, 3vw, 1.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.me-note {
+  font-size: 0.82rem;
+  color: rgba(46, 58, 52, 0.55);
+  line-height: 1.5;
+}
+
+.me-section > .me-note {
+  margin-top: 0.7rem;
+}
+
+/* Sparkline ---------------------------------------------------------------- */
+
+.me-spark-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.55rem;
+}
+
+.me-spark-scale {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.me-spark {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  display: block;
+}
+
+/* Micro-stats --------------------------------------------------------------- */
+
+.me-stats {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.me-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  background: var(--paper);
+  border: 1px solid rgba(46, 58, 52, 0.08);
+  border-radius: 16px;
+  padding: 0.75rem 0.85rem;
+}
+
+.me-stat-emoji {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.me-stat-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--pine-deep);
+}
+
+.me-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--pine-deep);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  background: rgba(46, 58, 52, 0.07);
+}
+
+.me-trend--better {
+  background: rgba(126, 155, 119, 0.24);
+}
+
+.me-trend--worse {
+  background: rgba(192, 104, 75, 0.16);
+}
+
+/* Timeline chips ------------------------------------------------------------ */
+
+.me-chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.me-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 3.2rem;
+  background: var(--paper);
+  border: 1px solid rgba(46, 58, 52, 0.1);
+  border-radius: 14px;
+  padding: 0.5rem 0.6rem;
+}
+
+.me-chip.is-latest {
+  border-color: var(--sage-deep);
+  box-shadow: 0 0 0 3px rgba(169, 191, 160, 0.3);
+}
+
+.me-chip-emoji {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.me-chip-date {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(46, 58, 52, 0.6);
+  white-space: nowrap;
+}
+
+.me-add-link {
+  align-self: flex-start;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--pine);
+  text-decoration: none;
+  border: 1.5px solid rgba(66, 96, 79, 0.4);
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+}
+
+.me-add-link:hover {
+  background: rgba(169, 191, 160, 0.25);
+}
+
+/* Empty state ---------------------------------------------------------------- */
+
+.me-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.9rem;
+  background: linear-gradient(160deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
+  border: 1px solid rgba(46, 58, 52, 0.08);
+  border-radius: 24px;
+  padding: clamp(1.8rem, 6vw, 3rem) clamp(1.2rem, 5vw, 2.5rem);
+}
+
+.me-empty-art {
+  width: min(260px, 100%);
+  height: auto;
+  display: block;
+}
+
+.me-empty-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 3.4vw, 1.65rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+  max-width: 24ch;
+}
+
+.me-empty-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.68);
+  max-width: 44ch;
+}
+
+.me-empty-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.35rem;
+  background: var(--terra);
+  color: var(--paper);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.85rem 1.6rem;
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.35);
+}
+
+.me-empty-cta:hover {
+  background: color-mix(in srgb, var(--terra) 86%, black);
+}
+
+/* Challenges ----------------------------------------------------------------- */
+
+.me-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--pine-deep);
+  background: rgba(169, 191, 160, 0.35);
+  border: 1px solid rgba(126, 155, 119, 0.4);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+}
+
+.me-badge.is-complete {
+  background: rgba(201, 166, 100, 0.28);
+  border-color: rgba(201, 166, 100, 0.55);
+}
+
+.me-challenges {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+.me-challenge {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1px solid rgba(46, 58, 52, 0.12);
+  border-radius: 16px;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+}
+
+.me-challenge:hover {
+  border-color: rgba(126, 155, 119, 0.6);
+}
+
+.me-challenge.is-done {
+  background: var(--sage);
+  border-color: var(--sage-deep);
+  color: var(--pine-deep);
+}
+
+.me-challenge-check {
+  flex: none;
+  width: 1.35rem;
+  height: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--paper);
+  border: 1.5px solid rgba(66, 96, 79, 0.45);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.me-challenge.is-done .me-challenge-check {
+  background: var(--pine-deep);
+  border-color: var(--pine-deep);
+}
+
+.me-challenge.is-done .me-challenge-text {
+  font-weight: 600;
+}
+
+/* Privacy note ---------------------------------------------------------------- */
+
+.me-privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  background: var(--paper);
+  border: 1.5px dashed rgba(126, 155, 119, 0.55);
+  border-radius: 20px;
+  padding: 1.15rem 1.3rem;
+}
+
+.me-privacy-leaf {
+  flex: none;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: 0.1rem;
+  color: var(--sage-deep);
+}
+
+.me-privacy-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--pine-deep);
+  margin-bottom: 0.3rem;
+}
+
+.me-privacy-body {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.65);
+}
+
+/* Focus ------------------------------------------------------------------------ */
+
+.me-challenge:focus-visible,
+.me-empty-cta:focus-visible,
+.me-add-link:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
+}
+
+/* Motion (only for users who allow it) ----------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .me-challenge {
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .me-challenge:active {
+    transform: scale(0.985);
+  }
+
+  .me-empty-cta,
+  .me-add-link {
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .me-empty-cta:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Wider screens ----------------------------------------------------------------- */
+
+@media (min-width: 560px) {
+  .me-challenges {
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  }
+}
+
+@media (min-width: 720px) {
+  .me-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

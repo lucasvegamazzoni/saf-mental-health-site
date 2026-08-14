@@ -1,0 +1,431 @@
+/* CheckIn — guided one-question-at-a-time flow. Calm, uncluttered, 390px-first. */
+
+.checkin-page {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vh, 3.5rem) 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* Head ------------------------------------------------------------------- */
+
+.checkin-head {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.checkin-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 5vw, 2.3rem);
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.checkin-lede {
+  font-size: 0.95rem;
+  color: rgba(46, 58, 52, 0.6);
+}
+
+/* Progress ---------------------------------------------------------------- */
+
+.checkin-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+}
+
+.checkin-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--pine);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem 0.4rem 0.6rem;
+  cursor: pointer;
+}
+
+.checkin-back svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.checkin-back:hover:not(:disabled) {
+  background: rgba(169, 191, 160, 0.25);
+}
+
+.checkin-back:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.checkin-count {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--pine);
+  font-variant-numeric: tabular-nums;
+}
+
+.checkin-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.15rem 0;
+}
+
+.checkin-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: rgba(46, 58, 52, 0.14);
+}
+
+.checkin-dot.is-done {
+  background: var(--sage-deep);
+}
+
+.checkin-dot.is-current {
+  background: var(--terra);
+  transform: scale(1.25);
+}
+
+/* Question card ------------------------------------------------------------ */
+
+.checkin-card {
+  background: var(--cream);
+  border: 1px solid rgba(46, 58, 52, 0.08);
+  border-radius: 22px;
+  padding: clamp(1.4rem, 5vw, 2.2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.checkin-question {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.25rem, 4.4vw, 1.6rem);
+  line-height: 1.3;
+  color: var(--pine-deep);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.checkin-scale {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.7rem;
+}
+
+.checkin-answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-body);
+  padding: 1rem 0.4rem 0.85rem;
+  background: var(--paper);
+  border: 1.5px solid rgba(46, 58, 52, 0.1);
+  border-radius: 18px;
+  cursor: pointer;
+}
+
+.checkin-answer:hover {
+  border-color: var(--sage-deep);
+}
+
+.checkin-answer.is-selected {
+  background: rgba(169, 191, 160, 0.3);
+  border-color: var(--sage-deep);
+}
+
+.checkin-answer-emoji {
+  font-size: 2.1rem;
+  line-height: 1;
+}
+
+.checkin-answer-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pine);
+}
+
+/* Follow-up ---------------------------------------------------------------- */
+
+.checkin-followup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(46, 58, 52, 0.1);
+}
+
+.checkin-followup-prompt {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--pine-deep);
+}
+
+.checkin-followup-hint {
+  font-size: 0.82rem;
+  color: rgba(46, 58, 52, 0.55);
+}
+
+.checkin-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.checkin-chip {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--pine);
+  background: var(--paper);
+  border: 1.5px solid rgba(46, 58, 52, 0.14);
+  border-radius: 999px;
+  padding: 0.5rem 0.95rem;
+  cursor: pointer;
+}
+
+.checkin-chip:hover {
+  border-color: var(--sage-deep);
+}
+
+.checkin-chip.is-selected {
+  color: #fdfbf6;
+  background: var(--pine);
+  border-color: var(--pine);
+}
+
+.checkin-continue {
+  align-self: flex-end;
+  margin-top: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fdfbf6;
+  background: var(--terra);
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(192, 104, 75, 0.28);
+}
+
+.checkin-continue:hover {
+  background: #b05c40;
+}
+
+.checkin-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(46, 58, 52, 0.5);
+}
+
+/* Finish ------------------------------------------------------------------- */
+
+.checkin-finish {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  padding: clamp(1.5rem, 6vh, 3rem) 0.25rem;
+}
+
+.checkin-finish-leaf {
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--sage-deep);
+}
+
+.checkin-finish-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 5.5vw, 2.4rem);
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.checkin-finish-line {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.7);
+  max-width: 42ch;
+}
+
+.checkin-finish-gentle {
+  background: var(--cream);
+  border: 1px solid rgba(201, 166, 100, 0.45);
+  border-radius: 18px;
+  padding: 1.1rem 1.3rem;
+  max-width: 46ch;
+}
+
+.checkin-finish-gentle p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.checkin-finish-gentle a {
+  color: var(--terra);
+  font-weight: 600;
+}
+
+.checkin-finish-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 0.6rem;
+}
+
+.checkin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.8rem 1.5rem;
+}
+
+.checkin-btn--primary {
+  color: #fdfbf6;
+  background: var(--terra);
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.3);
+}
+
+.checkin-btn--primary:hover {
+  background: #b05c40;
+}
+
+.checkin-btn--ghost {
+  color: var(--pine);
+  border: 1.5px solid rgba(66, 96, 79, 0.45);
+  background: transparent;
+}
+
+.checkin-btn--ghost:hover {
+  background: rgba(169, 191, 160, 0.22);
+}
+
+/* Focus -------------------------------------------------------------------- */
+
+.checkin-back:focus-visible,
+.checkin-answer:focus-visible,
+.checkin-chip:focus-visible,
+.checkin-continue:focus-visible,
+.checkin-btn:focus-visible,
+.checkin-finish-gentle a:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
+}
+
+/* Motion (only for users who allow it) ------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .checkin-back,
+  .checkin-answer,
+  .checkin-chip,
+  .checkin-continue,
+  .checkin-btn,
+  .checkin-dot {
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+      transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .checkin-answer:hover,
+  .checkin-continue:hover,
+  .checkin-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .checkin-card {
+    animation: checkin-card-in 0.28s ease;
+  }
+
+  .checkin-followup {
+    animation: checkin-fade-in 0.25s ease;
+  }
+
+  .checkin-finish {
+    animation: checkin-card-in 0.35s ease;
+  }
+
+  @keyframes checkin-card-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes checkin-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* Mobile ------------------------------------------------------------------- */
+
+@media (max-width: 420px) {
+  .checkin-answer-emoji {
+    font-size: 1.85rem;
+  }
+
+  .checkin-answer-label {
+    font-size: 0.78rem;
+  }
+
+  .checkin-chip {
+    font-size: 0.82rem;
+    padding: 0.45rem 0.8rem;
+  }
+
+  .checkin-continue {
+    align-self: stretch;
+  }
+
+  .checkin-btn {
+    width: 100%;
+  }
+
+  .checkin-finish-links {
+    flex-direction: column;
+    align-self: stretch;
+  }
+}
+
+/* a11y: 44px minimum tap targets for secondary controls */
+.checkin-back,
+.checkin-chip {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
