@@ -74,3 +74,227 @@
   outline: 3px solid var(--terra-soft);
   outline-offset: 2px;
 }
+
+/* Week picker — chip/toggle recipe (DESIGN.md §5) */
+
+.trends-weeks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.trends-week {
+  min-height: 44px;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(66, 96, 79, 0.12);
+  background: var(--cream);
+  color: var(--pine);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+
+.trends-week:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+.trends-week.is-selected {
+  background: var(--sage);
+  border-color: var(--pine);
+  color: var(--pine-deep);
+}
+
+.trends-week:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+}
+
+.trends-weekid {
+  font-size: 0.9rem;
+  color: rgba(46, 58, 52, 0.72);
+  margin-top: -0.75rem;
+}
+
+.trends-wait {
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Results panel */
+
+.trends-panel {
+  background: var(--paper);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 22px;
+  box-shadow: 0 12px 32px rgba(46, 58, 52, 0.06);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trends-n {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.35rem, 3vw, 1.7rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.trends-h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--pine-deep);
+  margin-top: 0.75rem;
+}
+
+.trends-moods {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.trends-moodbar {
+  display: flex;
+  height: 28px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--cream);
+}
+
+.trends-moodseg {
+  flex-basis: 0;
+  min-width: 0;
+}
+
+.trends-moodseg--tough {
+  background: var(--terra-soft);
+}
+
+.trends-moodseg--okay {
+  background: var(--blue-hill);
+}
+
+.trends-moodseg--good {
+  background: var(--sage-deep);
+}
+
+.trends-moodlegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.trends-moodlegend strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.trends-moodkey {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.trends-moodswatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.trends-reasons {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.trends-reason {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'label num'
+    'track track';
+  gap: 0.25rem 0.75rem;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .trends-reason {
+    grid-template-columns: 11rem minmax(0, 1fr) auto;
+    grid-template-areas: 'label track num';
+  }
+}
+
+.trends-reason-label {
+  grid-area: label;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.trends-reason-track {
+  grid-area: track;
+  display: block;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--cream);
+  overflow: hidden;
+}
+
+.trends-reason-fill {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  border-radius: 999px;
+  background: var(--sage-deep);
+}
+
+.trends-reason-num {
+  grid-area: num;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(46, 58, 52, 0.72);
+  white-space: nowrap;
+}
+
+.trends-small {
+  font-size: 0.82rem;
+}
+
+.trends-foot {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+  padding-top: 1rem;
+  border-top: 1.5px dashed rgba(126, 155, 119, 0.55);
+}
+
+.trends-secondary {
+  font: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

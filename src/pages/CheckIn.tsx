@@ -4,6 +4,7 @@ import { CHECKIN_QUESTIONS, CHECKIN_SCALE } from '../data/content';
 import type { CheckinScore } from '../data/content';
 import { currentUid, firebaseReady, useSession } from '../lib/auth';
 import { saveCheckinEverywhere } from '../lib/sync';
+import { recordTrendForCheckin } from '../lib/trends';
 import type { CheckinAnswer } from '../lib/store';
 import './CheckIn.css';
 
@@ -40,6 +41,8 @@ export default function CheckIn({ embedded = false }: Props) {
       return a ? [{ qid: q.id, score: a.score, followUps: a.followUps }] : [];
     });
     void saveCheckinEverywhere({ dateISO: new Date().toISOString(), answers }, currentUid());
+    // Anonymous weekly tally (counts only, no uid) — best-effort, errors swallowed inside.
+    if (currentUid() !== null) void recordTrendForCheckin(answers);
     setLowCount(answers.filter((a) => a.score === 0).length);
     setDone(true);
   }
