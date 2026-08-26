@@ -1,4 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy
+
+# One workflow, two targets, one source of truth (main):
+#   firebase  → https://saf-checkin.web.app            (canonical: SPA rewrites, 200s on deep links)
+#   pages     → https://lucasvegamazzoni.github.io/saf-mental-health-site/  (mirror, subpath build)
+# Firestore rules are deployed by the same run so schema + app never drift.
 
 on:
   push:
@@ -10,31 +15,124 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
-  build:
+  check:
+    name: Build · lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx oxlint src
+      - run: npm run build
+
+  firebase:
+    name: Firebase Hosting + rules (canonical)
+    needs: check
+    runs-on: ubuntu-latest
+    concurrency:
+      group: firebase-live
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+        env:
+          SITE_BASE: /
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          path: dist
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SAF_CHECKIN }}
+          projectId: saf-checkin
+          channelId: live
+      - name: Deploy Firestore rules
+        env:
+          SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SAF_CHECKIN }}
+        run: |
+          printf '%s' "$SA_JSON" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          npx firebase deploy --only firestore:rules --project saf-checkin --non-interactive
+          rm -f "$RUNNER_TEMP/sa.json"
 
-  deploy:
-    needs: build
+  pages: write
+  id-token: write
+
+jobs:
+  check:
+    name: Build · lint
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx oxlint src
+      - run: npm run build
+
+  firebase:
+    name: Firebase Hosting + rules (canonical)
+    needs: check
+    runs-on: ubuntu-latest
+    concurrency:
+      group: firebase-live
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          SITE_BASE: /
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SAF_CHECKIN }}
+          projectId: saf-checkin
+          channelId: live
+      - name: Deploy Firestore rules
+        run: npx firebase deploy --only firestore:rules --project saf-checkin --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json
+          SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SAF_CHECKIN }}
+        shell: bash
+        # write the SA json for the CLI, deploy, then remove it
+        continue-on-error: true
+
+  pages:
+    name: GitHub Pages (mirror)
+    needs: check
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          SITE_BASE: /saf-mental-health-site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
       - id: deployment
         uses: actions/deploy-pages@v4

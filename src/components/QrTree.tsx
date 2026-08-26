@@ -13,7 +13,7 @@ import './QrTree.css';
  * Everything is generated procedurally from SITE_URL — no textures or models.
  */
 
-export const SITE_URL = 'https://lucasvegamazzoni.github.io/saf-mental-health-site/';
+export const SITE_URL = 'https://saf-checkin.web.app/';
 
 const QUIET = 3; // quiet-zone modules around the code
 const ISO_ELEVATION = THREE.MathUtils.degToRad(27);

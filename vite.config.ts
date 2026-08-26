@@ -1,9 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// SITE_BASE picks the deploy target's base path (see DEPLOYMENT.md):
+//   Firebase Hosting (canonical)  → SITE_BASE=/
+//   GitHub Pages (mirror)         → SITE_BASE=/saf-mental-health-site/  (default for plain builds)
+const base = process.env.SITE_BASE ?? '/saf-mental-health-site/'
+
 export default defineConfig(({ command }) => ({
   plugins: [react()],
-  // Served from https://lucasvegamazzoni.github.io/saf-mental-health-site/ in prod
-  base: command === 'build' ? '/saf-mental-health-site/' : '/',
+  base: command === 'build' ? base : '/',
 }))
