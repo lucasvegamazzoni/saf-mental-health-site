@@ -1,4 +1,4 @@
-/* Stories — anonymous story wall, theme filters, and the share-your-story stub. */
+/* Stories — anonymous story wall, theme filters, and the share flow (write → review → sent). */
 
 .stories-page {
   max-width: 58rem;
@@ -69,7 +69,7 @@
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--pine);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--paper);
   border: 1px solid rgba(46, 58, 52, 0.14);
   border-radius: 999px;
   padding: 0.45rem 0.9rem;
@@ -103,7 +103,7 @@
 }
 
 .stories-card {
-  background: #fff;
+  background: var(--paper);
   border: 1px solid rgba(46, 58, 52, 0.1);
   border-radius: 20px;
   padding: clamp(1.2rem, 3.5vw, 1.7rem);
@@ -296,7 +296,7 @@
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--pine);
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--paper);
   border: 1px solid rgba(46, 58, 52, 0.1);
   border-radius: 999px;
   padding: 0.35rem 0.85rem;
@@ -311,9 +311,10 @@
   font-size: 0.95rem;
   line-height: 1.6;
   color: var(--ink);
-  background: #fff;
+  background: var(--paper);
   border: 1px solid rgba(46, 58, 52, 0.15);
-  border-radius: 16px;
+  border-radius: 14px;
+  min-height: 9rem;
   padding: 0.95rem 1.1rem;
 }
 
@@ -334,7 +335,7 @@
   font-family: var(--font-body);
   font-size: 0.92rem;
   font-weight: 600;
-  color: #fdfbf6;
+  color: var(--paper);
   background: var(--terra);
   border: none;
   border-radius: 999px;
@@ -344,7 +345,7 @@
 }
 
 .stories-share-submit:hover {
-  background: #b05c40;
+  background: color-mix(in srgb, var(--terra) 86%, black);
 }
 
 .stories-share-note {
@@ -352,56 +353,14 @@
   color: rgba(46, 58, 52, 0.55);
 }
 
-/* Honest submit stub ------------------------------------------------------- */
-
-.stories-stub {
-  margin-top: 1.3rem;
-  width: 100%;
-  max-width: 40rem;
-  text-align: left;
-  background: var(--paper);
-  border: 1px solid rgba(217, 142, 98, 0.55);
-  border-radius: 16px;
-  padding: 1.15rem 1.3rem;
-}
-
-.stories-stub-title {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1rem;
-  color: var(--terra);
-  margin-bottom: 0.45rem;
-}
-
-.stories-stub-body {
-  font-size: 0.88rem;
-  line-height: 1.6;
-  color: rgba(46, 58, 52, 0.75);
-}
-
-.stories-stub-close {
-  margin-top: 0.85rem;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--pine);
-  background: transparent;
-  border: 1px solid rgba(66, 96, 79, 0.4);
-  border-radius: 999px;
-  padding: 0.45rem 1rem;
-  cursor: pointer;
-}
-
-.stories-stub-close:hover {
-  background: rgba(169, 191, 160, 0.22);
-}
-
 /* Focus ------------------------------------------------------------------- */
 
 .stories-chip:focus-visible,
 .stories-readmore:focus-visible,
 .stories-share-submit:focus-visible,
-.stories-stub-close:focus-visible,
+.stories-secondary:focus-visible,
+.stories-care-name:focus-visible,
+.stories-title-input:focus-visible,
 .stories-share-input:focus-visible {
   outline: 3px solid var(--terra-soft);
   outline-offset: 3px;
@@ -413,7 +372,7 @@
   .stories-chip,
   .stories-readmore,
   .stories-share-submit,
-  .stories-stub-close {
+  .stories-secondary {
     transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
   }
 
@@ -422,7 +381,8 @@
   }
 
   .stories-card-more:not([hidden]),
-  .stories-stub {
+  .stories-review,
+  .stories-sent {
     animation: stories-fade-in 0.25s ease;
   }
 
@@ -460,9 +420,270 @@
 .stories-chip,
 .stories-share-hint,
 .stories-readmore,
-.stories-stub-close {
+.stories-secondary {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Share flow: write → review → sent ---------------------------------------- */
+
+.stories-share-submit:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: default;
+  transform: none;
+}
+
+.stories-share-submit {
+  min-height: 48px;
+  min-width: 12rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stories-secondary {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: transparent;
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+  border-radius: 999px;
+  padding: 0.55rem 1.2rem;
+  cursor: pointer;
+}
+
+.stories-secondary:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+.stories-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.4rem;
+}
+
+.stories-label {
+  width: 100%;
+  max-width: 40rem;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pine-deep);
+  margin: 1.1rem 0 0.4rem;
+}
+
+.stories-label-opt {
+  font-weight: 400;
+  color: rgba(46, 58, 52, 0.62);
+}
+
+.stories-title-input {
+  width: 100%;
+  max-width: 40rem;
+  min-height: 48px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid rgba(46, 58, 52, 0.15);
+  border-radius: 14px;
+  padding: 0.7rem 1rem;
+}
+
+.stories-count {
+  width: 100%;
+  max-width: 40rem;
+  text-align: right;
+  font-size: 0.82rem;
+  color: rgba(46, 58, 52, 0.62);
+  margin-top: 0.4rem;
+}
+
+.stories-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.stories-tag-sample {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(46, 58, 52, 0.72);
+  background: rgba(201, 166, 100, 0.18);
+  border: 1px solid rgba(201, 166, 100, 0.5);
+  border-radius: 10px;
+  padding: 0.22rem 0.55rem;
+}
+
+.stories-review {
+  width: 100%;
+  max-width: 40rem;
+  text-align: left;
+  background: var(--paper);
+  border: 1px solid rgba(46, 58, 52, 0.1);
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  margin-top: 1.1rem;
+}
+
+.stories-review-title {
+  width: 100%;
+  max-width: 40rem;
+  text-align: left;
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--pine-deep);
+}
+
+.stories-mark {
+  background: rgba(169, 191, 160, 0.45);
+  color: var(--pine-deep);
+  border-bottom: 2px solid var(--sage-deep);
+  border-radius: 4px;
+  padding: 0 0.2rem;
+  font-weight: 600;
+}
+
+.stories-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 0.9rem;
+}
+
+.stories-fieldset {
+  width: 100%;
+  max-width: 40rem;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.stories-fieldset legend {
+  padding: 0;
+}
+
+.stories-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.stories-hope-chip-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background: rgba(126, 155, 119, 0.22);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--pine-deep);
+}
+
+.stories-error {
+  width: 100%;
+  max-width: 40rem;
+  margin-top: 1rem;
+  text-align: left;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--terra);
+}
+
+.stories-sent {
+  width: 100%;
+  max-width: 40rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stories-sent-body {
+  max-width: 46ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.stories-care {
+  width: 100%;
+  text-align: left;
+  background: var(--paper);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  margin-top: 0.4rem;
+}
+
+.stories-care-title {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+}
+
+.stories-care-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stories-care-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.6rem;
+  min-height: 44px;
+  font-size: 0.92rem;
+}
+
+.stories-care-name {
+  font-weight: 700;
+  color: var(--pine);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.stories-care-name:hover {
+  text-decoration: underline;
+}
+
+.stories-care-detail {
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.stories-share .stories-share-actions {
+  margin-top: 1.4rem;
+  padding-bottom: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .stories-share {
+    padding-bottom: 6rem; /* clear the emergency button */
+  }
 }
