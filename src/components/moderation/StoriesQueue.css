@@ -1,0 +1,236 @@
+/* Stories moderation queue — flagged first, full text, approve / reject. */
+
+.sq {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sq-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.sq-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(169, 191, 160, 0.35);
+  border: 1px solid rgba(126, 155, 119, 0.5);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--pine-deep);
+}
+
+.sq-refresh {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: transparent;
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+  border-radius: 999px;
+  min-height: 44px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+}
+
+.sq-refresh:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+.sq-refresh:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.sq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sq-card {
+  background: var(--paper);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 22px;
+  box-shadow: 0 12px 32px rgba(46, 58, 52, 0.06);
+  padding: clamp(1.2rem, 3.5vw, 1.6rem);
+}
+
+.sq-card.is-flagged {
+  border-color: rgba(192, 104, 75, 0.45);
+}
+
+.sq-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.8rem;
+  margin-bottom: 0.7rem;
+}
+
+.sq-flags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.sq-flag {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--terra);
+  background: rgba(192, 104, 75, 0.1);
+  border: 1px solid rgba(192, 104, 75, 0.45);
+  border-radius: 10px;
+  padding: 0.25rem 0.6rem;
+}
+
+.sq-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: rgba(191, 212, 222, 0.4);
+  border-radius: 999px;
+  padding: 0.32rem 0.8rem;
+}
+
+.sq-when {
+  font-size: 0.82rem;
+  color: rgba(46, 58, 52, 0.62);
+}
+
+.sq-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+  margin-bottom: 0.6rem;
+}
+
+.sq-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(46, 58, 52, 0.85);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.sq-error {
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+  color: var(--terra);
+}
+
+.sq-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.sq-approve,
+.sq-reject {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 700;
+  min-height: 48px;
+  min-width: 7.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.sq-approve {
+  color: var(--paper);
+  background: var(--terra);
+  border: none;
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.3);
+}
+
+.sq-approve:hover {
+  background: color-mix(in srgb, var(--terra) 86%, black);
+}
+
+.sq-reject {
+  color: var(--pine);
+  background: transparent;
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+}
+
+.sq-reject:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+.sq-approve:disabled,
+.sq-reject:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: default;
+}
+
+.sq-empty {
+  background: var(--paper);
+  border: 1.5px dashed rgba(126, 155, 119, 0.55);
+  border-radius: 22px;
+  padding: 1.8rem 1.5rem;
+  min-height: 9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.4rem;
+}
+
+.sq-empty-mark {
+  font-size: 1.6rem;
+}
+
+.sq-empty-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--pine-deep);
+}
+
+.sq-empty-body {
+  max-width: 42ch;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.sq-refresh:focus-visible,
+.sq-approve:focus-visible,
+.sq-reject:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sq-refresh,
+  .sq-approve,
+  .sq-reject {
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+}
