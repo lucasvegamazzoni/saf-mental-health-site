@@ -63,7 +63,15 @@ moderators/{uid}                { }                            ← allowlist rea
 ```
 Rules: owner-only on `users/**`; `stories`/`recognitions` create-by-signed-in with `status: pending` and `authorUid == uid`, public read only when `published` (moderators read all), update/delete only by moderators; `polls/{w}` read signed-in, write moderators; `polls/{w}/votes/{uid}` read signed-in, create/update owner-only; `trends/{w}` read + create/update by signed-in users, keys limited to `n, reasons, overall`; `moderators/{uid}` self-read only, no client writes. Typed client helpers: `src/lib/db.ts`.
 
+## PWA (add-to-home-screen + offline shell)
+- `public/manifest.webmanifest` (relative `start_url`/`scope`, so it works on both bases) + `public/icons/*` (any + maskable, rendered from `favicon.svg`).
+- `public/sw.js` is hand-written (no Vite plugin) and scope-aware: every URL derives from `self.registration.scope`. Navigations are network-first → cached `index.html`; `assets/*` cache-first; Google Fonts stale-while-revalidate; Firebase/Google API hosts are never intercepted.
+- Caches are named `saf-checkin-v1-*`. **Bump `VERSION` in `public/sw.js` whenever the caching strategy changes**; hashed assets self-invalidate.
+- `src/lib/pwa.ts` registers the SW only in `PROD` (`${BASE_URL}sw.js`) and exposes `usePwaInstall()` (surfaced in the Me page privacy aside). `firebase.json` serves `/sw.js` and the manifest with `Cache-Control: no-cache` so deploys are picked up immediately.
+
 ## Verification
 - `verify/e2e-signup.cjs` — signed-out check-in → sign-up → sync → new device
+- `verify/polls-rotation.cjs` — poll/challenge rotation guarantees (`node verify/polls-rotation.cjs`)
+- Emergency contacts in `src/data/contacts.ts` carry `verifiedOn`; re-verify every 6 months (next due 2027-02-27)
 - `verify/shoot*.cjs` — route screenshots (desktop + mobile), QR decode test
 - CI `check` job = build + lint gate before either deploy

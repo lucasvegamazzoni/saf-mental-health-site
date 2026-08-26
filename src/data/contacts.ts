@@ -27,7 +27,16 @@ export interface EmergencyContact {
   verifiedOn?: string;
   /** Where the details were verified (URL or name). */
   source?: string;
+  /** Section the consumer can group under. */
+  group?: ContactGroup;
 }
+
+export type ContactGroup = 'now' | 'saf' | 'peer';
+export const CONTACT_GROUP_LABEL: Record<ContactGroup, string> = {
+  now: 'Right now, any hour',
+  saf: 'Inside the SAF',
+  peer: 'Peer and community',
+};
 
 /**
  * Order matters: immediate-danger lines first, then SAF-specific, then
@@ -37,6 +46,7 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   /* --- Right now, any hour ------------------------------------------------ */
   {
     label: 'Samaritans of Singapore (SOS)',
+    group: 'now',
     detail: '1767',
     href: 'tel:1767',
     hours: '24/7',
@@ -46,6 +56,7 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   },
   {
     label: 'SOS CareText',
+    group: 'now',
     detail: 'WhatsApp 9151 1767',
     href: 'https://wa.me/6591511767',
     hours: '24/7',
@@ -55,6 +66,7 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   },
   {
     label: 'National mindline 1771',
+    group: 'now',
     detail: '1771',
     href: 'tel:1771',
     hours: '24/7',
@@ -65,6 +77,7 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   },
   {
     label: 'mindline 1771 on WhatsApp',
+    group: 'now',
     detail: 'WhatsApp +65 6669 1771',
     href: 'https://wa.me/6566691771',
     hours: '24/7',
@@ -77,6 +90,7 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   /* --- Inside the SAF ------------------------------------------------------ */
   {
     label: 'SAF Counselling Hotline',
+    group: 'saf',
     detail: '1800-278-0022',
     href: 'tel:1800-278-0022',
     hours: '24/7',
@@ -86,11 +100,13 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   },
   {
     label: "Your unit's paracounsellors",
+    group: 'saf',
     detail: 'Trained peers in your own unit',
     note: 'They have been through the same training and know the system from the inside.',
   },
   {
     label: 'Any instructor you trust',
+    group: 'saf',
     detail: 'They will listen',
     note: 'You do not need a reason or a diagnosis to start the conversation.',
   },
@@ -98,6 +114,7 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   /* --- Peer and community -------------------------------------------------- */
   {
     label: 'CHAT (youth, 16–30)',
+    group: 'peer',
     detail: '6493 6500',
     href: 'tel:64936500',
     hours: 'Mon 9am–5pm · Tue–Sat 12pm–9pm',
@@ -107,6 +124,7 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   },
   {
     label: 'TOUCHline',
+    group: 'peer',
     detail: '1800 377 2252',
     href: 'tel:1800-377-2252',
     hours: 'Mon–Fri 9am–6pm, excl. public holidays',
@@ -116,6 +134,7 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   },
   {
     label: '@TheOpenManProject',
+    group: 'peer',
     detail: 'Instagram',
     href: 'https://www.instagram.com/theopenmanproject',
     note: 'Men talking openly about what they carry. Community, not a helpline.',

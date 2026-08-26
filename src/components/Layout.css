@@ -140,7 +140,9 @@
 }
 
 .layout-help-card {
-  width: min(320px, calc(100vw - 2rem));
+  width: min(340px, calc(100vw - 2rem));
+  max-height: min(70vh, calc(100dvh - 7rem));
+  overflow-y: auto;
   background: var(--paper);
   border: 1px solid rgba(46, 58, 52, 0.12);
   border-radius: 20px;
@@ -188,8 +190,55 @@ a.layout-help-name:hover {
 }
 
 .layout-help-detail {
-  font-size: 0.8rem;
-  color: rgba(46, 58, 52, 0.6);
+  font-size: 0.82rem;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.layout-help-group + .layout-help-group {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1.5px dashed rgba(126, 155, 119, 0.55);
+}
+
+.layout-help-group-title {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.55rem;
+}
+
+.layout-help-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.layout-help-hours {
+  flex: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--pine-deep);
+  background: rgba(169, 191, 160, 0.35);
+  border-radius: 10px;
+  padding: 0.12rem 0.5rem;
+  white-space: nowrap;
+}
+
+.layout-help-note {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(46, 58, 52, 0.72);
+  margin-top: 0.15rem;
+}
+
+.layout-help-verified {
+  margin-top: 0.9rem;
+  font-size: 0.82rem;
+  color: rgba(46, 58, 52, 0.72);
 }
 
 /* Motion (opt-in only for users who allow it) ----------------------------- */

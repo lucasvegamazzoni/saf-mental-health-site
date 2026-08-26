@@ -4,6 +4,7 @@ import SignInGate from '../components/SignInGate';
 import { CHALLENGES, CHECKIN_SCALE } from '../data/content';
 import type { CheckinScore, ScalePoint } from '../data/content';
 import { firebaseReady, useSession } from '../lib/auth';
+import { usePwaInstall } from '../lib/pwa';
 import { getChallengeDone, getCheckins, onStoreChange, toggleChallenge } from '../lib/store';
 import type { CheckinEntry } from '../lib/store';
 import CheckIn from './CheckIn';
@@ -49,7 +50,8 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'timeline', label: 'Timeline' },
   { id: 'challenges', label: 'Challenges' },
 ];
-const isTab = (v: string | null): v is Tab => v === 'check-in' || v === 'timeline' || v === 'challenges';
+const isTab = (v: string | null): v is Tab =>
+  v === 'check-in' || v === 'timeline' || v === 'challenges';
 
 /* Sparkline ----------------------------------------------------------------- */
 
@@ -58,14 +60,22 @@ const SPARK_H = 96;
 const SPARK_PAD_X = 12;
 const SPARK_PAD_Y = 14;
 
-function Sparkline({ points, label }: { points: { avg: number; dateLabel: string }[]; label: string }) {
+function Sparkline({
+  points,
+  label,
+}: {
+  points: { avg: number; dateLabel: string }[];
+  label: string;
+}) {
   const innerW = SPARK_W - SPARK_PAD_X * 2;
   const innerH = SPARK_H - SPARK_PAD_Y * 2;
   const coords = points.map((p, i) => ({
     x: SPARK_PAD_X + (i * innerW) / (points.length - 1),
     y: SPARK_PAD_Y + ((2 - p.avg) / 2) * innerH,
   }));
-  const line = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
+  const line = coords
+    .map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`)
+    .join(' ');
   const area = `${line} L ${coords[coords.length - 1].x.toFixed(1)} ${SPARK_H - SPARK_PAD_Y} L ${coords[0].x.toFixed(1)} ${SPARK_H - SPARK_PAD_Y} Z`;
   const gridYs = [0, 1, 2].map((s) => SPARK_PAD_Y + ((2 - s) / 2) * innerH);
 
@@ -161,6 +171,7 @@ interface Props {
 export default function Me({ initialTab }: Props) {
   const session = useSession();
   const [params, setParams] = useSearchParams();
+  const pwa = usePwaInstall();
   const signedIn = session.status === 'in';
   const gated = firebaseReady && !signedIn;
 
@@ -179,7 +190,12 @@ export default function Me({ initialTab }: Props) {
           const avg = averageScore(entry);
           return avg === null
             ? null
-            : { avg, point: scalePointFor(avg), dateLabel: formatDate(entry.dateISO), entry };
+            : {
+                avg,
+                point: scalePointFor(avg),
+                dateLabel: formatDate(entry.dateISO),
+                entry,
+              };
         })
         .filter((t): t is NonNullable<typeof t> => t !== null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -281,7 +297,10 @@ export default function Me({ initialTab }: Props) {
               )}
 
               {timeline.length >= 2 && previous && (
-                <ul className="me-stats" aria-label="How each area moved since your previous check-in">
+                <ul
+                  className="me-stats"
+                  aria-label="How each area moved since your previous check-in"
+                >
                   {MICRO_STATS.map((stat) => {
                     const now = scoreFor(latest.entry, stat.qid);
                     const before = scoreFor(previous.entry, stat.qid);
@@ -300,7 +319,11 @@ export default function Me({ initialTab }: Props) {
                     const word = delta > 0 ? 'Up' : delta < 0 ? 'Down' : 'Steady';
                     const arrow = delta > 0 ? '▲' : delta < 0 ? '▼' : '→';
                     const tone =
-                      delta === 0 ? 'steady' : (delta > 0) === stat.higherIsBetter ? 'better' : 'worse';
+                      delta === 0
+                        ? 'steady'
+                        : delta > 0 === stat.higherIsBetter
+                          ? 'better'
+                          : 'worse';
                     return (
                       <li key={stat.qid} className="me-stat">
                         <span className="me-stat-emoji" aria-hidden="true">
@@ -396,12 +419,37 @@ export default function Me({ initialTab }: Props) {
 
       {/* Privacy note ---------------------------------------------------------- */}
       <aside className="me-privacy" aria-label="Privacy note">
-        <h2 className="me-privacy-title">Private by design</h2>
-        <p className="me-privacy-body">
-          {signedIn
-            ? 'Your check-ins and challenges are kept under your call sign only. There is no name, email or unit attached — nobody, including us, can tell who you are.'
-            : 'Check-ins are saved in this browser, on this device. Nothing is uploaded unless you choose to keep it under a call sign — and even then, no name is ever attached.'}
-        </p>
+        <div className="me-privacy-inner">
+          <h2 className="me-privacy-title">Private by design</h2>
+          <p className="me-privacy-body">
+            {signedIn
+              ? 'Your check-ins and challenges are kept under your call sign only. There is no name, email or unit attached — nobody, including us, can tell who you are.'
+              : 'Check-ins are saved in this browser, on this device. Nothing is uploaded unless you choose to keep it under a call sign — and even then, no name is ever attached.'}
+          </p>
+          {pwa.shouldShowHint && (
+            <div className="me-install">
+              <p className="me-install-body">
+                {pwa.canPrompt
+                  ? 'Keep this a tap away — add it to your home screen. It opens like an app and still works when the signal drops.'
+                  : 'In Safari, tap Share, then "Add to Home Screen" to keep this a tap away. It still opens when the signal drops.'}
+              </p>
+              <div className="me-install-actions">
+                {pwa.canPrompt && (
+                  <button
+                    type="button"
+                    className="me-install-btn"
+                    onClick={() => void pwa.promptInstall()}
+                  >
+                    Add to Home Screen
+                  </button>
+                )}
+                <button type="button" className="me-install-dismiss" onClick={pwa.dismiss}>
+                  Not now
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </aside>
     </div>
   );

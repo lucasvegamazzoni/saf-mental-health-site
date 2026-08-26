@@ -3,7 +3,7 @@
 .mod-page {
   max-width: 900px;
   margin: 0 auto;
-  padding: clamp(2rem, 6vh, 4rem) 1.25rem 6rem; /* bottom clears the emergency button */
+  padding: clamp(2rem, 6vh, 4rem) 1.25rem 9rem; /* bottom clears the fixed emergency + companion buttons */
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -90,6 +90,13 @@
 .mod-primary:focus-visible {
   outline: 3px solid var(--terra-soft);
   outline-offset: 2px;
+}
+
+/* Queue action rows sit clear of the fixed emergency button on narrow screens */
+@media (max-width: 640px) {
+  .mod-section {
+    padding-bottom: 1rem;
+  }
 }
 
 /* Placeholder queue card used by the stub components */
