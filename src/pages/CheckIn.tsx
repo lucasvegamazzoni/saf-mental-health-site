@@ -2,7 +2,8 @@ import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CHECKIN_QUESTIONS, CHECKIN_SCALE } from '../data/content';
 import type { CheckinScore } from '../data/content';
-import { saveCheckin } from '../lib/store';
+import { currentUid, firebaseReady, useSession } from '../lib/auth';
+import { saveCheckinEverywhere } from '../lib/sync';
 import type { CheckinAnswer } from '../lib/store';
 import './CheckIn.css';
 
@@ -13,18 +14,13 @@ interface DraftAnswer {
   followUps: string[];
 }
 
-function Leaf({ className }: { className: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 21 C11 14 12 8 17 3 C19 9 17 16 12 21 Z M12 21 C12 15 10 10 5 7 C5 13 8 18 12 21 Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
+interface Props {
+  /** Rendered inside the "Me" page tabs (tighter spacing, h2 heading). */
+  embedded?: boolean;
 }
 
-export default function CheckIn() {
+export default function CheckIn({ embedded = false }: Props) {
+  const session = useSession();
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<Record<string, DraftAnswer>>({});
   const [done, setDone] = useState(false);
@@ -43,7 +39,7 @@ export default function CheckIn() {
       const a = finalDraft[q.id];
       return a ? [{ qid: q.id, score: a.score, followUps: a.followUps }] : [];
     });
-    saveCheckin({ dateISO: new Date().toISOString(), answers });
+    void saveCheckinEverywhere({ dateISO: new Date().toISOString(), answers }, currentUid());
     setLowCount(answers.filter((a) => a.score === 0).length);
     setDone(true);
   }
@@ -81,15 +77,23 @@ export default function CheckIn() {
     if (step > 0) setStep(step - 1);
   }
 
+  const pageClass = `checkin-page${embedded ? ' checkin-page--embedded' : ''}`;
+  const Heading = embedded ? 'h2' : 'h1';
+  const signedIn = session.status === 'in';
+  const canSave = firebaseReady && !signedIn;
+
   if (done) {
     return (
-      <div className="checkin-page">
+      <div className={pageClass}>
         <section className="checkin-finish" aria-live="polite">
-          <Leaf className="checkin-finish-leaf" />
-          <h1 className="checkin-finish-title">Thanks for checking in.</h1>
+          <span className="checkin-finish-mark" aria-hidden="true">
+            ✔
+          </span>
+          <Heading className="checkin-finish-title">Thanks for checking in.</Heading>
           <p className="checkin-finish-line">
-            Noticing how you feel is already a step. This stays on your device — come back
-            whenever you like.
+            {signedIn
+              ? 'Noticing how you feel is already a step. This one is saved under your call sign.'
+              : 'Noticing how you feel is already a step. This one is saved on this device.'}
           </p>
           {lowCount >= 3 && (
             <div className="checkin-finish-gentle">
@@ -102,22 +106,43 @@ export default function CheckIn() {
             </div>
           )}
           <div className="checkin-finish-links">
-            <Link className="checkin-btn checkin-btn--primary" to="/me">
-              See your timeline
-            </Link>
-            <Link className="checkin-btn checkin-btn--ghost" to="/stories">
-              Read stories from others
-            </Link>
+            {canSave ? (
+              <>
+                <Link
+                  className="checkin-btn checkin-btn--primary"
+                  to={`/account?mode=create&next=${encodeURIComponent('/me?tab=timeline')}`}
+                >
+                  Keep it with a call sign
+                </Link>
+                <Link className="checkin-btn checkin-btn--ghost" to="/stories">
+                  Not now — read stories
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link className="checkin-btn checkin-btn--primary" to="/me?tab=timeline">
+                  See your timeline
+                </Link>
+                <Link className="checkin-btn checkin-btn--ghost" to="/stories">
+                  Read stories from others
+                </Link>
+              </>
+            )}
           </div>
+          {canSave && (
+            <p className="checkin-note">
+              A call sign keeps your timeline on any phone — no name, no email, ever.
+            </p>
+          )}
         </section>
       </div>
     );
   }
 
   return (
-    <div className="checkin-page">
+    <div className={pageClass}>
       <header className="checkin-head">
-        <h1 className="checkin-title">30-Second Check-in</h1>
+        <Heading className="checkin-title">30-Second Check-in</Heading>
         <p className="checkin-lede">Ten quick taps, just for you.</p>
       </header>
 
@@ -159,7 +184,7 @@ export default function CheckIn() {
       </div>
 
       <section className="checkin-card" key={question.id}>
-        <h2 className="checkin-question">{question.text}</h2>
+        <h3 className="checkin-question">{question.text}</h3>
 
         <div className="checkin-scale" role="group" aria-label="Your answer">
           {CHECKIN_SCALE.map((point) => (
@@ -217,7 +242,11 @@ export default function CheckIn() {
         )}
       </section>
 
-      <p className="checkin-note">Your answers stay on this device — no one else sees them.</p>
+      <p className="checkin-note">
+        {signedIn
+          ? 'Saved under your call sign — no one else can see it.'
+          : 'Your answers stay on this device — no one else sees them.'}
+      </p>
     </div>
   );
 }

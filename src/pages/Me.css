@@ -447,3 +447,67 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* Tabs ------------------------------------------------------------------------- */
+
+.me-sub {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.7);
+}
+
+.me-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 1.4rem auto 1.6rem;
+  max-width: 460px;
+  background: var(--cream);
+  border-radius: 999px;
+}
+
+.me-tab {
+  flex: 1;
+  min-height: 44px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--pine);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.me-tab.is-active {
+  background: var(--paper);
+  color: var(--pine-deep);
+  box-shadow: 0 2px 8px rgba(46, 58, 52, 0.1);
+}
+
+.me-tab:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+}
+
+.me-tab-lock {
+  color: var(--terra);
+  font-size: 1.4rem;
+  line-height: 0;
+}
+
+.me-add-link,
+.me-empty-cta {
+  font-family: var(--font-body);
+  border: none;
+  cursor: pointer;
+}
+
+.me-add-link {
+  background: transparent;
+  padding: 0;
+}

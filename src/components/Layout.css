@@ -263,3 +263,7 @@ a.layout-help-name:hover {
   background: var(--sage);
   border-color: var(--pine);
 }
+
+.layout-account.is-loading {
+  opacity: 0.5;
+}

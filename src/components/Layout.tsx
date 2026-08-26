@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { EMERGENCY_CONTACTS } from '../data/content';
-import { getProfile, onProfileChange } from '../lib/store';
+import { useSession } from '../lib/auth';
 import './Layout.css';
 
+/** The leaf mark — used exactly twice on purpose: the wordmark and the footer sign-off. */
 function Leaf({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
@@ -16,7 +17,6 @@ function Leaf({ className }: { className?: string }) {
 }
 
 const NAV_LINKS = [
-  { to: '/check-in', label: 'Check-in' },
   { to: '/stories', label: 'Stories' },
   { to: '/resources', label: 'Resources' },
   { to: '/me', label: 'Me' },
@@ -24,16 +24,14 @@ const NAV_LINKS = [
 
 export default function Layout() {
   const [helpOpen, setHelpOpen] = useState(false);
-  const [profile, setProfile] = useState(getProfile);
-
-  useEffect(() => onProfileChange(() => setProfile(getProfile())), []);
+  const session = useSession();
 
   return (
     <div className="layout">
       <header className="layout-nav">
-        <NavLink to="/" className="layout-brand" aria-label="Not Alone — home">
+        <NavLink to="/" className="layout-brand" aria-label="SAF Check-in — home">
           <Leaf className="layout-brand-leaf" />
-          Not Alone.
+          SAF Check-in
         </NavLink>
         <nav className="layout-links" aria-label="Main navigation">
           {NAV_LINKS.map((link) => (
@@ -47,12 +45,16 @@ export default function Layout() {
           ))}
           <NavLink
             to="/account"
-            className={({ isActive }) => `layout-account${isActive ? ' is-active' : ''}`}
-            aria-label={profile ? `Your space — ${profile.alias}` : 'Sign in'}
+            className={({ isActive }) =>
+              `layout-account${isActive ? ' is-active' : ''}${session.status === 'loading' ? ' is-loading' : ''}`
+            }
+            aria-label={
+              session.status === 'in' ? `Your space — ${session.session.callSign}` : 'Sign in'
+            }
           >
-            {profile ? (
+            {session.status === 'in' ? (
               <>
-                <span aria-hidden="true">{profile.emoji}</span> {profile.alias}
+                <span aria-hidden="true">{session.session.marker}</span> {session.session.callSign}
               </>
             ) : (
               'Sign in'
@@ -67,7 +69,7 @@ export default function Layout() {
 
       <footer className="layout-footer">
         <Leaf className="layout-footer-leaf" />
-        <p>A demo wellbeing space. Everything you enter stays on this device.</p>
+        <p>SAF Check-in · Anonymous by design. Nothing here needs your name.</p>
       </footer>
 
       <div className="layout-help">

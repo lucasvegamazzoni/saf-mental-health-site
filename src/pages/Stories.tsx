@@ -1,7 +1,17 @@
 import { useState } from 'react';
 import { SEED_STORIES, STORY_THEMES } from '../data/content';
 import type { Story } from '../data/content';
+import SignInGate from '../components/SignInGate';
+import { useSession } from '../lib/auth';
 import './Stories.css';
+
+function Dot({ className }: { className: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="7" fill="currentColor" />
+    </svg>
+  );
+}
 
 const HELPER_PROMPTS = [
   'What happened?',
@@ -10,22 +20,11 @@ const HELPER_PROMPTS = [
   'What advice would you give?',
 ];
 
-function Leaf({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 21 C11 14 12 8 17 3 C19 9 17 16 12 21 Z M12 21 C12 15 10 10 5 7 C5 13 8 18 12 21 Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
 function HopeScore({ score }: { score: Story['hopeScore'] }) {
   return (
     <span className="stories-hope" role="img" aria-label={`Hope score ${score} out of 5`}>
       {[1, 2, 3, 4, 5].map((n) => (
-        <Leaf key={n} className={`stories-hope-leaf${n <= score ? ' is-filled' : ''}`} />
+        <Dot key={n} className={`stories-hope-leaf${n <= score ? ' is-filled' : ''}`} />
       ))}
       <span className="stories-hope-num" aria-hidden="true">
         {score}/5
@@ -98,6 +97,8 @@ export default function Stories() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [stubOpen, setStubOpen] = useState(false);
+  const session = useSession();
+  const canShare = session.status === 'in';
 
   const visible = activeTheme
     ? SEED_STORIES.filter((story) => story.theme === activeTheme)
@@ -106,7 +107,6 @@ export default function Stories() {
   return (
     <div className="stories-page">
       <header className="stories-head">
-        <Leaf className="stories-head-leaf" />
         <h1 className="stories-title">Real Stories. Real Growth.</h1>
         <p className="stories-sub">
           Every story shared here is completely anonymous. Names and identifying details are
@@ -161,8 +161,14 @@ export default function Stories() {
         </div>
       )}
 
+      {!canShare ? (
+        <SignInGate
+          what="anything you share"
+          next="/stories"
+          note="Stories are published anonymously, but a call sign lets you edit or withdraw yours later. No name, no email, no unit."
+        />
+      ) : (
       <section className="stories-share" aria-labelledby="stories-share-title">
-        <Leaf className="stories-share-leaf" />
         <h2 id="stories-share-title" className="stories-share-title">
           Share Your Story
         </h2>
@@ -213,6 +219,7 @@ export default function Stories() {
           </div>
         )}
       </section>
+      )}
     </div>
   );
 }

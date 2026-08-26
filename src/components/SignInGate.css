@@ -1,0 +1,80 @@
+.gate {
+  background: var(--paper);
+  border: 1.5px dashed rgba(66, 96, 79, 0.28);
+  border-radius: 22px;
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.gate-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+
+.gate-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  color: var(--pine-deep);
+  letter-spacing: -0.01em;
+}
+
+.gate-body {
+  max-width: 42ch;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 0.4rem;
+}
+
+.gate-primary,
+.gate-secondary {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.gate-primary {
+  color: var(--paper);
+  background: var(--terra);
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.28);
+}
+
+.gate-primary:hover {
+  background: color-mix(in srgb, var(--terra) 86%, black);
+}
+
+.gate-secondary {
+  color: var(--pine);
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+}
+
+.gate-secondary:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+.gate-primary:focus-visible,
+.gate-secondary:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+}

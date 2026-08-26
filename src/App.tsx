@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import CheckIn from './pages/CheckIn';
 import Stories from './pages/Stories';
 import Resources from './pages/Resources';
 import ResourceTopic from './pages/ResourceTopic';
@@ -14,7 +13,7 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/check-in" element={<CheckIn />} />
+          <Route path="/check-in" element={<Me initialTab="check-in" />} />
           <Route path="/stories" element={<Stories />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/resources/:topic" element={<ResourceTopic />} />

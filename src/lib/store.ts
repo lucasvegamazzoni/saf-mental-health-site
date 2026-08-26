@@ -12,7 +12,6 @@ const KEYS = {
   challenges: 'challenges',
   pollVote: 'pollVote',
   recognitions: 'recognitions',
-  profile: 'profile',
 } as const;
 
 /* Types --------------------------------------------------------------------- */
@@ -75,6 +74,7 @@ export function getCheckins(): CheckinEntry[] {
 export function saveCheckin(entry: CheckinEntry): CheckinEntry[] {
   const next = [...getCheckins(), entry];
   write(KEYS.checkins, next);
+  emitChange('checkins');
   return next;
 }
 
@@ -131,58 +131,31 @@ export function addRecognition(text: string): string[] {
   return next;
 }
 
-/* Profile (demo account) --------------------------------------------------------
- * An on-device pseudonymous "account": a call sign + emoji, never a real name.
- * Precedent for real anonymous auth later — nothing is sent anywhere.
+/* Change events ------------------------------------------------------------------
+ * Pages subscribe so they re-render when data changes (same tab or cross-tab).
  * ---------------------------------------------------------------------------- */
 
-export interface Profile {
-  alias: string;
-  emoji: string;
-  createdISO: string;
+const CHANGE_EVENT = 'nal:change';
+
+export function emitChange(key: string): void {
+  window.dispatchEvent(new CustomEvent<string>(CHANGE_EVENT, { detail: key }));
 }
 
-const PROFILE_EVENT = 'nal:profile';
-
-function isProfile(item: unknown): item is Profile {
-  if (typeof item !== 'object' || item === null) return false;
-  const p = item as Record<string, unknown>;
-  return (
-    typeof p.alias === 'string' &&
-    p.alias.trim().length > 0 &&
-    typeof p.emoji === 'string' &&
-    typeof p.createdISO === 'string'
-  );
-}
-
-/** The device's profile, or null if none was created. */
-export function getProfile(): Profile | null {
-  const parsed = read<unknown>(KEYS.profile, null);
-  return isProfile(parsed) ? parsed : null;
-}
-
-/** Creates or replaces the on-device profile. */
-export function saveProfile(profile: Profile): void {
-  write(KEYS.profile, profile);
-  window.dispatchEvent(new Event(PROFILE_EVENT));
-}
-
-/** Removes the profile. Check-ins and other data stay untouched. */
-export function clearProfile(): void {
-  try {
-    localStorage.removeItem(NS + KEYS.profile);
-  } catch {
-    // Storage unavailable — nothing to remove.
-  }
-  window.dispatchEvent(new Event(PROFILE_EVENT));
-}
-
-/** Subscribes to profile changes (same-tab and cross-tab). Returns unsubscribe. */
-export function onProfileChange(listener: () => void): () => void {
-  window.addEventListener(PROFILE_EVENT, listener);
-  window.addEventListener('storage', listener);
+/** Subscribes to store changes. Listener receives the changed key ('*' for cross-tab). */
+export function onStoreChange(listener: (key: string) => void): () => void {
+  const onLocal = (e: Event) => listener((e as CustomEvent<string>).detail);
+  const onStorage = () => listener('*');
+  window.addEventListener(CHANGE_EVENT, onLocal);
+  window.addEventListener('storage', onStorage);
   return () => {
-    window.removeEventListener(PROFILE_EVENT, listener);
-    window.removeEventListener('storage', listener);
+    window.removeEventListener(CHANGE_EVENT, onLocal);
+    window.removeEventListener('storage', onStorage);
   };
+}
+
+/** Replaces the local check-in cache (used when merging with the account copy). */
+export function replaceCheckins(entries: CheckinEntry[]): void {
+  const sorted = [...entries].sort((a, b) => a.dateISO.localeCompare(b.dateISO));
+  write(KEYS.checkins, sorted);
+  emitChange('checkins');
 }

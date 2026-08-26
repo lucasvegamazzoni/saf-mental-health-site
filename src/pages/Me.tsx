@@ -1,14 +1,16 @@
-import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import SignInGate from '../components/SignInGate';
 import { CHALLENGES, CHECKIN_SCALE } from '../data/content';
 import type { CheckinScore, ScalePoint } from '../data/content';
-import { getChallengeDone, getCheckins, toggleChallenge } from '../lib/store';
+import { firebaseReady, useSession } from '../lib/auth';
+import { getChallengeDone, getCheckins, onStoreChange, toggleChallenge } from '../lib/store';
 import type { CheckinEntry } from '../lib/store';
+import CheckIn from './CheckIn';
 import './Me.css';
 
 /* Helpers ------------------------------------------------------------------ */
 
-/** Mean of an entry's answer scores (0–2), or null if nothing usable. */
 function averageScore(entry: CheckinEntry): number | null {
   const scores = entry.answers
     .map((a) => (a && typeof a.score === 'number' && a.score >= 0 && a.score <= 2 ? a.score : null))
@@ -17,7 +19,6 @@ function averageScore(entry: CheckinEntry): number | null {
   return scores.reduce((sum: number, s) => sum + s, 0) / scores.length;
 }
 
-/** Nearest point on the 3-step scale for an average score. */
 function scalePointFor(avg: number): ScalePoint {
   const rounded = Math.min(2, Math.max(0, Math.round(avg)));
   return CHECKIN_SCALE.find((p) => p.score === rounded) ?? CHECKIN_SCALE[1];
@@ -29,7 +30,6 @@ function formatDate(iso: string): string {
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
 
-/** Score a single question got in an entry, or null if unanswered. */
 function scoreFor(entry: CheckinEntry, qid: string): number | null {
   const answer = entry.answers.find((a) => a && a.qid === qid);
   if (!answer || typeof answer.score !== 'number') return null;
@@ -43,18 +43,13 @@ const MICRO_STATS = [
   { qid: 'stress', label: 'Stress', emoji: '🌧️', higherIsBetter: false },
 ] as const;
 
-/* Small shared pieces ------------------------------------------------------- */
-
-function Leaf({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 21 C11 14 12 8 17 3 C19 9 17 16 12 21 Z M12 21 C12 15 10 10 5 7 C5 13 8 18 12 21 Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
+type Tab = 'check-in' | 'timeline' | 'challenges';
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'check-in', label: 'Check-in' },
+  { id: 'timeline', label: 'Timeline' },
+  { id: 'challenges', label: 'Challenges' },
+];
+const isTab = (v: string | null): v is Tab => v === 'check-in' || v === 'timeline' || v === 'challenges';
 
 /* Sparkline ----------------------------------------------------------------- */
 
@@ -127,7 +122,7 @@ function Sparkline({ points, label }: { points: { avg: number; dateLabel: string
 
 /* Empty state ---------------------------------------------------------------- */
 
-function EmptyTimeline() {
+function EmptyTimeline({ onStart }: { onStart: () => void }) {
   return (
     <div className="me-empty">
       <svg className="me-empty-art" viewBox="0 0 260 84" aria-hidden="true">
@@ -139,24 +134,17 @@ function EmptyTimeline() {
           strokeDasharray="1 9"
           strokeLinecap="round"
         />
-        <circle cx="16" cy="66" r="4" fill="none" stroke="var(--sage-deep)" strokeWidth="2" />
+        <circle cx="16" cy="66" r="5" fill="var(--gold)" />
         <circle cx="132" cy="46" r="4" fill="none" stroke="var(--sage-deep)" strokeWidth="2" />
         <circle cx="244" cy="22" r="5" fill="var(--terra)" />
-        <g transform="translate(5 42) scale(0.9)">
-          <path
-            d="M12 21 C11 14 12 8 17 3 C19 9 17 16 12 21 Z M12 21 C12 15 10 10 5 7 C5 13 8 18 12 21 Z"
-            fill="var(--pine)"
-          />
-        </g>
       </svg>
       <h3 className="me-empty-title">Your timeline starts with your first 30-second check-in</h3>
       <p className="me-empty-body">
-        No account, nothing leaves this phone — just a gentle snapshot of how your week is going,
-        drawn a little further with every check-in.
+        A gentle snapshot of how your week is going, drawn a little further with every check-in.
       </p>
-      <Link className="me-empty-cta" to="/check-in">
+      <button type="button" className="me-empty-cta" onClick={onStart}>
         Start my first check-in
-      </Link>
+      </button>
     </div>
   );
 }
@@ -165,7 +153,25 @@ function EmptyTimeline() {
 
 const TIMELINE_LIMIT = 12;
 
-export default function Me() {
+interface Props {
+  /** Tab to open when the URL has none (the /check-in route passes 'check-in'). */
+  initialTab?: Tab;
+}
+
+export default function Me({ initialTab }: Props) {
+  const session = useSession();
+  const [params, setParams] = useSearchParams();
+  const signedIn = session.status === 'in';
+  const gated = firebaseReady && !signedIn;
+
+  const urlTab = params.get('tab');
+  const tab: Tab = isTab(urlTab) ? urlTab : (initialTab ?? (signedIn ? 'timeline' : 'check-in'));
+  const setTab = (next: Tab) => setParams({ tab: next });
+
+  // Re-read the local cache whenever a check-in is saved or synced.
+  const [version, setVersion] = useState(0);
+  useEffect(() => onStoreChange(() => setVersion((v) => v + 1)), []);
+
   const timeline = useMemo(
     () =>
       getCheckins()
@@ -176,7 +182,8 @@ export default function Me() {
             : { avg, point: scalePointFor(avg), dateLabel: formatDate(entry.dateISO), entry };
         })
         .filter((t): t is NonNullable<typeof t> => t !== null),
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [version],
   );
 
   const [doneIds, setDoneIds] = useState<ReadonlySet<string>>(
@@ -203,144 +210,198 @@ export default function Me() {
     <div className="me-page">
       <header className="me-head">
         <h1>Your space</h1>
-        <p className="me-device-pill">
-          <Leaf className="me-device-leaf" />
-          Only visible on this device.
+        <p className="me-sub">
+          {signedIn ? (
+            <>
+              <span aria-hidden="true">{session.session.marker}</span> {session.session.callSign} —
+              good to have you here.
+            </>
+          ) : (
+            'Check in now. Keep it with a call sign whenever you like.'
+          )}
         </p>
       </header>
 
-      {/* 1 — Mood timeline ------------------------------------------------- */}
-      <section className="me-section" aria-labelledby="me-timeline-heading">
-        <h2 id="me-timeline-heading" className="me-section-title">
-          <Leaf className="me-title-leaf" />
-          Mood timeline
-        </h2>
-
-        {timeline.length === 0 ? (
-          <EmptyTimeline />
-        ) : (
-          <div className="me-card">
-            {recent.length >= 2 && (
-              <Sparkline
-                points={recent}
-                label={`Average check-in score across your last ${recent.length} check-ins, from ${recent[0].dateLabel} to ${recent[recent.length - 1].dateLabel}.`}
-              />
+      <div className="me-tabs" role="tablist" aria-label="Your space">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            id={`me-tab-${t.id}`}
+            aria-selected={tab === t.id}
+            aria-controls={`me-panel-${t.id}`}
+            className={`me-tab${tab === t.id ? ' is-active' : ''}`}
+            onClick={() => setTab(t.id)}
+          >
+            {t.label}
+            {t.id !== 'check-in' && gated && (
+              <span className="me-tab-lock" aria-label="needs a call sign">
+                ·
+              </span>
             )}
+          </button>
+        ))}
+      </div>
 
-            {timeline.length >= 2 && previous && (
-              <ul className="me-stats" aria-label="How each area moved since your previous check-in">
-                {MICRO_STATS.map((stat) => {
-                  const now = scoreFor(latest.entry, stat.qid);
-                  const before = scoreFor(previous.entry, stat.qid);
-                  if (now === null || before === null) {
+      {/* Check-in ------------------------------------------------------------ */}
+      {tab === 'check-in' && (
+        <section id="me-panel-check-in" role="tabpanel" aria-labelledby="me-tab-check-in">
+          <CheckIn key={version} embedded />
+        </section>
+      )}
+
+      {/* Timeline ------------------------------------------------------------ */}
+      {tab === 'timeline' && (
+        <section
+          id="me-panel-timeline"
+          role="tabpanel"
+          aria-labelledby="me-tab-timeline"
+          className="me-section"
+        >
+          {gated ? (
+            <SignInGate
+              what="your timeline"
+              next="/me?tab=timeline"
+              note={
+                timeline.length > 0
+                  ? `You have ${timeline.length} check-in${timeline.length === 1 ? '' : 's'} on this phone. A call sign keeps them together — and brings them to your next phone.`
+                  : undefined
+              }
+            />
+          ) : timeline.length === 0 ? (
+            <EmptyTimeline onStart={() => setTab('check-in')} />
+          ) : (
+            <div className="me-card">
+              {recent.length >= 2 && (
+                <Sparkline
+                  points={recent}
+                  label={`Average check-in score across your last ${recent.length} check-ins, from ${recent[0].dateLabel} to ${recent[recent.length - 1].dateLabel}.`}
+                />
+              )}
+
+              {timeline.length >= 2 && previous && (
+                <ul className="me-stats" aria-label="How each area moved since your previous check-in">
+                  {MICRO_STATS.map((stat) => {
+                    const now = scoreFor(latest.entry, stat.qid);
+                    const before = scoreFor(previous.entry, stat.qid);
+                    if (now === null || before === null) {
+                      return (
+                        <li key={stat.qid} className="me-stat">
+                          <span className="me-stat-emoji" aria-hidden="true">
+                            {stat.emoji}
+                          </span>
+                          <span className="me-stat-label">{stat.label}</span>
+                          <span className="me-trend me-trend--steady">—</span>
+                        </li>
+                      );
+                    }
+                    const delta = now - before;
+                    const word = delta > 0 ? 'Up' : delta < 0 ? 'Down' : 'Steady';
+                    const arrow = delta > 0 ? '▲' : delta < 0 ? '▼' : '→';
+                    const tone =
+                      delta === 0 ? 'steady' : (delta > 0) === stat.higherIsBetter ? 'better' : 'worse';
                     return (
                       <li key={stat.qid} className="me-stat">
                         <span className="me-stat-emoji" aria-hidden="true">
                           {stat.emoji}
                         </span>
                         <span className="me-stat-label">{stat.label}</span>
-                        <span className="me-trend me-trend--steady">—</span>
+                        <span
+                          className={`me-trend me-trend--${tone}`}
+                          title={`${stat.label}: ${word.toLowerCase()} compared with your previous check-in`}
+                        >
+                          <span aria-hidden="true">{arrow}</span> {word}
+                        </span>
                       </li>
                     );
-                  }
-                  const delta = now - before;
-                  const word = delta > 0 ? 'Up' : delta < 0 ? 'Down' : 'Steady';
-                  const arrow = delta > 0 ? '▲' : delta < 0 ? '▼' : '→';
-                  const tone =
-                    delta === 0 ? 'steady' : (delta > 0) === stat.higherIsBetter ? 'better' : 'worse';
+                  })}
+                </ul>
+              )}
+
+              <ol className="me-chips" aria-label="Your check-ins, oldest first">
+                {recent.map((t, i) => (
+                  <li
+                    key={`${t.entry.dateISO}-${i}`}
+                    className={`me-chip${i === recent.length - 1 ? ' is-latest' : ''}`}
+                  >
+                    <span className="me-chip-emoji" aria-hidden="true">
+                      {t.point.emoji}
+                    </span>
+                    <span className="me-chip-date">{t.dateLabel}</span>
+                    <span className="me-visually-hidden">Feeling: {t.point.label}</span>
+                  </li>
+                ))}
+              </ol>
+
+              {timeline.length > TIMELINE_LIMIT && (
+                <p className="me-note">Showing your last {TIMELINE_LIMIT} check-ins.</p>
+              )}
+              {timeline.length === 1 && (
+                <p className="me-note">One more check-in and your trend line appears here.</p>
+              )}
+
+              <button type="button" className="me-add-link" onClick={() => setTab('check-in')}>
+                Add today’s check-in
+              </button>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Challenges ------------------------------------------------------------ */}
+      {tab === 'challenges' && (
+        <section
+          id="me-panel-challenges"
+          role="tabpanel"
+          aria-labelledby="me-tab-challenges"
+          className="me-section"
+        >
+          {gated ? (
+            <SignInGate what="your challenges" next="/me?tab=challenges" />
+          ) : (
+            <>
+              <div className="me-section-head">
+                <h2 className="me-section-title">Growth challenges</h2>
+                <span className={`me-badge${allDone ? ' is-complete' : ''}`}>
+                  {doneCount} of {CHALLENGES.length} this week
+                </span>
+              </div>
+
+              <ul className="me-challenges">
+                {CHALLENGES.map((challenge) => {
+                  const done = doneIds.has(challenge.id);
                   return (
-                    <li key={stat.qid} className="me-stat">
-                      <span className="me-stat-emoji" aria-hidden="true">
-                        {stat.emoji}
-                      </span>
-                      <span className="me-stat-label">{stat.label}</span>
-                      <span
-                        className={`me-trend me-trend--${tone}`}
-                        title={`${stat.label}: ${word.toLowerCase()} compared with your previous check-in`}
+                    <li key={challenge.id}>
+                      <button
+                        type="button"
+                        className={`me-challenge${done ? ' is-done' : ''}`}
+                        aria-pressed={done}
+                        onClick={() => handleToggle(challenge.id)}
                       >
-                        <span aria-hidden="true">{arrow}</span> {word}
-                      </span>
+                        <span className="me-challenge-check" aria-hidden="true">
+                          {done ? '✔' : ''}
+                        </span>
+                        <span className="me-challenge-text">{challenge.text}</span>
+                      </button>
                     </li>
                   );
                 })}
               </ul>
-            )}
+              <p className="me-note">Tap one to mark it done — small wins count.</p>
+            </>
+          )}
+        </section>
+      )}
 
-            <ol className="me-chips" aria-label="Your check-ins, oldest first">
-              {recent.map((t, i) => (
-                <li
-                  key={`${t.entry.dateISO}-${i}`}
-                  className={`me-chip${i === recent.length - 1 ? ' is-latest' : ''}`}
-                >
-                  <span className="me-chip-emoji" aria-hidden="true">
-                    {t.point.emoji}
-                  </span>
-                  <span className="me-chip-date">{t.dateLabel}</span>
-                  <span className="me-visually-hidden">Feeling: {t.point.label}</span>
-                </li>
-              ))}
-            </ol>
-
-            {timeline.length > TIMELINE_LIMIT && (
-              <p className="me-note">Showing your last {TIMELINE_LIMIT} check-ins.</p>
-            )}
-            {timeline.length === 1 && (
-              <p className="me-note">One more check-in and your trend line appears here.</p>
-            )}
-
-            <Link className="me-add-link" to="/check-in">
-              Add today’s check-in
-            </Link>
-          </div>
-        )}
-      </section>
-
-      {/* 2 — Growth challenges ---------------------------------------------- */}
-      <section className="me-section" aria-labelledby="me-challenges-heading">
-        <div className="me-section-head">
-          <h2 id="me-challenges-heading" className="me-section-title">
-            <Leaf className="me-title-leaf" />
-            Growth challenges
-          </h2>
-          <span className={`me-badge${allDone ? ' is-complete' : ''}`}>
-            {doneCount} of {CHALLENGES.length} this week
-          </span>
-        </div>
-
-        <ul className="me-challenges">
-          {CHALLENGES.map((challenge) => {
-            const done = doneIds.has(challenge.id);
-            return (
-              <li key={challenge.id}>
-                <button
-                  type="button"
-                  className={`me-challenge${done ? ' is-done' : ''}`}
-                  aria-pressed={done}
-                  onClick={() => handleToggle(challenge.id)}
-                >
-                  <span className="me-challenge-check" aria-hidden="true">
-                    {done ? '✔' : ''}
-                  </span>
-                  <span className="me-challenge-text">{challenge.text}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-        <p className="me-note">Tap one to mark it done — small wins count.</p>
-      </section>
-
-      {/* 3 — Privacy note ---------------------------------------------------- */}
+      {/* Privacy note ---------------------------------------------------------- */}
       <aside className="me-privacy" aria-label="Privacy note">
-        <Leaf className="me-privacy-leaf" />
-        <div>
-          <h2 className="me-privacy-title">Private by design</h2>
-          <p className="me-privacy-body">
-            Everything on this page — your check-ins and your challenge progress — is saved only in
-            this browser, on this device. Nothing is uploaded and no one else can see it; clearing
-            your browser data removes it completely.
-          </p>
-        </div>
+        <h2 className="me-privacy-title">Private by design</h2>
+        <p className="me-privacy-body">
+          {signedIn
+            ? 'Your check-ins and challenges are kept under your call sign only. There is no name, email or unit attached — nobody, including us, can tell who you are.'
+            : 'Check-ins are saved in this browser, on this device. Nothing is uploaded unless you choose to keep it under a call sign — and even then, no name is ever attached.'}
+        </p>
       </aside>
     </div>
   );

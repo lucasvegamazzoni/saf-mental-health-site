@@ -1,0 +1,97 @@
+/* QrTree — pinned scroll section: blossom tree → scannable QR code. */
+
+.qrtree {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  justify-items: center;
+  gap: 0.6rem;
+  /* --qrtree-nav is the measured sticky-nav height (set from QrTree.tsx) */
+  height: calc(100svh - var(--qrtree-nav, 0px));
+  min-height: 560px;
+  padding: clamp(1.25rem, 3.5vh, 2.5rem) 1.25rem clamp(1.5rem, 4vh, 2.5rem);
+  overflow: clip;
+  background:
+    radial-gradient(60% 45% at 50% 100%, rgba(244, 183, 207, 0.35) 0%, rgba(244, 183, 207, 0) 70%),
+    linear-gradient(to bottom, var(--paper) 0%, #fbf1f2 55%, #f7e7ec 100%);
+}
+
+.qrtree__copy {
+  text-align: center;
+  max-width: 44ch;
+}
+
+.qrtree__kicker {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c76a93;
+  margin-bottom: 0.55rem;
+}
+
+.qrtree__copy h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  line-height: 1.2;
+  color: var(--pine);
+}
+
+.qrtree__lead {
+  margin-top: 0.6rem;
+  color: rgba(46, 58, 52, 0.65);
+  line-height: 1.55;
+  font-size: 0.98rem;
+}
+
+.qrtree__stage {
+  position: relative;
+  width: min(100%, 640px);
+  height: 100%;
+  min-height: 0;
+}
+
+.qrtree__canvas,
+.qrtree__fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.qrtree__fallback {
+  object-fit: contain;
+}
+
+.qrtree__hint {
+  font-size: 0.85rem;
+  color: rgba(46, 58, 52, 0.55);
+  transition: color 0.4s ease;
+}
+
+.qrtree__hint.is-revealed {
+  color: #c76a93;
+  font-weight: 500;
+}
+
+.qrtree__link {
+  font-size: 0.82rem;
+  color: var(--pine);
+  text-decoration: underline;
+  text-decoration-color: rgba(66, 96, 79, 0.35);
+  text-underline-offset: 3px;
+  word-break: break-all;
+  text-align: center;
+}
+
+.qrtree__link:hover {
+  text-decoration-color: currentColor;
+}
+
+@media (max-height: 700px) {
+  .qrtree__lead {
+    display: none;
+  }
+}

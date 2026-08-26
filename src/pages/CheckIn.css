@@ -429,3 +429,22 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Embedded inside the Me page tabs */
+.checkin-page--embedded {
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+}
+
+.checkin-finish-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--sage);
+  color: var(--pine-deep);
+  font-size: 1.4rem;
+}

@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
+import Spinner from '../components/Spinner';
+const QrTree = lazy(() => import('../components/QrTree'));
 import { RECOGNITION_SEED, WEEKLY_POLL } from '../data/content';
 import { addRecognition, getPollVote, getRecognitions, votePoll } from '../lib/store';
 import './Home.css';
@@ -25,17 +27,6 @@ const TEASERS = [
     line: 'Small, doable tips for sleep, stress, recovery and the people around you.',
   },
 ];
-
-function Leaf({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M12 21 C11 14 12 8 17 3 C19 9 17 16 12 21 Z M12 21 C12 15 10 10 5 7 C5 13 8 18 12 21 Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
 
 export default function Home() {
   const [pollVote, setPollVote] = useState<string | null>(() => getPollVote());
@@ -64,7 +55,6 @@ export default function Home() {
 
       {/* Reassurance strip */}
       <section className="home-reassure" aria-label="Reassurance">
-        <Leaf className="home-reassure-leaf" />
         <h2>Struggling is normal. Growth is possible. No one has to face it alone.</h2>
         <p>
           Take a quiet minute here — check in with yourself, hear from others, or pick up
@@ -84,6 +74,17 @@ export default function Home() {
           </Link>
         ))}
       </section>
+
+      {/* Blossom tree → QR (scroll to reveal) */}
+      <Suspense
+        fallback={
+          <div className="qrtree qrtree--loading spinner-slot" aria-hidden="true">
+            <Spinner label="" />
+          </div>
+        }
+      >
+        <QrTree />
+      </Suspense>
 
       {/* This week's pulse */}
       <section className="home-pulse" aria-labelledby="home-pulse-question">
@@ -144,7 +145,6 @@ export default function Home() {
       {/* Recognition wall */}
       <section className="home-wall" aria-labelledby="home-wall-title">
         <div className="home-wall-head">
-          <Leaf className="home-wall-leaf" />
           <h2 id="home-wall-title">Recognition wall</h2>
           <p>Small thank-yous to the people who made a hard week lighter.</p>
         </div>
@@ -184,7 +184,6 @@ export default function Home() {
 
       {/* Soft footer */}
       <section className="home-footnote" aria-label="Privacy note">
-        <Leaf className="home-footnote-leaf" />
         <p className="home-footnote-strong">Everything you do here stays on this device.</p>
         <p className="home-footnote-sub">
           Built with care for Singapore’s servicemen — so the tough weeks feel a little less lonely.
