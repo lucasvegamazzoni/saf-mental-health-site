@@ -245,6 +245,91 @@
   color: var(--terra);
 }
 
+/* Poll — signed-out preview, live states ---------------------------------- */
+
+.home-pulse-preview {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.home-pulse-preview li {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: rgba(46, 58, 52, 0.72);
+  background: var(--cream);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 999px;
+  padding: 0.65rem 1.15rem;
+}
+
+.home-pulse-option {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.home-pulse-option:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.home-pulse-option.is-current {
+  background: var(--sage);
+  border-color: var(--pine);
+  color: var(--pine-deep);
+}
+
+.home-pulse-option-spinner {
+  flex: none;
+}
+
+.home-pulse-wait {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-pulse-error,
+.home-wall-error {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--terra);
+}
+
+.home-pulse-n {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pine);
+}
+
+.home-pulse-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.home-pulse-change {
+  align-self: flex-start;
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: transparent;
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+  border-radius: 999px;
+  padding: 0.55rem 1.15rem;
+  cursor: pointer;
+}
+
+.home-pulse-change:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
 /* Recognition wall -------------------------------------------------------- */
 
 .home-wall {
@@ -315,6 +400,81 @@
   overflow-wrap: anywhere;
 }
 
+.home-wall-tag {
+  display: inline-block;
+  margin-top: 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pine-deep);
+  background: rgba(201, 166, 100, 0.28);
+  border-radius: 10px;
+  padding: 0.2rem 0.55rem;
+}
+
+.home-wall-wait {
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-wall-note {
+  width: min(100%, 640px);
+  margin: 0 auto;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--terra);
+  text-align: center;
+}
+
+.home-wall-signin {
+  width: min(100%, 640px);
+  margin: 0 auto;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+  text-align: center;
+}
+
+.home-wall-signin a {
+  color: var(--pine);
+  font-weight: 600;
+}
+
+.home-wall-sent {
+  width: min(100%, 640px);
+  margin: 0 auto;
+  background: var(--paper);
+  border: 1.5px dashed rgba(126, 155, 119, 0.55);
+  border-radius: 22px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.home-wall-sent-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--pine-deep);
+}
+
+.home-wall-sent-sub {
+  font-size: 0.9rem;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.home-wall-help {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(46, 58, 52, 0.72);
+}
+
 .home-wall-form {
   width: min(100%, 640px);
   margin: 0 auto;
@@ -338,6 +498,7 @@
 .home-wall-input {
   flex: 1 1 220px;
   min-width: 0;
+  min-height: 48px;
   font-family: var(--font-body);
   font-size: 0.92rem;
   color: var(--ink);
@@ -352,6 +513,10 @@
 }
 
 .home-wall-submit {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 600;
@@ -367,9 +532,14 @@
   background: var(--pine-deep);
 }
 
+.home-wall-submit:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .home-wall-count {
-  font-size: 0.75rem;
-  color: rgba(46, 58, 52, 0.45);
+  font-size: 0.82rem;
+  color: rgba(46, 58, 52, 0.72);
   padding-left: 0.4rem;
 }
 
@@ -409,6 +579,8 @@
 
 .home-teaser:focus-visible,
 .home-pulse-option:focus-visible,
+.home-pulse-change:focus-visible,
+.home-wall-signin a:focus-visible,
 .home-wall-input:focus-visible,
 .home-wall-submit:focus-visible {
   outline: 3px solid var(--terra-soft);
