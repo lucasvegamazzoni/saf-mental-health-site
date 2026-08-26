@@ -247,7 +247,7 @@ export default function Me({ initialTab }: Props) {
       {/* Check-in ------------------------------------------------------------ */}
       {tab === 'check-in' && (
         <section id="me-panel-check-in" role="tabpanel" aria-labelledby="me-tab-check-in">
-          <CheckIn key={version} embedded />
+          <CheckIn embedded />
         </section>
       )}
 
