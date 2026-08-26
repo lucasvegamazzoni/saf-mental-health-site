@@ -1,0 +1,76 @@
+/* /trends — anonymous weekly aggregates. Mobile-first; DESIGN.md §5 recipes. */
+
+.trends-page {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vh, 4rem) 1.25rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.trends-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.trends-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pine);
+}
+
+.trends-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.trends-body {
+  max-width: 52ch;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.trends-card {
+  background: var(--paper);
+  border: 1.5px dashed rgba(126, 155, 119, 0.55);
+  border-radius: 22px;
+  padding: 1.8rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+  color: rgba(46, 58, 52, 0.72);
+  line-height: 1.6;
+}
+
+.trends-secondary {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  color: var(--pine);
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+}
+
+.trends-secondary:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+.trends-secondary:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+}

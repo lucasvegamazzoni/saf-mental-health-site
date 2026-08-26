@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { EMERGENCY_CONTACTS } from '../data/content';
 import { useSession } from '../lib/auth';
+import { useIsModerator } from '../lib/db';
+import Companion from './Companion';
 import './Layout.css';
 
 /** The leaf mark — used exactly twice on purpose: the wordmark and the footer sign-off. */
@@ -25,6 +27,7 @@ const NAV_LINKS = [
 export default function Layout() {
   const [helpOpen, setHelpOpen] = useState(false);
   const session = useSession();
+  const isModerator = useIsModerator();
 
   return (
     <div className="layout">
@@ -43,6 +46,14 @@ export default function Layout() {
               {link.label}
             </NavLink>
           ))}
+          {isModerator && (
+            <NavLink
+              to="/moderate"
+              className={({ isActive }) => `layout-link${isActive ? ' is-active' : ''}`}
+            >
+              Moderate
+            </NavLink>
+          )}
           <NavLink
             to="/account"
             className={({ isActive }) =>
@@ -71,6 +82,8 @@ export default function Layout() {
         <Leaf className="layout-footer-leaf" />
         <p>SAF Check-in · Anonymous by design. Nothing here needs your name.</p>
       </footer>
+
+      <Companion />
 
       <div className="layout-help">
         {helpOpen && (

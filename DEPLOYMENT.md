@@ -56,12 +56,12 @@ npx firebase hosting:channel:deploy preview-x   # temporary preview URL
 users/{uid}                     { callSign, marker, createdAt }
 users/{uid}/checkins/{dateISO}  { dateISO, answers[] }
 stories/{id}                    { status: pending|published|rejected, theme, title, preview, body[], lessons[], hopeScore, readMins, authorUid, flags[], createdAt }
-polls/{weekId}                  { question, options[] }  · votes/{uid}  { option }
-recognitions/{id}               { text, status, createdAt }
-trends/{weekId}                 { counts: { reason: n }, n }   ← anonymous aggregates only
+polls/{weekId}                  { question, options[] }  · votes/{uid}  { option, at }
+recognitions/{id}               { text, status, authorUid, flags[], createdAt }
+trends/{weekId}                 { n, reasons: { reason: n }, overall: { '0'|'1'|'2': n } }   ← anonymous aggregates only, no uid
 moderators/{uid}                { }                            ← allowlist read by rules
 ```
-Rules: owner-only on `users/**`; `stories`/`recognitions` create-by-signed-in with `status: pending`, public read only when `published`, update/delete only by moderators; `polls/*/votes/{uid}` owner-only; `trends` increments allowed for signed-in users, no reads of per-user data.
+Rules: owner-only on `users/**`; `stories`/`recognitions` create-by-signed-in with `status: pending` and `authorUid == uid`, public read only when `published` (moderators read all), update/delete only by moderators; `polls/{w}` read signed-in, write moderators; `polls/{w}/votes/{uid}` read signed-in, create/update owner-only; `trends/{w}` read + create/update by signed-in users, keys limited to `n, reasons, overall`; `moderators/{uid}` self-read only, no client writes. Typed client helpers: `src/lib/db.ts`.
 
 ## Verification
 - `verify/e2e-signup.cjs` — signed-out check-in → sign-up → sync → new device

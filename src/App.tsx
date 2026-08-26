@@ -6,6 +6,8 @@ import Resources from './pages/Resources';
 import ResourceTopic from './pages/ResourceTopic';
 import Me from './pages/Me';
 import Account from './pages/Account';
+import Moderate from './pages/Moderate';
+import Trends from './pages/Trends';
 
 export default function App() {
   return (
@@ -19,6 +21,8 @@ export default function App() {
           <Route path="/resources/:topic" element={<ResourceTopic />} />
           <Route path="/me" element={<Me />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/moderate" element={<Moderate />} />
+          <Route path="/trends" element={<Trends />} />
         </Route>
       </Routes>
     </BrowserRouter>

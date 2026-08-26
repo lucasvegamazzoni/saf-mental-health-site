@@ -1,12 +1,66 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Each account owns exactly its own document tree. No public reads anywhere.
+    function signedIn() {
+      return request.auth != null;
+    }
+    function isModerator() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/moderators/$(request.auth.uid));
+    }
+
+    // Each account owns exactly its own document tree. No public reads.
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
-      match /checkins/{checkinId} {
-        allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read, write: if signedIn() && request.auth.uid == uid;
+      match /{document=**} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
       }
+    }
+
+    // Stories: anyone can read what moderators have published; authors submit as 'pending'.
+    match /stories/{id} {
+      allow read: if resource.data.status == 'published' || isModerator();
+      allow create: if signedIn()
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.flags is list
+        && request.resource.data.body is list;
+      allow update, delete: if isModerator();
+    }
+
+    // Recognitions: same pattern as stories.
+    match /recognitions/{id} {
+      allow read: if resource.data.status == 'published' || isModerator();
+      allow create: if signedIn()
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.flags is list;
+      allow update, delete: if isModerator();
+    }
+
+    // Polls: the question doc is moderator-managed; each voter owns one vote doc.
+    match /polls/{weekId} {
+      allow read: if signedIn();
+      allow write: if isModerator();
+      match /votes/{uid} {
+        allow read: if signedIn();
+        allow create, update: if signedIn()
+          && request.auth.uid == uid
+          && request.resource.data.option is string;
+      }
+    }
+
+    // Trends: anonymous aggregate counters only — no uid may ever be stored here.
+    match /trends/{weekId} {
+      allow read: if signedIn();
+      allow create, update: if signedIn()
+        && request.resource.data.keys().hasOnly(['n', 'reasons', 'overall']);
+    }
+
+    // Moderator allowlist: a user may check only their own entry; written from the console.
+    match /moderators/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
     }
   }
 }

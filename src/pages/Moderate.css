@@ -1,0 +1,113 @@
+/* /moderate — review queue. Mobile-first; classes follow DESIGN.md §5 recipes. */
+
+.mod-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vh, 4rem) 1.25rem 6rem; /* bottom clears the emergency button */
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mod-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pine);
+}
+
+.mod-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.mod-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.35rem, 3vw, 1.7rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+  margin-bottom: 1rem;
+}
+
+.mod-body {
+  max-width: 52ch;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.mod-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Gate card — dashed "not for you" framing */
+.mod-gate {
+  background: var(--paper);
+  border: 1.5px dashed rgba(126, 155, 119, 0.55);
+  border-radius: 22px;
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: center;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.mod-gate .mod-kicker {
+  color: var(--terra);
+}
+
+.mod-primary {
+  margin-top: 0.4rem;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  color: var(--paper);
+  background: var(--terra);
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.3);
+}
+
+.mod-primary:hover {
+  background: color-mix(in srgb, var(--terra) 86%, black);
+}
+
+.mod-primary:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+}
+
+/* Placeholder queue card used by the stub components */
+.mod-stub {
+  background: var(--paper);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 22px;
+  box-shadow: 0 12px 32px rgba(46, 58, 52, 0.06);
+  padding: 1.5rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.mod-stub-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pine);
+  margin-bottom: 0.4rem;
+}
