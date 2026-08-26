@@ -1,2 +1,355 @@
-/* Companion — styles land here when the feature is built. Keep clear of the
-   bottom-right 96px reserved for the emergency button (DESIGN.md §7). */
+/* Companion — floating launcher (bottom-left) + calm sheet.
+   Keeps clear of the bottom-right 96px reserved for the emergency button (DESIGN.md §7). */
+
+.companion {
+  position: fixed;
+  left: clamp(0.9rem, 3vw, 1.8rem);
+  bottom: clamp(0.9rem, 3vw, 1.8rem);
+  z-index: 79;
+}
+
+/* Launcher ------------------------------------------------------------------ */
+
+.companion-launch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.75rem 1.2rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: var(--paper);
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 12px 32px rgba(46, 58, 52, 0.12);
+  transition: background 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.companion-launch svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.companion-launch:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+.companion-launch:focus-visible,
+.companion-close:focus-visible,
+.companion-step:focus-visible,
+.companion-chip:focus-visible,
+.companion-send:focus-visible,
+.companion-input:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+}
+
+/* Scrim + sheet ------------------------------------------------------------ */
+
+.companion-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(46, 58, 52, 0.28);
+  z-index: 90;
+}
+
+.companion-sheet {
+  position: fixed;
+  z-index: 91;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: min(88svh, 100%);
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -12px 32px rgba(46, 58, 52, 0.12);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+@media (min-width: 720px) {
+  .companion-scrim {
+    background: transparent;
+  }
+  .companion-sheet {
+    left: clamp(0.9rem, 3vw, 1.8rem);
+    right: auto;
+    bottom: clamp(0.9rem, 3vw, 1.8rem);
+    width: 360px;
+    max-height: min(640px, calc(100svh - 2rem));
+    border-radius: 22px;
+    box-shadow: 0 18px 40px rgba(46, 58, 52, 0.18);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .companion-sheet {
+    animation: companion-in 0.24s ease-out;
+  }
+  @keyframes companion-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Header -------------------------------------------------------------------- */
+
+.companion-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1.1rem 1.25rem 0.85rem;
+  border-bottom: 1.5px dashed rgba(126, 155, 119, 0.55);
+}
+
+.companion-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pine);
+}
+
+.companion-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+  margin-top: 0.15rem;
+}
+
+.companion-honest {
+  font-size: 0.82rem;
+  color: rgba(46, 58, 52, 0.72);
+  margin-top: 0.2rem;
+}
+
+.companion-close {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pine);
+  background: var(--cream);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.companion-close svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.companion-close:hover {
+  background: rgba(169, 191, 160, 0.4);
+}
+
+/* Log ----------------------------------------------------------------------- */
+
+.companion-log {
+  flex: 1;
+  min-height: 160px;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.companion-msg {
+  max-width: 88%;
+  padding: 0.7rem 0.95rem;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.companion-msg p + p {
+  margin-top: 0.5rem;
+}
+
+.companion-msg--companion {
+  align-self: flex-start;
+  background: var(--cream);
+  color: var(--ink);
+  border-bottom-left-radius: 6px;
+}
+
+.companion-msg--user {
+  align-self: flex-end;
+  background: rgba(169, 191, 160, 0.45);
+  color: var(--pine-deep);
+  border-bottom-right-radius: 6px;
+}
+
+.companion-msg--handover {
+  border: 1.5px solid rgba(192, 104, 75, 0.55);
+  background: rgba(192, 104, 75, 0.08);
+}
+
+.companion-msg--wait {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.companion-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+}
+
+.companion-step {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: var(--paper);
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease-out;
+}
+
+.companion-step:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+.companion-step--tel {
+  color: #fdfbf6;
+  background: var(--terra);
+  border-color: var(--terra);
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.3);
+}
+
+.companion-step--tel:hover {
+  background: color-mix(in srgb, var(--terra) 90%, black);
+}
+
+.companion-step--plain {
+  cursor: default;
+  border-style: dashed;
+  font-weight: 500;
+}
+
+/* Quick starts ------------------------------------------------------------- */
+
+.companion-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0 1.25rem 0.75rem;
+}
+
+.companion-chip {
+  min-height: 44px;
+  padding: 0.5rem 0.95rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--pine-deep);
+  background: var(--cream);
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease-out;
+}
+
+.companion-chip:hover {
+  background: var(--sage);
+  border-color: var(--pine);
+}
+
+/* Form ----------------------------------------------------------------------- */
+
+.companion-form {
+  padding: 0.75rem 1.25rem 1.1rem;
+  border-top: 1px solid rgba(66, 96, 79, 0.12);
+}
+
+.companion-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--pine);
+  margin-bottom: 0.4rem;
+}
+
+.companion-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.companion-input {
+  flex: 1;
+  min-height: 48px;
+  max-height: 140px;
+  padding: 0.75rem 0.9rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 14px;
+  resize: none;
+}
+
+.companion-send {
+  flex: none;
+  min-height: 48px;
+  padding: 0 1.2rem;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--paper);
+  background: var(--terra);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.3);
+}
+
+.companion-send:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: default;
+}
+
+.companion-error {
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--terra);
+}
+
+/* On small screens the emergency button sits bottom-right (z 80, above us on
+   purpose — it must never be covered). Keep the send row clear of it. */
+@media (max-width: 719px) {
+  .companion-form {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  }
+}
