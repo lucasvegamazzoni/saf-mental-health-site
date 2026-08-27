@@ -1,0 +1,322 @@
+/* NotFound — "4 [cloud] 4". Centred column, mobile-first; bottom padding clears the
+   96px emergency zone. Every animation lives under no-preference (DESIGN.md §6), so
+   reduced-motion users get the settled state straight away. */
+
+.nf-page {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vh, 4rem) 1.25rem 7.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* The art row ------------------------------------------------------------- */
+
+.nf-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.25rem, 2vw, 1rem);
+  margin-bottom: 1.5rem;
+  user-select: none;
+}
+
+.nf-four {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(80px, 18vw, 140px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--pine-deep);
+  opacity: 0.7;
+}
+
+.nf-cloud {
+  width: clamp(120px, 26vw, 200px);
+  flex: none;
+}
+
+.nf-cloud .cloud {
+  width: 100%;
+  margin: 0;
+}
+
+/* Copy ---------------------------------------------------------------------- */
+
+.nf-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--terra-ink);
+  margin-bottom: 0.5rem;
+}
+
+.nf-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+}
+
+.nf-line {
+  margin-top: 0.75rem;
+  max-width: 44ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+/* Actions (recipes from DESIGN.md §5) --------------------------------------- */
+
+.nf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.nf-primary,
+.nf-secondary {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nf-primary {
+  padding: 0.75rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--paper);
+  background: var(--terra);
+  border: none;
+  box-shadow: 0 10px 24px rgba(192, 104, 75, 0.3);
+}
+
+.nf-primary:hover {
+  background: color-mix(in srgb, var(--terra) 86%, black);
+}
+
+.nf-secondary {
+  padding: 0.75rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: transparent;
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
+}
+
+.nf-secondary:hover {
+  background: rgba(169, 191, 160, 0.2);
+}
+
+/* "What's a 404?" ------------------------------------------------------------ */
+
+.nf-explain {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nf-explain-toggle {
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pine);
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(66, 96, 79, 0.4);
+  cursor: pointer;
+}
+
+.nf-explain-toggle:hover {
+  color: var(--pine-deep);
+  text-decoration-color: var(--pine);
+}
+
+.nf-explain-text {
+  max-width: 44ch;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.nf-primary:focus-visible,
+.nf-secondary:focus-visible,
+.nf-explain-toggle:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .nf-actions {
+    flex-direction: column;
+  }
+
+  .nf-primary,
+  .nf-secondary {
+    width: 100%;
+  }
+}
+
+/* Choreography (opt-in only) ------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* 1. the 4s slide in from either side with a slight tilt */
+  .nf-four--left {
+    animation: nf-four-left 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .nf-four--right {
+    animation: nf-four-right 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* 2. the cloud scales/fades in, then floats forever */
+  .nf-cloud {
+    animation: nf-cloud-in 0.55s ease-out 0.2s both;
+  }
+
+  .nf-cloud-float {
+    animation: nf-float 2s ease-in-out 0.75s infinite;
+  }
+
+  /* a gentle wiggle when you hover the cloud */
+  .nf-cloud-float:hover .cloud {
+    animation: nf-wiggle 0.6s ease-in-out;
+  }
+
+  /* 3. copy and actions stagger in, 100 ms apart */
+  .nf-kicker,
+  .nf-title,
+  .nf-line,
+  .nf-actions,
+  .nf-explain {
+    animation: nf-rise 0.4s ease-out both;
+  }
+
+  .nf-kicker {
+    animation-delay: 0.55s;
+  }
+
+  .nf-title {
+    animation-delay: 0.65s;
+  }
+
+  .nf-line {
+    animation-delay: 0.75s;
+  }
+
+  .nf-actions {
+    animation-delay: 0.85s;
+  }
+
+  .nf-explain {
+    animation-delay: 0.95s;
+  }
+
+  .nf-explain-text {
+    animation: nf-rise 0.25s ease-out both;
+  }
+
+  .nf-explain-toggle {
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
+
+  .nf-primary,
+  .nf-secondary {
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .nf-primary:hover,
+  .nf-secondary:hover {
+    transform: translateY(-2px);
+  }
+
+  @keyframes nf-four-left {
+    from {
+      opacity: 0;
+      transform: translateX(-120%) rotate(-5deg);
+    }
+    to {
+      opacity: 0.7;
+      transform: translateX(0) rotate(0);
+    }
+  }
+
+  @keyframes nf-four-right {
+    from {
+      opacity: 0;
+      transform: translateX(120%) rotate(5deg);
+    }
+    to {
+      opacity: 0.7;
+      transform: translateX(0) rotate(0);
+    }
+  }
+
+  @keyframes nf-cloud-in {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes nf-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes nf-wiggle {
+    0%,
+    100% {
+      transform: rotate(0);
+    }
+    25% {
+      transform: rotate(-4deg);
+    }
+    50% {
+      transform: rotate(4deg);
+    }
+    75% {
+      transform: rotate(-2deg);
+    }
+  }
+
+  @keyframes nf-rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
