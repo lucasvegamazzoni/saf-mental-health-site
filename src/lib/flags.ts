@@ -10,6 +10,7 @@ export const FEATURES = {
   challenges: false,  // growth challenges tab on Me (LUC-71)
   trends: false,      // /trends aggregate view (LUC-78)
   qrTree: true,       // blossom-tree QR on the home page (LUC-84/91)
+  glassButtons: true, // glass texture on every button (LUC-89) — false restores the solid buttons, nothing else changes
 } as const;
 
 export type FeatureKey = keyof typeof FEATURES;
