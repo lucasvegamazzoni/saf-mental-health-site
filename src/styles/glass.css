@@ -1,0 +1,447 @@
+/* Glass buttons — LUC-89 ("use this glass texture … ALL buttons, otherwise we revert").
+ *
+ * A theme layer, not a rewrite. Every rule is scoped to html[data-buttons="glass"],
+ * which src/main.tsx sets from FEATURES.glassButtons. Flip the flag to false and the
+ * solid buttons defined in each page's stylesheet come back untouched.
+ *
+ * Recipe (DESIGN.md palette only — no new colours):
+ *   fill      translucent token tint (color-mix … transparent) + a faint white highlight wash
+ *   blur      backdrop-filter: blur(14px) saturate(1.2)  (solid-ish fallback via @supports not)
+ *   edge      1px rgba(255,255,255,.55) outer border + inset 0 1px 0 rgba(255,255,255,.6) highlight
+ *   shadow    DESIGN.md soft shadows; primaries get a blurred terra glow (::after) — the
+ *             pasted 21st.dev component's separate "shadow" layer.
+ *
+ * Contrast (paper text on the terra glass, pine / pine-deep text on paper glass) is verified
+ * in verify/glass-contrast.cjs — the primary tint is deliberately deeper than plain terra
+ * because terra at 62% over cream only reaches ~2.2:1.
+ */
+
+html[data-buttons="glass"] {
+  /* --- tunables ------------------------------------------------------- */
+  --glass-blur: blur(14px) saturate(1.2);
+  --glass-edge: rgba(255, 255, 255, 0.55);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --glass-wash: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%);
+  --glass-wash-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 50%);
+  --glass-shadow: 0 12px 32px rgba(46, 58, 52, 0.08);
+  --glass-shadow-hover: 0 16px 36px rgba(46, 58, 52, 0.12);
+  --glass-motion: 220ms ease-out;
+
+  /* neutral — paper 55% (pine / pine-deep text) */
+  --glass-neutral: color-mix(in srgb, var(--paper) 55%, transparent);
+  --glass-neutral-hover: color-mix(in srgb, var(--paper) 72%, transparent);
+  --glass-neutral-edge: color-mix(in srgb, var(--pine) 22%, var(--glass-edge));
+
+  /* selected / active — sage tint (pine-deep text) */
+  --glass-selected: color-mix(in srgb, var(--sage) 62%, transparent);
+  --glass-selected-edge: color-mix(in srgb, var(--sage-deep) 55%, transparent);
+
+  /* primary — terra deepened so paper text clears 4.5:1 over cream, sky and hills.
+     Plain terra at 62% is ≈ 2.2:1 on cream; terra·58% (42% black) at 88% + the 8% wash renders
+     ≈ 5.1:1 on cream / 5.0 paper / 5.2 sky (verify/glass-shoot.cjs samples the real pixels). */
+  --glass-terra: color-mix(in srgb, var(--terra) 58%, black);
+  --glass-primary: color-mix(in srgb, var(--glass-terra) 88%, transparent);
+  --glass-primary-hover: color-mix(in srgb, var(--glass-terra) 94%, transparent);
+  --glass-primary-edge: rgba(255, 255, 255, 0.42);
+  --glass-primary-glow: 0 10px 24px rgba(192, 104, 75, 0.3);
+  --glass-primary-text: var(--paper);
+
+  /* pine primary (recognition wall submit) */
+  --glass-pine: color-mix(in srgb, var(--pine-deep) 86%, transparent);
+}
+
+/* ---------------------------------------------------------------------------
+ * 1. Base glass surface — applied to every button / button-like link.
+ * ------------------------------------------------------------------------- */
+html[data-buttons="glass"] .btn,
+html[data-buttons="glass"] .talk-pill,
+html[data-buttons="glass"] .layout-link,
+html[data-buttons="glass"] .layout-account,
+html[data-buttons="glass"] .layout-help-btn,
+html[data-buttons="glass"] .gate-primary,
+html[data-buttons="glass"] .gate-secondary,
+html[data-buttons="glass"] .account-primary,
+html[data-buttons="glass"] .account-secondary,
+html[data-buttons="glass"] .account-mode,
+html[data-buttons="glass"] .account-avatar-btn,
+html[data-buttons="glass"] .checkin-answer,
+html[data-buttons="glass"] .checkin-chip,
+html[data-buttons="glass"] .checkin-continue,
+html[data-buttons="glass"] .checkin-back,
+html[data-buttons="glass"] .checkin-btn,
+html[data-buttons="glass"] .stories-chip,
+html[data-buttons="glass"] .stories-readmore,
+html[data-buttons="glass"] .stories-share-submit,
+html[data-buttons="glass"] .stories-secondary,
+html[data-buttons="glass"] .me-tab,
+html[data-buttons="glass"] .me-challenge,
+html[data-buttons="glass"] .me-empty-cta,
+html[data-buttons="glass"] .me-add-link,
+html[data-buttons="glass"] .me-install-btn,
+html[data-buttons="glass"] .me-install-dismiss,
+html[data-buttons="glass"] .resourcetopic-back,
+html[data-buttons="glass"] .resourcetopic-link,
+html[data-buttons="glass"] .resourcetopic-stories-link,
+html[data-buttons="glass"] .home-pulse-option,
+html[data-buttons="glass"] .home-pulse-change,
+html[data-buttons="glass"] .home-wall-submit,
+html[data-buttons="glass"] .sq-refresh,
+html[data-buttons="glass"] .sq-approve,
+html[data-buttons="glass"] .sq-reject,
+html[data-buttons="glass"] .rq-btn,
+html[data-buttons="glass"] .mod-primary,
+html[data-buttons="glass"] .trends-secondary,
+html[data-buttons="glass"] .trends-week,
+html[data-buttons="glass"] .companion-launch,
+html[data-buttons="glass"] .companion-close,
+html[data-buttons="glass"] .companion-chip,
+html[data-buttons="glass"] .companion-send,
+html[data-buttons="glass"] .companion-step {
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-wash), var(--glass-neutral);
+  border: 1px solid var(--glass-neutral-edge);
+  box-shadow: var(--glass-highlight), var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  transition:
+    background var(--glass-motion),
+    border-color var(--glass-motion),
+    color var(--glass-motion),
+    box-shadow var(--glass-motion),
+    transform var(--glass-motion);
+  /* no `opacity` here: the hero's GSAP .from(autoAlpha) reads computed opacity on
+     StrictMode's re-run and a CSS transition on it would freeze the CTAs at 0. */
+}
+
+/* Default text on neutral glass: pine (≥ 6:1 on cream/paper/sky). Elements that already use
+   ink / pine-deep keep it — they're not listed here. */
+html[data-buttons="glass"] .gate-secondary,
+html[data-buttons="glass"] .account-secondary,
+html[data-buttons="glass"] .stories-readmore,
+html[data-buttons="glass"] .stories-secondary,
+html[data-buttons="glass"] .me-add-link,
+html[data-buttons="glass"] .me-install-btn,
+html[data-buttons="glass"] .home-pulse-change,
+html[data-buttons="glass"] .resourcetopic-back,
+html[data-buttons="glass"] .sq-refresh,
+html[data-buttons="glass"] .sq-reject,
+html[data-buttons="glass"] .rq-btn-secondary,
+html[data-buttons="glass"] .trends-secondary,
+html[data-buttons="glass"] .checkin-btn--ghost {
+  color: var(--pine);
+}
+
+/* Neutral hover / active */
+html[data-buttons="glass"] .talk-pill:hover,
+html[data-buttons="glass"] .layout-link:hover,
+html[data-buttons="glass"] .layout-account:hover,
+html[data-buttons="glass"] .gate-secondary:hover,
+html[data-buttons="glass"] .account-secondary:hover,
+html[data-buttons="glass"] .account-avatar-btn:hover,
+html[data-buttons="glass"] .checkin-answer:hover,
+html[data-buttons="glass"] .checkin-chip:hover,
+html[data-buttons="glass"] .checkin-back:hover:not(:disabled),
+html[data-buttons="glass"] .checkin-btn--ghost:hover,
+html[data-buttons="glass"] .stories-chip:hover,
+html[data-buttons="glass"] .stories-readmore:hover,
+html[data-buttons="glass"] .stories-secondary:hover,
+html[data-buttons="glass"] .me-tab:hover,
+html[data-buttons="glass"] .me-challenge:hover,
+html[data-buttons="glass"] .me-add-link:hover,
+html[data-buttons="glass"] .me-install-btn:hover,
+html[data-buttons="glass"] .me-install-dismiss:hover,
+html[data-buttons="glass"] .resourcetopic-back:hover,
+html[data-buttons="glass"] .resourcetopic-link:hover,
+html[data-buttons="glass"] .home-pulse-option:hover:not(:disabled),
+html[data-buttons="glass"] .home-pulse-change:hover,
+html[data-buttons="glass"] .sq-refresh:hover:not(:disabled),
+html[data-buttons="glass"] .sq-reject:hover:not(:disabled),
+html[data-buttons="glass"] .rq-btn-secondary:hover:not(:disabled),
+html[data-buttons="glass"] .trends-secondary:hover,
+html[data-buttons="glass"] .trends-week:hover,
+html[data-buttons="glass"] .companion-launch:hover,
+html[data-buttons="glass"] .companion-close:hover,
+html[data-buttons="glass"] .companion-chip:hover,
+html[data-buttons="glass"] .companion-step:hover {
+  background: var(--glass-wash), var(--glass-neutral-hover);
+  border-color: color-mix(in srgb, var(--sage-deep) 55%, var(--glass-edge));
+  color: var(--pine-deep);
+  box-shadow: var(--glass-highlight), var(--glass-shadow-hover);
+  transform: translateY(-1px);
+}
+
+html[data-buttons="glass"] .btn:active,
+html[data-buttons="glass"] button:active:not(:disabled),
+html[data-buttons="glass"] .layout-link:active,
+html[data-buttons="glass"] .layout-account:active,
+html[data-buttons="glass"] .gate-primary:active,
+html[data-buttons="glass"] .gate-secondary:active,
+html[data-buttons="glass"] .account-primary:active,
+html[data-buttons="glass"] .checkin-btn:active,
+html[data-buttons="glass"] .me-empty-cta:active,
+html[data-buttons="glass"] .resourcetopic-back:active,
+html[data-buttons="glass"] .resourcetopic-link:active,
+html[data-buttons="glass"] .resourcetopic-stories-link:active,
+html[data-buttons="glass"] .mod-primary:active,
+html[data-buttons="glass"] .companion-step:active {
+  transform: translateY(0) scale(0.985);
+  box-shadow: var(--glass-highlight), 0 4px 12px rgba(46, 58, 52, 0.08);
+}
+
+/* ---------------------------------------------------------------------------
+ * 2. Selected / active — sage glass, pine-deep text (≥ 6:1 on cream/paper).
+ * ------------------------------------------------------------------------- */
+html[data-buttons="glass"] .layout-link.is-active,
+html[data-buttons="glass"] .layout-account.is-active,
+html[data-buttons="glass"] .account-avatar-btn.is-picked,
+html[data-buttons="glass"] .checkin-answer.is-selected,
+html[data-buttons="glass"] .stories-chip.is-active,
+html[data-buttons="glass"] .me-challenge.is-done,
+html[data-buttons="glass"] .home-pulse-option.is-current,
+html[data-buttons="glass"] .trends-week.is-selected,
+html[data-buttons="glass"] .companion-chip:hover {
+  background: var(--glass-wash), var(--glass-selected);
+  border-color: var(--glass-selected-edge);
+  color: var(--pine-deep);
+}
+
+/* Selected check-in theme chip: pine glass, paper text (same as solid) */
+html[data-buttons="glass"] .checkin-chip.is-selected {
+  background: var(--glass-wash-strong), var(--glass-pine);
+  border-color: var(--glass-primary-edge);
+  color: var(--paper);
+}
+
+/* Segmented tabs: track stays cream; the active pill is paper glass lifted off it. */
+html[data-buttons="glass"] .me-tab,
+html[data-buttons="glass"] .account-mode {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-buttons="glass"] .me-tab.is-active,
+html[data-buttons="glass"] .account-mode.is-active {
+  background: var(--glass-wash), color-mix(in srgb, var(--paper) 82%, transparent);
+  border-color: var(--glass-edge);
+  color: var(--pine-deep);
+  box-shadow: var(--glass-highlight), 0 2px 8px rgba(46, 58, 52, 0.1);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+/* ---------------------------------------------------------------------------
+ * 3. Primary — deep terra glass, paper text, blurred glow underneath (::after).
+ * ------------------------------------------------------------------------- */
+html[data-buttons="glass"] .btn--primary,
+html[data-buttons="glass"] .layout-help-btn,
+html[data-buttons="glass"] .gate-primary,
+html[data-buttons="glass"] .account-primary,
+html[data-buttons="glass"] .checkin-continue,
+html[data-buttons="glass"] .checkin-btn--primary,
+html[data-buttons="glass"] .stories-share-submit,
+html[data-buttons="glass"] .me-empty-cta,
+html[data-buttons="glass"] .resourcetopic-stories-link,
+html[data-buttons="glass"] .sq-approve,
+html[data-buttons="glass"] .rq-btn-primary,
+html[data-buttons="glass"] .mod-primary,
+html[data-buttons="glass"] .companion-send,
+html[data-buttons="glass"] .companion-step--tel {
+  background: var(--glass-wash-strong), var(--glass-primary);
+  border: 1px solid var(--glass-primary-edge);
+  color: var(--glass-primary-text);
+  box-shadow: var(--glass-highlight), var(--glass-primary-glow);
+}
+
+html[data-buttons="glass"] .btn--primary::after,
+html[data-buttons="glass"] .layout-help-btn::after,
+html[data-buttons="glass"] .gate-primary::after,
+html[data-buttons="glass"] .account-primary::after,
+html[data-buttons="glass"] .checkin-continue::after,
+html[data-buttons="glass"] .checkin-btn--primary::after,
+html[data-buttons="glass"] .stories-share-submit::after,
+html[data-buttons="glass"] .me-empty-cta::after,
+html[data-buttons="glass"] .resourcetopic-stories-link::after,
+html[data-buttons="glass"] .sq-approve::after,
+html[data-buttons="glass"] .rq-btn-primary::after,
+html[data-buttons="glass"] .mod-primary::after,
+html[data-buttons="glass"] .companion-send::after,
+html[data-buttons="glass"] .companion-step--tel::after {
+  /* the pasted component's separate shadow layer: a soft terra bloom behind the pill */
+  content: '';
+  position: absolute;
+  inset: 22% 8% -18% 8%;
+  z-index: -1;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--terra) 55%, transparent);
+  filter: blur(16px);
+  opacity: 0.75;
+  pointer-events: none;
+  transition: opacity var(--glass-motion), transform var(--glass-motion);
+}
+
+html[data-buttons="glass"] .btn--primary:hover,
+html[data-buttons="glass"] .layout-help-btn:hover,
+html[data-buttons="glass"] .gate-primary:hover,
+html[data-buttons="glass"] .account-primary:hover:not(:disabled),
+html[data-buttons="glass"] .checkin-continue:hover,
+html[data-buttons="glass"] .checkin-btn--primary:hover,
+html[data-buttons="glass"] .stories-share-submit:hover:not(:disabled),
+html[data-buttons="glass"] .me-empty-cta:hover,
+html[data-buttons="glass"] .resourcetopic-stories-link:hover,
+html[data-buttons="glass"] .sq-approve:hover:not(:disabled),
+html[data-buttons="glass"] .rq-btn-primary:hover:not(:disabled),
+html[data-buttons="glass"] .mod-primary:hover,
+html[data-buttons="glass"] .companion-send:hover:not(:disabled),
+html[data-buttons="glass"] .companion-step--tel:hover {
+  background: var(--glass-wash-strong), var(--glass-primary-hover);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: var(--glass-primary-text);
+  box-shadow: var(--glass-highlight), 0 14px 30px rgba(192, 104, 75, 0.36);
+  transform: translateY(-2px);
+}
+html[data-buttons="glass"] .btn--primary:hover::after,
+html[data-buttons="glass"] .gate-primary:hover::after,
+html[data-buttons="glass"] .account-primary:hover::after,
+html[data-buttons="glass"] .checkin-continue:hover::after,
+html[data-buttons="glass"] .checkin-btn--primary:hover::after,
+html[data-buttons="glass"] .stories-share-submit:hover::after,
+html[data-buttons="glass"] .me-empty-cta:hover::after {
+  opacity: 1;
+  transform: translateY(2px);
+}
+
+/* Disabled primaries: no glow, no lift (mirrors the solid rules) */
+html[data-buttons="glass"] .account-primary:disabled,
+html[data-buttons="glass"] .stories-share-submit:disabled,
+html[data-buttons="glass"] .sq-approve:disabled,
+html[data-buttons="glass"] .rq-btn-primary:disabled,
+html[data-buttons="glass"] .companion-send:disabled,
+html[data-buttons="glass"] .home-wall-submit:disabled {
+  box-shadow: var(--glass-highlight);
+  transform: none;
+}
+html[data-buttons="glass"] .account-primary:disabled::after,
+html[data-buttons="glass"] .stories-share-submit:disabled::after,
+html[data-buttons="glass"] .sq-approve:disabled::after,
+html[data-buttons="glass"] .rq-btn-primary:disabled::after,
+html[data-buttons="glass"] .companion-send:disabled::after {
+  display: none;
+}
+
+/* Pine primary — recognition-wall submit keeps its pine identity */
+html[data-buttons="glass"] .home-wall-submit {
+  background: var(--glass-wash-strong), var(--glass-pine);
+  border-color: var(--glass-primary-edge);
+  color: var(--paper);
+}
+html[data-buttons="glass"] .home-wall-submit:hover:not(:disabled) {
+  background: var(--glass-wash-strong), var(--pine-deep);
+  color: var(--paper);
+}
+
+/* ---------------------------------------------------------------------------
+ * 4. Hero — the two CTAs sit over sky/hills, so both get the stronger tint.
+ * ------------------------------------------------------------------------- */
+html[data-buttons="glass"] .btn--ghost {
+  background: var(--glass-wash), color-mix(in srgb, var(--paper) 62%, transparent);
+  border-color: rgba(255, 255, 255, 0.7);
+  color: var(--pine-deep);
+}
+html[data-buttons="glass"] .btn--ghost:hover {
+  background: var(--glass-wash), color-mix(in srgb, var(--paper) 78%, transparent);
+  color: var(--pine-deep);
+  transform: translateY(-2px);
+}
+html[data-buttons="glass"] .talk-pill {
+  color: var(--terra-ink);
+}
+html[data-buttons="glass"] .talk-pill:hover {
+  color: var(--terra-ink);
+}
+
+/* Emergency button keeps its own soft shadow scale (it floats) */
+html[data-buttons="glass"] .layout-help-btn {
+  box-shadow: var(--glass-highlight), 0 10px 24px rgba(192, 104, 75, 0.35);
+}
+
+/* Non-pill shapes keep their radius (DESIGN.md §4): answer tiles 18, avatars 16, challenges 16, resource links 14 */
+html[data-buttons="glass"] .checkin-answer { border-radius: 18px; }
+html[data-buttons="glass"] .account-avatar-btn { border-radius: 16px; }
+html[data-buttons="glass"] .me-challenge { border-radius: 16px; }
+html[data-buttons="glass"] .resourcetopic-link { border-radius: 14px; }
+html[data-buttons="glass"] .me-challenge.is-done .me-challenge-check {
+  background: var(--pine-deep);
+  border-color: var(--pine-deep);
+}
+
+/* Cream-track hover for plain text-links kept underlined */
+html[data-buttons="glass"] .me-install-dismiss {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * 5. Focus ring (DESIGN.md §8) — unchanged, restated so it wins over the border.
+ * ------------------------------------------------------------------------- */
+html[data-buttons="glass"] button:focus-visible,
+html[data-buttons="glass"] a:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------------------
+ * 6. Fallbacks
+ * ------------------------------------------------------------------------- */
+@supports not (backdrop-filter: blur(1px)) {
+  html[data-buttons="glass"] {
+    --glass-neutral: color-mix(in srgb, var(--paper) 88%, transparent);
+    --glass-neutral-hover: color-mix(in srgb, var(--paper) 96%, transparent);
+    --glass-selected: color-mix(in srgb, var(--sage) 85%, transparent);
+    --glass-primary: color-mix(in srgb, var(--glass-terra) 96%, transparent);
+    --glass-primary-hover: var(--glass-terra);
+    --glass-pine: var(--pine-deep);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Buttons only — never blanket the page. Final state shown immediately, no lift. */
+  html[data-buttons="glass"] button,
+  html[data-buttons="glass"] button::after,
+  html[data-buttons="glass"] .btn,
+  html[data-buttons="glass"] .btn::after,
+  html[data-buttons="glass"] .layout-link,
+  html[data-buttons="glass"] .layout-account,
+  html[data-buttons="glass"] .gate-primary,
+  html[data-buttons="glass"] .gate-primary::after,
+  html[data-buttons="glass"] .gate-secondary,
+  html[data-buttons="glass"] .account-primary::after,
+  html[data-buttons="glass"] .checkin-btn,
+  html[data-buttons="glass"] .checkin-btn::after,
+  html[data-buttons="glass"] .me-empty-cta,
+  html[data-buttons="glass"] .resourcetopic-back,
+  html[data-buttons="glass"] .resourcetopic-link,
+  html[data-buttons="glass"] .resourcetopic-stories-link,
+  html[data-buttons="glass"] .mod-primary,
+  html[data-buttons="glass"] .companion-step {
+    transition: none;
+  }
+  html[data-buttons="glass"] button:hover,
+  html[data-buttons="glass"] button:active,
+  html[data-buttons="glass"] .btn:hover,
+  html[data-buttons="glass"] .btn:active,
+  html[data-buttons="glass"] .gate-primary:hover,
+  html[data-buttons="glass"] .gate-secondary:hover,
+  html[data-buttons="glass"] .checkin-btn:hover,
+  html[data-buttons="glass"] .me-empty-cta:hover,
+  html[data-buttons="glass"] .resourcetopic-stories-link:hover,
+  html[data-buttons="glass"] .mod-primary:hover,
+  html[data-buttons="glass"] .companion-step:hover {
+    transform: none;
+  }
+}
