@@ -398,10 +398,15 @@ export default function QrTree() {
     let st: ScrollTrigger | undefined;
     if (!reduced) {
       gsap.registerPlugin(ScrollTrigger);
+      // Exposed so verify/final-shoot.cjs can unpin before a full-page capture.
+      (window as Window & { __safScrollTrigger?: typeof ScrollTrigger }).__safScrollTrigger = ScrollTrigger;
       st = ScrollTrigger.create({
         trigger: section,
         start: () => `top ${navHeight()}px`,
-        end: '+=150%',
+        // Scroll runway: shorter on phones so the pin spacer doesn't read as
+        // a blank gap below the tree. (Full-page captures still show the
+        // spacer — see verify/final-shoot.cjs.)
+        end: () => (window.innerWidth < 768 ? '+=100%' : '+=150%'),
         pin: true,
         scrub: true,
         anticipatePin: 1,

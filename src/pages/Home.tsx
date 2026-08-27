@@ -326,7 +326,8 @@ function RecognitionWall() {
     <>
       {wall.status === 'loading' ? (
         <div className="home-wall-wait spinner-slot" aria-live="polite">
-          <Spinner size={48} label="Loading the wall" />
+          <Spinner size={48} label="" />
+          <span>Loading the wall…</span>
         </div>
       ) : (
         <>

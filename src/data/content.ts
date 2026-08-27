@@ -14,6 +14,6 @@ export * from './polls';
 
 export const RECOGNITION_SEED: string[] = [
   'Thanks to my buddy for covering my duty when I was down — it did not go unnoticed.',
-  'Shout-out to my section commander for actually asking how we were doing this week.',
+  'Shout-out to the person in charge of us for actually asking how we were doing this week.',
   'Appreciate the bunkmate who shared his snacks and listened after a long outfield.',
 ];
