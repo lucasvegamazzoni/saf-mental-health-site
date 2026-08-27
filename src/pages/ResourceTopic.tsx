@@ -44,9 +44,39 @@ export default function ResourceTopic() {
           <li key={tip.title} className="resourcetopic-tip">
             <h2 className="resourcetopic-tip-title">{tip.title}</h2>
             <p className="resourcetopic-tip-body">{tip.body}</p>
+            {tip.source && (
+              <p className="resourcetopic-tip-source">
+                Source:{' '}
+                <a href={tip.source.url} target="_blank" rel="noreferrer">
+                  {tip.source.label}
+                </a>
+              </p>
+            )}
           </li>
         ))}
       </ul>
+
+      {topic.links.length > 0 && (
+        <section className="resourcetopic-links" aria-labelledby="resourcetopic-links-title">
+          <p className="resourcetopic-links-kicker">Further reading</p>
+          <h2 id="resourcetopic-links-title" className="resourcetopic-links-title">
+            Where these tips come from
+          </h2>
+          <p className="resourcetopic-links-note">
+            Free, public guidance. Each link opens in a new tab — nothing about you is sent along.
+          </p>
+          <ul className="resourcetopic-links-list">
+            {topic.links.map((link) => (
+              <li key={link.url}>
+                <a className="resourcetopic-link" href={link.url} target="_blank" rel="noreferrer">
+                  {link.label}
+                  <span aria-hidden="true"> ↗</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <aside className="resourcetopic-stories">
         <p className="resourcetopic-stories-text">

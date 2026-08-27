@@ -6,7 +6,8 @@
 .resources-page {
   max-width: 1060px;
   margin: 0 auto;
-  padding: clamp(2.4rem, 7vh, 4.5rem) clamp(1.1rem, 4vw, 2rem) 4.5rem;
+  /* Bottom padding clears the 96px reserved zone for the floating buttons (DESIGN.md §7). */
+  padding: clamp(2.4rem, 7vh, 4.5rem) clamp(1.1rem, 4vw, 2rem) calc(4.5rem + 96px);
 }
 
 .resources-head {
@@ -23,7 +24,7 @@
 .resources-title {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1.8rem, 4.5vw, 2.4rem);
   line-height: 1.08;
   letter-spacing: -0.02em;
   color: var(--pine-deep);
@@ -63,7 +64,7 @@
 }
 
 .resources-card:hover {
-  background: #fffdf8;
+  background: var(--paper);
   border-color: rgba(126, 155, 119, 0.55);
 }
 
@@ -99,13 +100,14 @@
 }
 
 .resources-chip {
-  font-size: 0.74rem;
+  /* Tiny tag (DESIGN.md §4: 10px radius) — a preview of tip titles, not a toggle. */
+  font-size: 0.82rem;
   font-weight: 600;
+  line-height: 1.3;
   color: var(--pine);
-  background: rgba(169, 191, 160, 0.28);
-  border: 1px solid rgba(126, 155, 119, 0.35);
-  border-radius: 999px;
-  padding: 0.28rem 0.7rem;
+  background: rgba(169, 191, 160, 0.22);
+  border-radius: 10px;
+  padding: 0.25rem 0.55rem;
 }
 
 @media (min-width: 640px) {

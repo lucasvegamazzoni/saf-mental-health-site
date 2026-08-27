@@ -4,7 +4,8 @@
 .resourcetopic-page {
   max-width: 760px;
   margin: 0 auto;
-  padding: clamp(2.2rem, 6vh, 4rem) clamp(1.1rem, 4vw, 2rem) 4.5rem;
+  /* Bottom padding clears the 96px reserved zone for the floating buttons (DESIGN.md §7). */
+  padding: clamp(2.2rem, 6vh, 4rem) clamp(1.1rem, 4vw, 2rem) calc(4.5rem + 96px);
 }
 
 .resourcetopic-back {
@@ -13,14 +14,14 @@
   font-weight: 600;
   color: var(--pine);
   text-decoration: none;
-  padding: 0.4rem 0.95rem;
-  background: rgba(169, 191, 160, 0.16);
-  border: 1px solid rgba(126, 155, 119, 0.4);
+  padding: 0.4rem 1.1rem;
+  background: transparent;
+  border: 1.5px solid rgba(66, 96, 79, 0.3);
   border-radius: 999px;
 }
 
 .resourcetopic-back:hover {
-  background: rgba(169, 191, 160, 0.32);
+  background: rgba(169, 191, 160, 0.2);
   color: var(--pine-deep);
 }
 
@@ -43,7 +44,7 @@
 .resourcetopic-title {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(1.9rem, 5vw, 2.8rem);
+  font-size: clamp(1.8rem, 4.5vw, 2.4rem);
   line-height: 1.08;
   letter-spacing: -0.02em;
   color: var(--pine-deep);
@@ -85,6 +86,103 @@
   font-size: 0.95rem;
   line-height: 1.6;
   color: rgba(46, 58, 52, 0.75);
+}
+
+/* Citation under a tip */
+
+.resourcetopic-tip-source {
+  margin-top: 0.6rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.resourcetopic-tip-source a {
+  color: var(--pine);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.resourcetopic-tip-source a:hover {
+  color: var(--pine-deep);
+}
+
+.resourcetopic-tip-source a:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Further reading */
+
+.resourcetopic-links {
+  margin-top: 2.2rem;
+  background: var(--paper);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 22px;
+  box-shadow: 0 12px 32px rgba(46, 58, 52, 0.06);
+  padding: 1.3rem 1.35rem 1.4rem;
+}
+
+.resourcetopic-links-kicker {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pine);
+}
+
+.resourcetopic-links-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.35rem, 3vw, 1.7rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+  margin-top: 0.3rem;
+}
+
+.resourcetopic-links-note {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+  margin-top: 0.4rem;
+  max-width: 52ch;
+}
+
+.resourcetopic-links-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.resourcetopic-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--pine);
+  background: var(--cream);
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  border-radius: 14px;
+  text-decoration: none;
+}
+
+.resourcetopic-link:hover {
+  background: rgba(169, 191, 160, 0.28);
+  border-color: rgba(126, 155, 119, 0.55);
+  color: var(--pine-deep);
+}
+
+.resourcetopic-link:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
 }
 
 /* "Stories that might help" pointer */
@@ -185,6 +283,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .resourcetopic-back,
+  .resourcetopic-link,
   .resourcetopic-stories-link {
     transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
       transform 0.2s ease;
