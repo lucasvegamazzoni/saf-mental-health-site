@@ -42,69 +42,6 @@
   padding-top: 2rem;
 }
 
-/* Cloud face ---------------------------------------------------------------- */
-
-.cloud {
-  position: relative;
-  width: min(260px, 100%);
-  aspect-ratio: 260 / 150;
-  margin: 0 auto 0.2rem;
-}
-
-.cloud-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  filter: drop-shadow(0 10px 18px rgba(66, 96, 79, 0.12));
-}
-
-.cloud-eye {
-  position: absolute;
-  top: 34%;
-  width: 10%;
-  height: 22%;
-  background: #fff;
-  border: 2.5px solid var(--ink);
-  border-radius: 50% / 55%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: hidden;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .cloud-eye {
-    transition: height 0.15s ease, border-radius 0.15s ease, top 0.15s ease;
-  }
-
-  .cloud-pupil {
-    transition: transform 0.1s ease;
-  }
-}
-
-.cloud-eye--left {
-  left: 40%;
-}
-
-.cloud-eye--right {
-  left: 52%;
-}
-
-.cloud-eye.is-closed {
-  top: 45%;
-  height: 4px;
-  border-radius: 3px;
-  background: var(--ink);
-}
-
-.cloud-pupil {
-  width: 52%;
-  aspect-ratio: 1;
-  margin-bottom: 12%;
-  border-radius: 50%;
-  background: var(--ink);
-}
-
 /* Mode switch ----------------------------------------------------------------- */
 
 .account-modes {
@@ -318,11 +255,4 @@
 .account-mode:focus-visible {
   outline: 3px solid var(--terra-soft);
   outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cloud-eye,
-  .cloud-pupil {
-    transition: none;
-  }
 }
