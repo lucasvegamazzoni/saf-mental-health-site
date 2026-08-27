@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Spinner from '../components/Spinner';
+import { rovingKeyDown } from '../lib/roving';
 import {
   CALL_SIGN_MAX,
   DEFAULT_MARKER,
@@ -23,6 +24,7 @@ function CloudFace({ eyesClosed }: { eyesClosed: boolean }) {
   const [blink, setBlink] = useState(false);
 
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const onMove = (e: MouseEvent) => {
       setPupil({
         x: (e.clientX / window.innerWidth - 0.5) * 14,
@@ -34,6 +36,7 @@ function CloudFace({ eyesClosed }: { eyesClosed: boolean }) {
   }, []);
 
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const interval = setInterval(() => {
       setBlink(true);
       setTimeout(() => setBlink(false), 170);
@@ -179,11 +182,19 @@ export default function Account() {
       <form className="account-card" onSubmit={submit} noValidate>
         <CloudFace eyesClosed={pwFocused} />
 
-        <div className="account-modes" role="tablist" aria-label="Create or sign in">
+        <div
+          className="account-modes"
+          role="tablist"
+          aria-label="Create or sign in"
+          onKeyDown={(e) => rovingKeyDown(e, '[role="tab"]')}
+        >
           <button
             type="button"
             role="tab"
+            id="account-tab-create"
             aria-selected={creating}
+            aria-controls="account-panel"
+            tabIndex={creating ? 0 : -1}
             className={`account-mode${creating ? ' is-active' : ''}`}
             onClick={() => {
               setMode('create');
@@ -195,7 +206,10 @@ export default function Account() {
           <button
             type="button"
             role="tab"
+            id="account-tab-signin"
             aria-selected={!creating}
+            aria-controls="account-panel"
+            tabIndex={creating ? -1 : 0}
             className={`account-mode${!creating ? ' is-active' : ''}`}
             onClick={() => {
               setMode('signin');
@@ -213,6 +227,12 @@ export default function Account() {
           </p>
         )}
 
+        <div
+          id="account-panel"
+          role="tabpanel"
+          aria-labelledby={creating ? 'account-tab-create' : 'account-tab-signin'}
+          className="account-panel"
+        >
         <fieldset className="account-fields" disabled={!firebaseReady || pending}>
           <label className="account-label" htmlFor="account-callsign">
             Call sign
@@ -237,6 +257,7 @@ export default function Account() {
                 className="account-avatars"
                 role="radiogroup"
                 aria-labelledby="account-marker-label"
+                onKeyDown={(e) => rovingKeyDown(e, '[role="radio"]')}
               >
                 {MARKERS.map((option) => (
                   <button
@@ -244,6 +265,8 @@ export default function Account() {
                     type="button"
                     role="radio"
                     aria-checked={marker === option}
+                    aria-label={`Marker ${option}`}
+                    tabIndex={marker === option ? 0 : -1}
                     className={`account-avatar-btn${marker === option ? ' is-picked' : ''}`}
                     onClick={() => setMarker(option)}
                   >
@@ -257,13 +280,20 @@ export default function Account() {
           <label className="account-label" htmlFor="account-password">
             Password
           </label>
+          {creating && (
+            <p className="account-hint" id="account-password-hint">
+              At least 6 characters. There is no reset — pick one you will remember.
+            </p>
+          )}
           <input
             id="account-password"
+            aria-describedby={creating ? 'account-password-hint' : undefined}
+            aria-invalid={error ? true : undefined}
             className="account-input"
             type="password"
             autoComplete={creating ? 'new-password' : 'current-password'}
             value={password}
-            placeholder={creating ? 'At least 6 characters' : 'Your password'}
+            placeholder={creating ? '' : 'Your password'}
             onFocus={() => setPwFocused(true)}
             onBlur={() => setPwFocused(false)}
             onChange={(e) => setPassword(e.target.value)}
@@ -289,6 +319,7 @@ export default function Account() {
             )}
           </button>
         </fieldset>
+        </div>
 
         <p className="account-note">
           {creating

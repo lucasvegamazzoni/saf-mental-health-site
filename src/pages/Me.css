@@ -101,7 +101,7 @@
 
 .me-note {
   font-size: 0.82rem;
-  color: rgba(46, 58, 52, 0.55);
+  color: rgba(46, 58, 52, 0.72);
   line-height: 1.5;
 }
 
@@ -220,7 +220,7 @@
 .me-chip-date {
   font-size: 0.7rem;
   font-weight: 500;
-  color: rgba(46, 58, 52, 0.6);
+  color: rgba(46, 58, 52, 0.72);
   white-space: nowrap;
 }
 
@@ -272,7 +272,7 @@
 .me-empty-body {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: rgba(46, 58, 52, 0.68);
+  color: rgba(46, 58, 52, 0.72);
   max-width: 44ch;
 }
 
@@ -401,7 +401,7 @@
 .me-privacy-body {
   font-size: 0.88rem;
   line-height: 1.6;
-  color: rgba(46, 58, 52, 0.65);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 /* Focus ------------------------------------------------------------------------ */
@@ -495,7 +495,7 @@
 }
 
 .me-tab-lock {
-  color: var(--terra);
+  color: var(--terra-ink);
   font-size: 1.4rem;
   line-height: 0;
 }
@@ -508,8 +508,10 @@
 }
 
 .me-add-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   background: transparent;
-  padding: 0;
 }
 
 /* Mobile polish: full-width tab pill, single-line labels, stacked privacy card */

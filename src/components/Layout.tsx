@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { CONTACT_GROUP_LABEL, EMERGENCY_CONTACTS } from '../data/contacts';
 import type { ContactGroup, EmergencyContact } from '../data/contacts';
@@ -72,8 +72,21 @@ const NAV_LINKS = [
 
 export default function Layout() {
   const [helpOpen, setHelpOpen] = useState(false);
+  const helpBtnRef = useRef<HTMLButtonElement>(null);
   const session = useSession();
   const isModerator = useIsModerator();
+
+  // Escape closes the help card (non-modal, so Tab is never trapped) and hands focus back to its button.
+  useEffect(() => {
+    if (!helpOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setHelpOpen(false);
+      helpBtnRef.current?.focus();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [helpOpen]);
 
   return (
     <div className="layout">
@@ -141,11 +154,11 @@ export default function Layout() {
 
       <div className="layout-help">
         {helpOpen && (
-          <div className="layout-help-card" role="dialog" aria-label="People you can talk to">
+          <div id="layout-help-card" className="layout-help-card" role="dialog" aria-label="People you can talk to">
             <p className="layout-help-title">You don't have to carry it alone.</p>
             {CONTACTS_BY_GROUP.map((section) => (
               <section key={section.group} className="layout-help-group" aria-label={section.label}>
-                <h3 className="layout-help-group-title">{section.label}</h3>
+                <p className="layout-help-group-title">{section.label}</p>
                 <ul className="layout-help-list">
                   {section.contacts.map((contact) => (
                     <HelpContact key={contact.label} contact={contact} />
@@ -159,9 +172,11 @@ export default function Layout() {
           </div>
         )}
         <button
+          ref={helpBtnRef}
           type="button"
           className="layout-help-btn"
           aria-expanded={helpOpen}
+          aria-controls="layout-help-card"
           onClick={() => setHelpOpen((open) => !open)}
         >
           {helpOpen ? 'Close' : 'Need someone to talk to?'}

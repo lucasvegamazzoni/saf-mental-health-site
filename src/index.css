@@ -12,6 +12,9 @@
   --terra: #c0684b;
   --terra-soft: #d98e62;
   --gold: #c9a664;
+  /* Derived (DESIGN.md §2): terra darkened for small text on cream/paper — 5.2:1 / 4.8:1.
+     Fills stay pure terra; this is text only. */
+  --terra-ink: color-mix(in srgb, var(--terra) 82%, black);
 
   --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
   --font-body: 'Karla', -apple-system, 'Segoe UI', sans-serif;
@@ -23,8 +26,21 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Focus ring safety net (DESIGN.md §8) — component rules may tighten the offset, never remove it. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 2px;
 }
 
 body {
@@ -72,7 +88,7 @@ body {
 .talk-pill {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--terra);
+  color: var(--terra-ink);
   background: rgba(251, 247, 239, 0.85);
   border: 1px solid rgba(192, 104, 75, 0.4);
   border-radius: 999px;
@@ -320,7 +336,7 @@ body {
 }
 
 .after p {
-  color: rgba(46, 58, 52, 0.65);
+  color: rgba(46, 58, 52, 0.72);
   font-size: 1rem;
   max-width: 52ch;
   line-height: 1.6;

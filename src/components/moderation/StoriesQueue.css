@@ -87,7 +87,7 @@
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--terra);
+  color: var(--terra-ink);
   background: rgba(192, 104, 75, 0.1);
   border: 1px solid rgba(192, 104, 75, 0.45);
   border-radius: 10px;
@@ -108,7 +108,7 @@
 
 .sq-when {
   font-size: 0.82rem;
-  color: rgba(46, 58, 52, 0.62);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .sq-title {
@@ -135,7 +135,7 @@
 .sq-error {
   margin-top: 0.8rem;
   font-size: 0.9rem;
-  color: var(--terra);
+  color: var(--terra-ink);
 }
 
 .sq-actions {

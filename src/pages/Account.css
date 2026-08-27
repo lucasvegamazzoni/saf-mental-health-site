@@ -70,7 +70,16 @@
   align-items: flex-end;
   justify-content: center;
   overflow: hidden;
-  transition: height 0.15s ease, border-radius 0.15s ease, top 0.15s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cloud-eye {
+    transition: height 0.15s ease, border-radius 0.15s ease, top 0.15s ease;
+  }
+
+  .cloud-pupil {
+    transition: transform 0.1s ease;
+  }
 }
 
 .cloud-eye--left {
@@ -94,7 +103,6 @@
   margin-bottom: 12%;
   border-radius: 50%;
   background: var(--ink);
-  transition: transform 0.1s ease;
 }
 
 /* Mode switch ----------------------------------------------------------------- */
@@ -109,7 +117,7 @@
 }
 
 .account-mode {
-  min-height: 42px;
+  min-height: 44px;
   border: none;
   border-radius: 999px;
   background: transparent;
@@ -272,7 +280,7 @@
 .account-error {
   font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--terra);
+  color: var(--terra-ink);
   background: rgba(192, 104, 75, 0.1);
   border-radius: 12px;
   padding: 0.6rem 0.9rem;
@@ -287,10 +295,21 @@
   padding: 0.7rem 0.9rem;
 }
 
+.account-panel {
+  display: contents;
+}
+
+.account-hint {
+  margin: -0.35rem 0 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(46, 58, 52, 0.72);
+}
+
 .account-note {
   font-size: 0.82rem;
   line-height: 1.6;
-  color: rgba(46, 58, 52, 0.55);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .account-primary:focus-visible,

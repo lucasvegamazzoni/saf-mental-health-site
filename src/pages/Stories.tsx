@@ -10,6 +10,7 @@ import type { StoryDoc } from '../lib/db';
 import { anonymise, segments } from '../lib/anonymise';
 import type { AnonymiseResult } from '../lib/anonymise';
 import { flagRisks, needsCareNow } from '../lib/risk';
+import { rovingKeyDown } from '../lib/roving';
 import './Stories.css';
 
 /* Helpers ----------------------------------------------------------------- */
@@ -320,7 +321,7 @@ function ShareStory({ uid }: { uid: string }) {
             />
           </>
         ) : (
-          <div className="stories-review" aria-label="Anonymised story">
+          <div className="stories-review" role="region" aria-label="Anonymised story">
             {toParagraphsWithMarks(reviewed)}
           </div>
         )}
@@ -347,13 +348,19 @@ function ShareStory({ uid }: { uid: string }) {
 
         <fieldset className="stories-fieldset" disabled={pending}>
           <legend className="stories-label">Which theme fits best?</legend>
-          <div className="stories-pick" role="radiogroup" aria-label="Theme">
-            {STORY_THEMES.map((t) => (
+          <div
+            className="stories-pick"
+            role="radiogroup"
+            aria-label="Theme"
+            onKeyDown={(e) => rovingKeyDown(e, '[role="radio"]')}
+          >
+            {STORY_THEMES.map((t, i) => (
               <button
                 key={t.label}
                 type="button"
                 role="radio"
                 aria-checked={theme === t.label}
+                tabIndex={theme === t.label || (theme === null && i === 0) ? 0 : -1}
                 className={`stories-chip${theme === t.label ? ' is-active' : ''}`}
                 onClick={() => setTheme(t.label)}
               >
@@ -365,13 +372,19 @@ function ShareStory({ uid }: { uid: string }) {
 
         <fieldset className="stories-fieldset" disabled={pending}>
           <legend className="stories-label">How are you doing now?</legend>
-          <div className="stories-pick" role="radiogroup" aria-label="How you are doing now">
+          <div
+            className="stories-pick"
+            role="radiogroup"
+            aria-label="How you are doing now"
+            onKeyDown={(e) => rovingKeyDown(e, '[role="radio"]')}
+          >
             {([1, 2, 3, 4, 5] as const).map((n) => (
               <button
                 key={n}
                 type="button"
                 role="radio"
                 aria-checked={hope === n}
+                tabIndex={hope === n || (hope === null && n === 1) ? 0 : -1}
                 className={`stories-chip stories-hope-chip${hope === n ? ' is-active' : ''}`}
                 onClick={() => setHope(n)}
               >

@@ -34,7 +34,7 @@
 }
 
 .home-reassure p {
-  color: rgba(46, 58, 52, 0.65);
+  color: rgba(46, 58, 52, 0.72);
   font-size: 1rem;
   max-width: 52ch;
   line-height: 1.6;
@@ -77,7 +77,7 @@
 .home-teaser p {
   font-size: 0.95rem;
   line-height: 1.55;
-  color: rgba(46, 58, 52, 0.65);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .home-teaser-arrow {
@@ -85,7 +85,7 @@
   margin-top: 0.35rem;
   font-size: 1.2rem;
   line-height: 1;
-  color: var(--terra);
+  color: var(--terra-ink);
 }
 
 /* This week's pulse ------------------------------------------------------- */
@@ -113,7 +113,7 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--terra);
+  color: var(--terra-ink);
 }
 
 .home-pulse-card h2 {
@@ -149,7 +149,7 @@
 
 .home-pulse-hint {
   font-size: 0.82rem;
-  color: rgba(46, 58, 52, 0.55);
+  color: rgba(46, 58, 52, 0.72);
   line-height: 1.5;
 }
 
@@ -166,7 +166,7 @@
   gap: 0.5rem;
   font-size: 0.8rem;
   line-height: 1.5;
-  color: rgba(46, 58, 52, 0.6);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .home-pulse-sample-badge {
@@ -220,7 +220,7 @@
   font-size: 0.85rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: rgba(46, 58, 52, 0.65);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .home-pulse-track {
@@ -242,7 +242,7 @@
 }
 
 .home-pulse-row.is-mine .home-pulse-row-pct {
-  color: var(--terra);
+  color: var(--terra-ink);
 }
 
 /* Poll — signed-out preview, live states ---------------------------------- */
@@ -297,7 +297,7 @@
 .home-wall-error {
   font-size: 0.88rem;
   line-height: 1.5;
-  color: var(--terra);
+  color: var(--terra-ink);
 }
 
 .home-pulse-n {
@@ -366,7 +366,7 @@
 .home-wall-head p {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: rgba(46, 58, 52, 0.6);
+  color: rgba(46, 58, 52, 0.72);
   max-width: 52ch;
 }
 
@@ -425,7 +425,7 @@
   margin: 0 auto;
   font-size: 0.88rem;
   line-height: 1.5;
-  color: var(--terra);
+  color: var(--terra-ink);
   text-align: center;
 }
 
@@ -571,7 +571,7 @@
 .home-footnote-sub {
   font-size: 0.9rem;
   line-height: 1.6;
-  color: rgba(46, 58, 52, 0.6);
+  color: rgba(46, 58, 52, 0.72);
   max-width: 52ch;
 }
 

@@ -28,7 +28,7 @@
 
 .checkin-lede {
   font-size: 0.95rem;
-  color: rgba(46, 58, 52, 0.6);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 /* Progress ---------------------------------------------------------------- */
@@ -179,7 +179,7 @@
 
 .checkin-followup-hint {
   font-size: 0.82rem;
-  color: rgba(46, 58, 52, 0.55);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .checkin-chips {
@@ -233,7 +233,7 @@
 .checkin-note {
   text-align: center;
   font-size: 0.8rem;
-  color: rgba(46, 58, 52, 0.5);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 /* Finish ------------------------------------------------------------------- */
@@ -283,7 +283,7 @@
 }
 
 .checkin-finish-gentle a {
-  color: var(--terra);
+  color: var(--terra-ink);
   font-weight: 600;
 }
 
@@ -299,6 +299,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 48px;
   font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 600;

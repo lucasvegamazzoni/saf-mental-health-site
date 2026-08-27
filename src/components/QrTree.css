@@ -26,7 +26,7 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #c76a93;
+  color: color-mix(in srgb, #c76a93 75%, black); /* 4.8:1 on the blossom ground */
   margin-bottom: 0.55rem;
 }
 
@@ -40,7 +40,7 @@
 
 .qrtree__lead {
   margin-top: 0.6rem;
-  color: rgba(46, 58, 52, 0.65);
+  color: rgba(46, 58, 52, 0.72);
   line-height: 1.55;
   font-size: 0.98rem;
 }
@@ -67,16 +67,25 @@
 
 .qrtree__hint {
   font-size: 0.85rem;
-  color: rgba(46, 58, 52, 0.55);
-  transition: color 0.4s ease;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .qrtree__hint {
+    transition: color 0.4s ease;
+  }
 }
 
 .qrtree__hint.is-revealed {
-  color: #c76a93;
+  color: color-mix(in srgb, #c76a93 75%, black);
   font-weight: 500;
 }
 
 .qrtree__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.75rem;
   font-size: 0.82rem;
   color: var(--pine);
   text-decoration: underline;

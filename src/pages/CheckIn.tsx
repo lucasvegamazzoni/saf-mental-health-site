@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CHECKIN_QUESTIONS, CHECKIN_SCALE } from '../data/content';
 import type { CheckinScore } from '../data/content';
@@ -27,6 +27,16 @@ export default function CheckIn({ embedded = false }: Props) {
   const [done, setDone] = useState(false);
   const [lowCount, setLowCount] = useState(0);
   const savedRef = useRef(false);
+  const questionRef = useRef<HTMLHeadingElement>(null);
+  const finishRef = useRef<HTMLHeadingElement>(null);
+  const touchedRef = useRef(false);
+
+  // Each step remounts the card, which would drop keyboard focus to <body>.
+  // After the first answer, move focus to the new question (or the finish title).
+  useEffect(() => {
+    if (!touchedRef.current) return;
+    (done ? finishRef : questionRef).current?.focus();
+  }, [step, done]);
 
   const question = CHECKIN_QUESTIONS[step];
   const current = draft[question.id];
@@ -56,6 +66,7 @@ export default function CheckIn({ embedded = false }: Props) {
   }
 
   function handleScore(score: CheckinScore) {
+    touchedRef.current = true;
     const needsFollowUp = question.followUp !== undefined && score <= 1;
     // Keep chip picks when switching between the two low answers; clear otherwise.
     const keptFollowUps =
@@ -92,7 +103,9 @@ export default function CheckIn({ embedded = false }: Props) {
           <span className="checkin-finish-mark" aria-hidden="true">
             ✔
           </span>
-          <Heading className="checkin-finish-title">Thanks for checking in.</Heading>
+          <Heading ref={finishRef} tabIndex={-1} className="checkin-finish-title">
+            Thanks for checking in.
+          </Heading>
           <p className="checkin-finish-line">
             {signedIn
               ? 'Noticing how you feel is already a step. This one is saved under your call sign.'
@@ -187,7 +200,9 @@ export default function CheckIn({ embedded = false }: Props) {
       </div>
 
       <section className="checkin-card" key={question.id}>
-        <h3 className="checkin-question">{question.text}</h3>
+        <h3 ref={questionRef} tabIndex={-1} className="checkin-question">
+          {question.text}
+        </h3>
 
         <div className="checkin-scale" role="group" aria-label="Your answer">
           {CHECKIN_SCALE.map((point) => (

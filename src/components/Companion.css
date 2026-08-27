@@ -25,7 +25,12 @@
   border-radius: 999px;
   cursor: pointer;
   box-shadow: 0 12px 32px rgba(46, 58, 52, 0.12);
-  transition: background 0.2s ease-out, transform 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .companion-launch {
+    transition: background 0.2s ease-out, transform 0.2s ease-out;
+  }
 }
 
 .companion-launch svg {
@@ -343,7 +348,7 @@
 .companion-error {
   margin-top: 0.5rem;
   font-size: 0.88rem;
-  color: var(--terra);
+  color: var(--terra-ink);
 }
 
 /* On small screens the emergency button sits bottom-right (z 80, above us on

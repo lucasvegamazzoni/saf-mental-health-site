@@ -5,6 +5,7 @@ import { CHALLENGES, CHECKIN_SCALE } from '../data/content';
 import type { CheckinScore, ScalePoint } from '../data/content';
 import { firebaseReady, useSession } from '../lib/auth';
 import { usePwaInstall } from '../lib/pwa';
+import { rovingKeyDown } from '../lib/roving';
 import { getChallengeDone, getCheckins, onStoreChange, toggleChallenge } from '../lib/store';
 import type { CheckinEntry } from '../lib/store';
 import CheckIn from './CheckIn';
@@ -148,7 +149,7 @@ function EmptyTimeline({ onStart }: { onStart: () => void }) {
         <circle cx="132" cy="46" r="4" fill="none" stroke="var(--sage-deep)" strokeWidth="2" />
         <circle cx="244" cy="22" r="5" fill="var(--terra)" />
       </svg>
-      <h3 className="me-empty-title">Your timeline starts with your first 30-second check-in</h3>
+      <h2 className="me-empty-title">Your timeline starts with your first 30-second check-in</h2>
       <p className="me-empty-body">
         A gentle snapshot of how your week is going, drawn a little further with every check-in.
       </p>
@@ -238,7 +239,12 @@ export default function Me({ initialTab }: Props) {
         </p>
       </header>
 
-      <div className="me-tabs" role="tablist" aria-label="Your space">
+      <div
+        className="me-tabs"
+        role="tablist"
+        aria-label="Your space"
+        onKeyDown={(e) => rovingKeyDown(e, '[role="tab"]')}
+      >
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -247,14 +253,18 @@ export default function Me({ initialTab }: Props) {
             id={`me-tab-${t.id}`}
             aria-selected={tab === t.id}
             aria-controls={`me-panel-${t.id}`}
+            tabIndex={tab === t.id ? 0 : -1}
             className={`me-tab${tab === t.id ? ' is-active' : ''}`}
             onClick={() => setTab(t.id)}
           >
             {t.label}
             {t.id !== 'check-in' && gated && (
-              <span className="me-tab-lock" aria-label="needs a call sign">
+              <span className="me-tab-lock" aria-hidden="true">
                 ·
               </span>
+            )}
+            {t.id !== 'check-in' && gated && (
+              <span className="me-visually-hidden"> (needs a call sign)</span>
             )}
           </button>
         ))}

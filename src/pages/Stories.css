@@ -36,7 +36,7 @@
   max-width: 56ch;
   font-size: clamp(0.95rem, 1.4vw, 1.05rem);
   line-height: 1.6;
-  color: rgba(46, 58, 52, 0.68);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .stories-banner {
@@ -65,6 +65,7 @@
 }
 
 .stories-chip {
+  min-width: 44px;
   font-family: var(--font-body);
   font-size: 0.85rem;
   font-weight: 500;
@@ -99,7 +100,7 @@
   text-align: center;
   font-size: 0.95rem;
   line-height: 1.6;
-  color: rgba(46, 58, 52, 0.6);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .stories-card {
@@ -150,13 +151,13 @@
   margin-left: 0.3rem;
   font-size: 0.78rem;
   font-weight: 600;
-  color: rgba(46, 58, 52, 0.55);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .stories-readtime {
   margin-left: auto;
   font-size: 0.8rem;
-  color: rgba(46, 58, 52, 0.55);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .stories-card-title {
@@ -350,7 +351,7 @@
 
 .stories-share-note {
   font-size: 0.8rem;
-  color: rgba(46, 58, 52, 0.55);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 /* Focus ------------------------------------------------------------------- */
@@ -465,7 +466,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--terra);
+  color: var(--terra-ink);
   margin-bottom: 0.4rem;
 }
 
@@ -481,7 +482,7 @@
 
 .stories-label-opt {
   font-weight: 400;
-  color: rgba(46, 58, 52, 0.62);
+  color: rgba(46, 58, 52, 0.72);
 }
 
 .stories-title-input {
@@ -502,7 +503,7 @@
   max-width: 40rem;
   text-align: right;
   font-size: 0.82rem;
-  color: rgba(46, 58, 52, 0.62);
+  color: rgba(46, 58, 52, 0.72);
   margin-top: 0.4rem;
 }
 
@@ -608,7 +609,7 @@
   text-align: left;
   font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--terra);
+  color: var(--terra-ink);
 }
 
 .stories-sent {
