@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# local artifacts
-verify/
+# local artifacts: keep the verification scripts, ignore screenshots/state
+verify/*
+!verify/*.cjs
