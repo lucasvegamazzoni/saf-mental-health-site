@@ -28,6 +28,7 @@ import {
 import type { DocumentData, Firestore, QueryDocumentSnapshot } from 'firebase/firestore';
 import { db, firebaseReady } from './firebase';
 import { useSession } from './auth';
+import { flagRisks } from './risk';
 
 export { firebaseReady };
 
@@ -106,12 +107,24 @@ export async function listPublishedStories(): Promise<StoryDoc[]> {
   return snap.docs.map(toStory).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
+/**
+ * Safety net for the queue: flags are computed client-side at submit time, so a
+ * stale tab or an older flag set can under-flag. Re-screen the stored text and
+ * union it with what was saved — never drop a stored flag.
+ */
+function withFreshFlags(story: StoryDoc): StoryDoc {
+  const text = [story.title, ...story.body, ...story.lessons].join('\n');
+  const fresh = flagRisks(text);
+  const flags = [...story.flags, ...fresh.filter((f) => !story.flags.includes(f))];
+  return flags.length === story.flags.length ? story : { ...story, flags };
+}
+
 /** Pending stories for the moderation queue: flagged first, then oldest first. */
 export async function listPendingStories(): Promise<StoryDoc[]> {
   const snap = await getDocs(
     query(collection(requireDb(), 'stories'), where('status', '==', 'pending')),
   );
-  return snap.docs.map(toStory).sort((a, b) => {
+  return snap.docs.map(toStory).map(withFreshFlags).sort((a, b) => {
     const fa = a.flags.length > 0 ? 0 : 1;
     const fb = b.flags.length > 0 ? 0 : 1;
     return fa - fb || a.createdAt.localeCompare(b.createdAt);
@@ -246,6 +259,27 @@ export async function getTrend(
 /* Moderators -------------------------------------------------------------- */
 
 const moderatorCache = new Map<string, Promise<boolean>>();
+const MOD_KEY = 'saf.moderator';
+
+/** Last resolved answer for this uid, kept for the tab so the nav doesn't flicker. */
+function readCachedModerator(uid: string): boolean | null {
+  try {
+    const raw = sessionStorage.getItem(MOD_KEY);
+    if (!raw) return null;
+    const v = JSON.parse(raw) as { uid?: string; ok?: boolean };
+    return v.uid === uid && typeof v.ok === 'boolean' ? v.ok : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedModerator(uid: string, ok: boolean): void {
+  try {
+    sessionStorage.setItem(MOD_KEY, JSON.stringify({ uid, ok }));
+  } catch {
+    /* private mode / quota — cache is a convenience only */
+  }
+}
 
 /** True iff moderators/{uid} exists. Cached per uid for the page lifetime. */
 export function isModerator(uid: string): Promise<boolean> {
@@ -253,8 +287,11 @@ export function isModerator(uid: string): Promise<boolean> {
   let cached = moderatorCache.get(uid);
   if (!cached) {
     cached = getDoc(doc(db, 'moderators', uid))
-      .then((snap) => snap.exists())
-      .catch(() => false);
+      .then((snap) => {
+        writeCachedModerator(uid, snap.exists());
+        return snap.exists();
+      })
+      .catch(() => readCachedModerator(uid) ?? false);
     moderatorCache.set(uid, cached);
   }
   return cached;
@@ -264,13 +301,14 @@ export function isModerator(uid: string): Promise<boolean> {
 export function useIsModerator(): boolean {
   const session = useSession();
   const uid = session.status === 'in' ? session.session.uid : null;
-  const [mod, setMod] = useState(false);
+  const [mod, setMod] = useState(() => (uid ? (readCachedModerator(uid) ?? false) : false));
   useEffect(() => {
     let live = true;
     if (!uid) {
       setMod(false);
       return;
     }
+    setMod(readCachedModerator(uid) ?? false);
     void isModerator(uid).then((ok) => {
       if (live) setMod(ok);
     });
