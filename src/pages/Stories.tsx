@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { EMERGENCY_CONTACTS, SEED_STORIES, STORY_THEMES } from '../data/content';
 import type { Story } from '../data/content';
 import SignInGate from '../components/SignInGate';
 import Spinner from '../components/Spinner';
+import StorySphere from '../components/StorySphere';
 import { ensureAnonymousUid, firebaseReady, useSession } from '../lib/auth';
 import { listPublishedStories, submitStory } from '../lib/db';
 import type { StoryDoc } from '../lib/db';
@@ -92,6 +93,10 @@ function HopeScore({ score }: { score: Story['hopeScore'] }) {
   );
 }
 
+function storyCardId(id: string): string {
+  return `story-${id}`;
+}
+
 function StoryCard({
   story,
   expanded,
@@ -105,7 +110,7 @@ function StoryCard({
   const bodyId = `stories-more-${story.id}`;
 
   return (
-    <article className="stories-card">
+    <article id={storyCardId(story.id)} className="stories-card" tabIndex={-1}>
       <div className="stories-card-meta">
         <span className="stories-tag">
           {themeEmoji && <span aria-hidden="true">{themeEmoji}</span>} {story.theme}
@@ -523,6 +528,8 @@ export default function Stories() {
   const [params, setParams] = useSearchParams();
   const activeTheme = params.get('theme');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  // Set by the sphere: after the card expands, scroll to it and move focus there.
+  const jumpTo = useRef<string | null>(null);
   const [remote, setRemote] = useState<Story[] | null>(null);
   const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
   const session = useSession();
@@ -548,6 +555,22 @@ export default function Stories() {
 
   const all = useMemo(() => [...(remote ?? []), ...SEED_STORIES], [remote]);
   const visible = activeTheme ? all.filter((story) => story.theme === activeTheme) : all;
+
+  useEffect(() => {
+    const id = jumpTo.current;
+    if (!id || expandedId !== id) return;
+    jumpTo.current = null;
+    const el = document.getElementById(storyCardId(id));
+    if (!el) return;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' });
+    el.focus({ preventScroll: true });
+  }, [expandedId]);
+
+  const openStory = (id: string) => {
+    jumpTo.current = id;
+    setExpandedId(id);
+  };
 
   const setTheme = (label: string | null) => {
     const next = new URLSearchParams(params);
@@ -591,6 +614,8 @@ export default function Stories() {
           </button>
         ))}
       </div>
+
+      <StorySphere stories={all} activeTheme={activeTheme} onOpen={openStory} />
 
       {loadState === 'loading' && (
         <p className="stories-loading" role="status">

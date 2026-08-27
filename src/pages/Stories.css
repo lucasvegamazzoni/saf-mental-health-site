@@ -104,11 +104,18 @@
 }
 
 .stories-card {
+  scroll-margin-top: 5rem;
   background: var(--paper);
   border: 1px solid rgba(46, 58, 52, 0.1);
   border-radius: 20px;
   padding: clamp(1.2rem, 3.5vw, 1.7rem);
   box-shadow: 0 6px 18px rgba(46, 58, 52, 0.05);
+}
+
+/* Reached via the sphere: a quiet ring so the eye lands on the right card. */
+.stories-card:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
 }
 
 .stories-card-meta {
