@@ -10,3 +10,7 @@ export const firebaseConfig = {
   messagingSenderId: '689226990521',
   appId: '1:689226990521:web:a7a3affff92adbe6cf2c68',
 };
+
+/** reCAPTCHA v3 site key for Firebase App Check (public by design — the secret
+ *  key lives only in the Firebase console). Empty string = App Check off. */
+export const recaptchaSiteKey = '6LeRr5stAAAAAKbLdfuD72-vwLCnG6eFqF6zSwXC';

@@ -9,6 +9,7 @@ import Account from './pages/Account';
 import Moderate from './pages/Moderate';
 import Trends from './pages/Trends';
 import NotFound from './pages/NotFound';
+import Privacy from './pages/Privacy';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/account" element={<Account />} />
           <Route path="/moderate" element={<Moderate />} />
           <Route path="/trends" element={<Trends />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

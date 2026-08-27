@@ -11,6 +11,7 @@ import {
   signIn,
   signOutUser,
   signUp,
+  deleteMySpace,
   useSession,
 } from '../lib/auth';
 import './Account.css';
@@ -34,6 +35,25 @@ export default function Account() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [justSigned, setJustSigned] = useState(false);
+  const [delOpen, setDelOpen] = useState(false);
+  const [delPassword, setDelPassword] = useState('');
+  const [delPending, setDelPending] = useState(false);
+  const [delError, setDelError] = useState<string | null>(null);
+  const [deleted, setDeleted] = useState(false);
+
+  async function confirmDelete(e: FormEvent) {
+    e.preventDefault();
+    setDelError(null);
+    setDelPending(true);
+    try {
+      await deleteMySpace(delPassword);
+      setDeleted(true);
+    } catch (err) {
+      setDelError(err instanceof Error ? err.message : 'Something went wrong — please try again.');
+    } finally {
+      setDelPending(false);
+    }
+  }
 
   useEffect(() => {
     if (justSigned && session.status === 'in') navigate(next, { replace: true });
@@ -60,6 +80,27 @@ export default function Account() {
         <div className="spinner-slot">
           <Spinner size={56} label="Checking your space" />
         </div>
+      </div>
+    );
+  }
+
+  if (deleted) {
+    return (
+      <div className="account-page">
+        <section className="account-card account-card--me" aria-label="Space deleted">
+          <span className="account-avatar" aria-hidden="true">🍃</span>
+          <h1 className="account-title">Gone, as asked.</h1>
+          <p className="account-sub">
+            Your username, password and every check-in kept under it are deleted, and this device
+            is cleared. Nothing links back to you. The door stays open if you ever want to start
+            again.
+          </p>
+          <div className="account-actions">
+            <Link className="account-primary" to="/">
+              Back to the start
+            </Link>
+          </div>
+        </section>
       </div>
     );
   }
@@ -95,6 +136,62 @@ export default function Account() {
           <p className="account-note">
             Signing out on this phone keeps your check-ins safe under your username.
           </p>
+
+          <div className="account-danger">
+            {!delOpen ? (
+              <button type="button" className="account-danger-link" onClick={() => setDelOpen(true)}>
+                Delete my space
+              </button>
+            ) : (
+              <form className="account-danger-form" onSubmit={confirmDelete} noValidate>
+                <p className="account-danger-title">Delete your space?</p>
+                <p className="account-note">
+                  This removes your username, your password and every check-in kept under it —
+                  right away, with no way back. Stories you already shared stay published; they
+                  carry nothing that points to you. Type your password to confirm.
+                </p>
+                <label className="account-label" htmlFor="account-delete-password">
+                  Password
+                </label>
+                <input
+                  id="account-delete-password"
+                  className="account-input"
+                  type="password"
+                  autoComplete="current-password"
+                  value={delPassword}
+                  disabled={delPending}
+                  aria-invalid={delError ? true : undefined}
+                  onChange={(e) => setDelPassword(e.target.value)}
+                />
+                {delError && (
+                  <p className="account-error" role="alert">
+                    {delError}
+                  </p>
+                )}
+                <div className="account-actions">
+                  <button
+                    type="submit"
+                    className="account-danger-btn"
+                    disabled={!delPassword || delPending}
+                  >
+                    {delPending ? <Spinner size={22} fill="#fbf7ef" label="" /> : 'Yes, delete everything'}
+                  </button>
+                  <button
+                    type="button"
+                    className="account-secondary"
+                    disabled={delPending}
+                    onClick={() => {
+                      setDelOpen(false);
+                      setDelPassword('');
+                      setDelError(null);
+                    }}
+                  >
+                    Keep my space
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
         </section>
       </div>
     );

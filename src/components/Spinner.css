@@ -3,6 +3,23 @@
   flex-shrink: 0;
 }
 
+/* Rotation lives in CSS (LUC-88: the SMIL animateTransform did not run for Lucas);
+   the shape morph stays as an SVG <animate> on the path's d. */
+.spinner--spin {
+  animation: spinner-turn 6s linear infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+@keyframes spinner-turn {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner--spin { animation: none; }
+}
+
 /* Centred full-width loading slot (e.g. Suspense fallbacks) */
 .spinner-slot {
   min-height: 240px;

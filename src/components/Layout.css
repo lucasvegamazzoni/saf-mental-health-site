@@ -324,3 +324,20 @@ a.layout-help-name:hover {
 .layout-account.is-loading {
   opacity: 0.5;
 }
+
+.layout-footer-meta {
+  font-size: 0.8rem;
+  color: rgba(46, 58, 52, 0.62);
+  max-width: 34rem;
+  line-height: 1.6;
+}
+
+.layout-footer-meta a {
+  color: var(--pine);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
+}

@@ -599,3 +599,45 @@
   outline: 3px solid var(--terra-soft);
   outline-offset: 2px;
 }
+
+/* Clear this device (LUC-97) ------------------------------------------------ */
+
+.me-clear {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1.5px dashed rgba(126, 155, 119, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.me-clear-body {
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: rgba(46, 58, 52, 0.72);
+}
+
+.me-clear-body a {
+  color: var(--pine);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.me-clear-btn {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #fbf7ef;
+  background: var(--terra-ink);
+  border: 1.5px solid transparent;
+}
+
+.me-clear-btn:hover {
+  background: var(--terra);
+}

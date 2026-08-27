@@ -94,9 +94,12 @@ function Foliage() {
 
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
-  // LUC-66 comparison: ?uniform=no4 swaps in public/officer-no4.png when it exists; No. 1 stays the default.
+  // LUC-98 decision (2026-08-27): each page load picks No. 1 or No. 4 at random (50/50).
+  // ?uniform=no1 / ?uniform=no4 forces one for comparisons and screenshots.
   const [params] = useSearchParams();
-  const wantsNo4 = params.get('uniform') === 'no4';
+  const forced = params.get('uniform');
+  const [coin] = useState(() => Math.random() < 0.5);
+  const wantsNo4 = forced === 'no4' ? true : forced === 'no1' ? false : coin;
   const [no4Missing, setNo4Missing] = useState(false);
   const useNo4 = wantsNo4 && !no4Missing;
 

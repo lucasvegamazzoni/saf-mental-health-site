@@ -7,7 +7,8 @@ import { firebaseReady, useSession } from '../lib/auth';
 import { FEATURES } from '../lib/flags';
 import { usePwaInstall } from '../lib/pwa';
 import { rovingKeyDown } from '../lib/roving';
-import { getChallengeDone, getCheckins, onStoreChange, toggleChallenge } from '../lib/store';
+import { clearDevice, getChallengeDone, getCheckins, onStoreChange, toggleChallenge } from '../lib/store';
+import { Link } from 'react-router-dom';
 import type { CheckinEntry } from '../lib/store';
 import CheckIn from './CheckIn';
 import './Me.css';
@@ -174,6 +175,7 @@ export default function Me({ initialTab }: Props) {
   const session = useSession();
   const [params, setParams] = useSearchParams();
   const pwa = usePwaInstall();
+  const [clearStep, setClearStep] = useState<'idle' | 'confirm' | 'done'>('idle');
   const signedIn = session.status === 'in';
   const gated = firebaseReady && !signedIn;
 
@@ -437,6 +439,48 @@ export default function Me({ initialTab }: Props) {
               ? 'Your check-ins and challenges are kept under your username only. There is no name, email or unit attached — nobody, including us, can tell who you are.'
               : 'Check-ins are saved in this browser, on this device. Nothing is uploaded unless you choose to keep it under a username — and even then, no name is ever attached.'}
           </p>
+          <div className="me-clear">
+            {clearStep === 'done' ? (
+              <p className="me-clear-body" role="status">
+                Cleared. Nothing from the check-in is left on this device
+                {signedIn ? ' — your account copy is untouched.' : '.'}
+              </p>
+            ) : clearStep === 'confirm' ? (
+              <>
+                <p className="me-clear-body">
+                  This removes every check-in saved in this browser.{' '}
+                  {signedIn
+                    ? 'Your account copy stays — sign in again to bring it back.'
+                    : 'There is no copy anywhere else, so this cannot be undone.'}
+                </p>
+                <div className="me-install-actions">
+                  <button
+                    type="button"
+                    className="me-clear-btn"
+                    onClick={() => {
+                      clearDevice();
+                      setClearStep('done');
+                    }}
+                  >
+                    Yes, clear this device
+                  </button>
+                  <button type="button" className="me-install-dismiss" onClick={() => setClearStep('idle')}>
+                    Keep it
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="me-clear-body">
+                  Sharing this phone? You can wipe what is saved here.{' '}
+                  <Link to="/privacy">What we keep</Link>
+                </p>
+                <button type="button" className="me-install-dismiss" onClick={() => setClearStep('confirm')}>
+                  Clear this device
+                </button>
+              </>
+            )}
+          </div>
           {pwa.shouldShowHint && (
             <div className="me-install">
               <p className="me-install-body">

@@ -1,0 +1,83 @@
+.privacy-page {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.privacy-head {
+  margin-bottom: 0.6rem;
+}
+
+.privacy-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sage-deep);
+  margin-bottom: 0.5rem;
+}
+
+.privacy-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+  line-height: 1.12;
+  color: var(--ink);
+  margin: 0 0 0.8rem;
+}
+
+.privacy-lead {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: rgba(46, 58, 52, 0.8);
+}
+
+.privacy-card {
+  background: #fff;
+  border: 1px solid rgba(46, 58, 52, 0.08);
+  border-radius: 20px;
+  padding: 1.4rem 1.5rem;
+  box-shadow: 0 6px 24px rgba(46, 58, 52, 0.05);
+}
+
+.privacy-card h2 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--pine-deep);
+  margin: 0 0 0.6rem;
+}
+
+.privacy-card p,
+.privacy-card li {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(46, 58, 52, 0.85);
+}
+
+.privacy-card ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.privacy-card a {
+  color: var(--pine);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.privacy-card--contact {
+  background: color-mix(in srgb, var(--sage) 22%, white);
+}
+
+.privacy-note {
+  margin-top: 0.7rem;
+  font-size: 0.86rem;
+  color: rgba(46, 58, 52, 0.7);
+}

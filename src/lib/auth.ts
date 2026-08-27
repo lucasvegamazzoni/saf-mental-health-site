@@ -12,9 +12,13 @@ import {
   signInAnonymously,
   signOut,
   updateProfile,
+  deleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, writeBatch } from 'firebase/firestore';
+import { clearDevice } from './store';
 import { auth, db, firebaseReady } from './firebase';
 import { checkCallSign } from './callsign-filter';
 import { syncCheckins } from './sync';
@@ -218,6 +222,33 @@ export async function ensureAnonymousUid(): Promise<string> {
   try {
     const cred = await signInAnonymously(a);
     return cred.user.uid;
+  } catch (err) {
+    throw friendly(err);
+  }
+}
+
+/**
+ * "Delete my space" (LUC-97): removes the account copy of every check-in, the
+ * users/{uid} profile and the Auth user itself, then wipes this device's cache.
+ * Firebase requires a recent sign-in for deletion, so the password is re-checked
+ * first. Published stories are untouched — they never carried an author id.
+ */
+export async function deleteMySpace(password: string): Promise<void> {
+  const { auth: a, db: d } = requireBackend();
+  const user = a.currentUser;
+  if (!user || user.isAnonymous || !user.email) throw new AuthError('no-user', 'You are not signed in.');
+  try {
+    await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, password));
+    const snap = await getDocs(collection(d, 'users', user.uid, 'checkins'));
+    const docs = snap.docs;
+    for (let i = 0; i < docs.length; i += 400) {
+      const batch = writeBatch(d);
+      docs.slice(i, i + 400).forEach((c) => batch.delete(c.ref));
+      await batch.commit();
+    }
+    await deleteDoc(doc(d, 'users', user.uid));
+    await deleteUser(user);
+    clearDevice();
   } catch (err) {
     throw friendly(err);
   }

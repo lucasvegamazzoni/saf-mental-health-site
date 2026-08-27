@@ -256,3 +256,65 @@
   outline: 3px solid var(--terra-soft);
   outline-offset: 2px;
 }
+
+/* Delete my space (LUC-97) --------------------------------------------------- */
+
+.account-danger {
+  margin-top: 1.4rem;
+  padding-top: 1.1rem;
+  border-top: 1.5px dashed rgba(126, 155, 119, 0.55);
+  width: 100%;
+}
+
+.account-danger-link {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  color: var(--terra-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.account-danger-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  text-align: left;
+}
+
+.account-danger-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--terra-ink);
+}
+
+.account-danger-btn {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.4rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fbf7ef;
+  background: var(--terra-ink);
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.account-danger-btn:hover:not(:disabled) {
+  background: var(--terra);
+}
+
+.account-danger-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

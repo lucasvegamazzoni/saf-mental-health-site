@@ -159,3 +159,21 @@ export function replaceCheckins(entries: CheckinEntry[]): void {
   write(KEYS.checkins, sorted);
   emitChange('checkins');
 }
+
+/* Clear this device (LUC-97) ------------------------------------------------- */
+
+/** Wipes every nal.* key on this device — for shared bunk phones. The account copy
+ *  (if any) is untouched; signing in again brings it back. */
+export function clearDevice(): void {
+  try {
+    const doomed: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(NS)) doomed.push(k);
+    }
+    doomed.forEach((k) => localStorage.removeItem(k));
+  } catch {
+    // unavailable storage — nothing to clear
+  }
+  emitChange('*');
+}

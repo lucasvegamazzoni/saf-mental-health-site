@@ -36,7 +36,7 @@ export default function Spinner({ size = 64, fill = '#42604f', label = 'Loading'
       viewBox="0 0 240 240"
       width={size}
       height={size}
-      className={['spinner', className].filter(Boolean).join(' ')}
+      className={['spinner', reduceMotion ? 'spinner--still' : 'spinner--spin', className].filter(Boolean).join(' ')}
       role={label ? 'img' : undefined}
       aria-label={label || undefined}
       aria-hidden={label ? undefined : true}
@@ -44,16 +44,7 @@ export default function Spinner({ size = 64, fill = '#42604f', label = 'Loading'
       <path d={KEYFRAMES[0]} fill={fill} fillRule="evenodd" stroke="none">
         {!reduceMotion && (
           <>
-            <animateTransform
-              attributeName="transform"
-              attributeType="XML"
-              type="rotate"
-              from="0 120 120"
-              to="-360 120 120"
-              dur="6s"
-              repeatCount="indefinite"
-            />
-            <animate attributeName="d" values={D_VALUES} dur="6s" repeatCount="indefinite" />
+            <animate attributeName="d" values={D_VALUES} dur="6s" repeatCount="indefinite" calcMode="linear" />
           </>
         )}
       </path>
