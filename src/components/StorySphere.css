@@ -1,0 +1,178 @@
+/* StorySphere — desktop-only story explorer (see StorySphere.tsx). Hidden below 768px. */
+
+.sphere {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .sphere {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 auto 2.4rem;
+    width: 100%;
+    max-width: 520px;
+  }
+}
+
+.sphere-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    color-mix(in srgb, var(--cream) 70%, var(--paper)) 0%,
+    var(--cream) 62%,
+    color-mix(in srgb, var(--cream) 88%, var(--sage)) 100%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(66, 96, 79, 0.1),
+    0 12px 32px rgba(46, 58, 52, 0.06);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  overflow: visible;
+}
+
+.sphere-stage.is-dragging {
+  cursor: grabbing;
+}
+
+/* Nodes ------------------------------------------------------------------- */
+
+.sphere-node {
+  --depth: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 68px;
+  height: 68px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  /* Back-face fade: depth 0 (back) → 0.28, depth 1 (front) → 1 */
+  opacity: calc(0.28 + var(--depth) * 0.72);
+  will-change: transform;
+  border-radius: 50%;
+}
+
+.sphere-node:focus-visible {
+  outline: 3px solid var(--terra-soft);
+  outline-offset: 3px;
+}
+
+.sphere-node:hover,
+.sphere-node:focus-visible {
+  z-index: 400 !important;
+  opacity: 1;
+}
+
+.sphere-node-face {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid rgba(66, 96, 79, 0.12);
+  box-shadow: 0 6px 16px rgba(46, 58, 52, 0.08);
+  transform: scale(1);
+}
+
+.sphere-node-emoji {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+/* Pastel palette — every fill is a token mixed towards paper (DESIGN.md §2). */
+.sphere-node--p0 .sphere-node-face {
+  background: color-mix(in srgb, var(--sage) 55%, var(--paper));
+}
+.sphere-node--p1 .sphere-node-face {
+  background: color-mix(in srgb, var(--blue-hill) 72%, var(--paper));
+}
+.sphere-node--p2 .sphere-node-face {
+  background: color-mix(in srgb, var(--gold) 22%, var(--cream));
+}
+.sphere-node--p3 .sphere-node-face {
+  background: color-mix(in srgb, var(--terra-soft) 28%, var(--paper));
+}
+.sphere-node--p4 .sphere-node-face {
+  background: color-mix(in srgb, var(--gold) 36%, var(--paper));
+}
+
+/* While a theme filter is on, the matching bubbles stay legible even at the back. */
+.sphere.is-filtered .sphere-node:not(.is-dim) {
+  opacity: calc(0.7 + var(--depth) * 0.3);
+}
+
+/* Filtered out by ?theme= */
+.sphere-node.is-dim {
+  opacity: calc(0.12 + var(--depth) * 0.1);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Hover label --------------------------------------------------------------- */
+
+.sphere-node-label {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translate(-50%, -4px);
+  max-width: 200px;
+  width: max-content;
+  padding: 0.35rem 0.7rem;
+  border-radius: 10px;
+  background: var(--paper);
+  border: 1px solid rgba(66, 96, 79, 0.14);
+  box-shadow: 0 6px 18px rgba(46, 58, 52, 0.08);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--pine-deep);
+  text-align: center;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sphere-node:hover .sphere-node-label,
+.sphere-node:focus-visible .sphere-node-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.sphere-node:hover .sphere-node-face,
+.sphere-node:focus-visible .sphere-node-face {
+  transform: scale(1.1);
+  box-shadow: 0 10px 24px rgba(46, 58, 52, 0.12);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sphere-node-face {
+    transition:
+      transform 200ms ease-out,
+      box-shadow 200ms ease-out;
+  }
+  .sphere-node-label {
+    transition:
+      opacity 180ms ease-out,
+      transform 180ms ease-out;
+  }
+}
+
+/* Caption ------------------------------------------------------------------- */
+
+.sphere-caption {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(46, 58, 52, 0.72);
+  text-align: center;
+}
