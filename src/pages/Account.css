@@ -60,7 +60,7 @@
 
 .cloud-eye {
   position: absolute;
-  top: 46%;
+  top: 34%;
   width: 10%;
   height: 22%;
   background: #fff;
@@ -91,7 +91,7 @@
 }
 
 .cloud-eye.is-closed {
-  top: 55%;
+  top: 45%;
   height: 4px;
   border-radius: 3px;
   background: var(--ink);

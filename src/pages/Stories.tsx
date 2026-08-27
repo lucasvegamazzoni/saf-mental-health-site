@@ -4,7 +4,7 @@ import { EMERGENCY_CONTACTS, SEED_STORIES, STORY_THEMES } from '../data/content'
 import type { Story } from '../data/content';
 import SignInGate from '../components/SignInGate';
 import Spinner from '../components/Spinner';
-import { useSession } from '../lib/auth';
+import { ensureAnonymousUid, firebaseReady, useSession } from '../lib/auth';
 import { listPublishedStories, submitStory } from '../lib/db';
 import type { StoryDoc } from '../lib/db';
 import { anonymise, segments } from '../lib/anonymise';
@@ -162,7 +162,7 @@ interface Sent {
   flags: string[];
 }
 
-function ShareStory({ uid }: { uid: string }) {
+function ShareStory({ uid }: { uid: string | null }) {
   const [step, setStep] = useState<Step>('write');
   const [title, setTitle] = useState('');
   const [draft, setDraft] = useState('');
@@ -202,6 +202,8 @@ function ShareStory({ uid }: { uid: string }) {
       const safeTitle = (titleReviewed?.text ?? '').trim();
       const body = toParagraphs(safe);
       const flags = flagRisks(safe);
+      // No call sign? An anonymous Firebase session gives us a throwaway uid that is never linked to a person.
+      const authorUid = uid ?? (await ensureAnonymousUid());
       await submitStory({
         theme,
         title: safeTitle || 'An anonymous story',
@@ -210,7 +212,7 @@ function ShareStory({ uid }: { uid: string }) {
         lessons: [],
         hopeScore: hope,
         readMins: readMinsFor(safe),
-        authorUid: uid,
+        authorUid,
         flags,
       });
       setSent({ flags });
@@ -425,6 +427,12 @@ function ShareStory({ uid }: { uid: string }) {
       <p className="stories-share-prompt">
         What's something you've been through that might help someone else?
       </p>
+      {uid === null && (
+        <p className="stories-share-anon">
+          No call sign needed — your story is stored with no link to you. With a call sign you could
+          edit or withdraw it later, but it is never required.
+        </p>
+      )}
       <ul className="stories-share-hints" aria-label="Prompts to get you started">
         {HELPER_PROMPTS.map((prompt) => (
           <li key={prompt} className="stories-share-hint">
@@ -618,13 +626,12 @@ export default function Stories() {
         <p className="stories-loading" role="status">
           <Spinner size={28} label="" /> Checking your space…
         </p>
-      ) : uid ? (
+      ) : firebaseReady ? (
         <ShareStory uid={uid} />
       ) : (
         <SignInGate
           what="anything you share"
           next={activeTheme ? `/stories?theme=${encodeURIComponent(activeTheme)}` : '/stories'}
-          note="Stories are published anonymously, but a call sign lets you edit or withdraw yours later. No name, no email, no unit."
         />
       )}
     </div>

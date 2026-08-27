@@ -2,6 +2,7 @@ import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
+import { FEATURES } from '../lib/flags';
 import SignInGate from '../components/SignInGate';
 import Spinner from '../components/Spinner';
 const QrTree = lazy(() => import('../components/QrTree'));
@@ -441,6 +442,7 @@ export default function Home() {
       </section>
 
       {/* Blossom tree → QR (scroll to reveal) */}
+      {FEATURES.qrTree && (
       <Suspense
         fallback={
           <div className="qrtree qrtree--loading spinner-slot" aria-hidden="true">
@@ -450,8 +452,10 @@ export default function Home() {
       >
         <QrTree />
       </Suspense>
+      )}
 
       {/* This week's pulse */}
+      {FEATURES.polls && (
       <section className="home-pulse" aria-labelledby="home-pulse-question">
         <div className="home-pulse-card">
           <p className="home-pulse-kicker">This week’s pulse</p>
@@ -459,8 +463,10 @@ export default function Home() {
           <PollCard />
         </div>
       </section>
+      )}
 
       {/* Recognition wall */}
+      {FEATURES.recognition && (
       <section className="home-wall" aria-labelledby="home-wall-title">
         <div className="home-wall-head">
           <h2 id="home-wall-title">Recognition wall</h2>
@@ -468,6 +474,7 @@ export default function Home() {
         </div>
         <RecognitionWall />
       </section>
+      )}
 
       {/* Soft footer */}
       <section className="home-footnote" aria-label="Privacy note">

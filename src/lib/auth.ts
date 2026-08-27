@@ -9,12 +9,14 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInAnonymously,
   signOut,
   updateProfile,
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db, firebaseReady } from './firebase';
+import { checkCallSign } from './callsign-filter';
 import { syncCheckins } from './sync';
 
 export { firebaseReady };
@@ -85,6 +87,10 @@ function validate(callSign: string, password: string): string {
   if (callSign.trim().length > CALL_SIGN_MAX) {
     throw new AuthError('form/call-sign', `Call sign can be at most ${CALL_SIGN_MAX} characters.`);
   }
+  const verdict = checkCallSign(callSign);
+  if (!verdict.ok) {
+    throw new AuthError('form/call-sign', verdict.reason ?? 'That call sign is not allowed here.');
+  }
   if (password.length < PASSWORD_MIN) {
     throw new AuthError('form/password', `Password needs at least ${PASSWORD_MIN} characters.`);
   }
@@ -135,7 +141,9 @@ function start() {
   if (started || !auth) return;
   started = true;
   onAuthStateChanged(auth, async (user) => {
-    if (!user) {
+    if (!user || user.isAnonymous) {
+      // Anonymous sessions exist only to let someone share a story without a call sign;
+      // they are never shown as "signed in" and never sync personal data.
       setState({ status: 'out' });
       return;
     }
@@ -197,4 +205,20 @@ export async function signIn(callSign: string, password: string): Promise<void> 
 export async function signOutUser(): Promise<void> {
   if (!auth) return;
   await signOut(auth);
+}
+
+/**
+ * Returns a uid usable for account-less actions (sharing a story without a call
+ * sign). Reuses the current user if one exists; otherwise signs in anonymously.
+ * Anonymous users are never treated as "signed in" by useSession().
+ */
+export async function ensureAnonymousUid(): Promise<string> {
+  const { auth: a } = requireBackend();
+  if (a.currentUser) return a.currentUser.uid;
+  try {
+    const cred = await signInAnonymously(a);
+    return cred.user.uid;
+  } catch (err) {
+    throw friendly(err);
+  }
 }

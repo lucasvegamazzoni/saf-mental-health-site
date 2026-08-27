@@ -62,10 +62,10 @@ function CloudFace({ eyesClosed }: { eyesClosed: boolean }) {
           <circle cx="186" cy="88" r="33" />
           <rect x="55" y="87" width="164" height="36" rx="18" />
         </g>
-        <circle cx="92" cy="98" r="7" fill="var(--terra-soft)" opacity="0.45" />
-        <circle cx="168" cy="98" r="7" fill="var(--terra-soft)" opacity="0.45" />
+        <circle cx="92" cy="104" r="7" fill="var(--terra-soft)" opacity="0.45" />
+        <circle cx="168" cy="104" r="7" fill="var(--terra-soft)" opacity="0.45" />
         <path
-          d={eyesClosed ? 'M118 104 H142' : 'M116 100 Q130 112 144 100'}
+          d={eyesClosed ? 'M119 110 H141' : 'M116 106 Q130 118 144 106'}
           fill="none"
           stroke="var(--ink)"
           strokeWidth="3"

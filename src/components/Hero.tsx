@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
@@ -93,6 +94,11 @@ function Foliage() {
 
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
+  // LUC-66 comparison: ?uniform=no4 swaps in public/officer-no4.png when it exists; No. 1 stays the default.
+  const [params] = useSearchParams();
+  const wantsNo4 = params.get('uniform') === 'no4';
+  const [no4Missing, setNo4Missing] = useState(false);
+  const useNo4 = wantsNo4 && !no4Missing;
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -173,8 +179,15 @@ export default function Hero() {
           <div data-parallax-layer="4" className="layer layer--front">
             <img
               className="hero__officer"
-              src={`${import.meta.env.BASE_URL}officer.png`}
-              alt="Illustration of a Singapore Armed Forces serviceman in No. 1 ceremonial dress, facing forward"
+              src={`${import.meta.env.BASE_URL}${useNo4 ? 'officer-no4.png' : 'officer.png'}`}
+              alt={
+                useNo4
+                  ? 'Illustration of a Singapore Armed Forces serviceman in No. 4 field uniform, facing forward'
+                  : 'Illustration of a Singapore Armed Forces serviceman in No. 1 ceremonial dress, facing forward'
+              }
+              onError={() => {
+                if (useNo4) setNo4Missing(true);
+              }}
             />
             <NearHills />
             <Foliage />

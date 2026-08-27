@@ -4,6 +4,7 @@ import SignInGate from '../components/SignInGate';
 import { CHALLENGES, CHECKIN_SCALE } from '../data/content';
 import type { CheckinScore, ScalePoint } from '../data/content';
 import { firebaseReady, useSession } from '../lib/auth';
+import { FEATURES } from '../lib/flags';
 import { usePwaInstall } from '../lib/pwa';
 import { rovingKeyDown } from '../lib/roving';
 import { getChallengeDone, getCheckins, onStoreChange, toggleChallenge } from '../lib/store';
@@ -49,7 +50,7 @@ type Tab = 'check-in' | 'timeline' | 'challenges';
 const TABS: { id: Tab; label: string }[] = [
   { id: 'check-in', label: 'Check-in' },
   { id: 'timeline', label: 'Timeline' },
-  { id: 'challenges', label: 'Challenges' },
+  ...(FEATURES.challenges ? [{ id: 'challenges' as Tab, label: 'Challenges' }] : []),
 ];
 const isTab = (v: string | null): v is Tab =>
   v === 'check-in' || v === 'timeline' || v === 'challenges';

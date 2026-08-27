@@ -5,6 +5,7 @@ import type { ContactGroup, EmergencyContact } from '../data/contacts';
 import { useSession } from '../lib/auth';
 import { useIsModerator } from '../lib/db';
 import Companion from './Companion';
+import { FEATURES } from '../lib/flags';
 import './Layout.css';
 
 /** The leaf mark — used exactly twice on purpose: the wordmark and the footer sign-off. */
@@ -105,7 +106,7 @@ export default function Layout() {
               {link.label}
             </NavLink>
           ))}
-          {session.status === 'in' && (
+          {FEATURES.trends && session.status === 'in' && (
             <NavLink
               to="/trends"
               className={({ isActive }) => `layout-link${isActive ? ' is-active' : ''}`}
@@ -147,10 +148,10 @@ export default function Layout() {
 
       <footer className="layout-footer">
         <Leaf className="layout-footer-leaf" />
-        <p>SAF Check-in · Anonymous by design. Nothing here needs your name.</p>
+        <p>SAF Check-in · Anonymous by design. Nothing here necessarily needs your name.</p>
       </footer>
 
-      <Companion />
+      {FEATURES.companion && <Companion />}
 
       <div className="layout-help">
         {helpOpen && (
