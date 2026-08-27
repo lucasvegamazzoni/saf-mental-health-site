@@ -16,28 +16,12 @@ import './Stories.css';
 
 /* Helpers ----------------------------------------------------------------- */
 
-function Dot({ className }: { className: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="7" fill="currentColor" />
-    </svg>
-  );
-}
-
 const HELPER_PROMPTS = [
   'What happened?',
   'How did you feel?',
   'What helped?',
   'What advice would you give?',
 ];
-
-const HOPE_LABELS: Record<Story['hopeScore'], string> = {
-  1: 'Still heavy',
-  2: 'Getting by',
-  3: 'Okay',
-  4: 'Better',
-  5: 'Good',
-};
 
 const MIN_WORDS = 20;
 const PREVIEW_CHARS = 160;
@@ -80,19 +64,6 @@ function fromDoc(doc: StoryDoc): Story {
 
 /* Story card -------------------------------------------------------------- */
 
-function HopeScore({ score }: { score: Story['hopeScore'] }) {
-  return (
-    <span className="stories-hope" role="img" aria-label={`Hope score ${score} out of 5`}>
-      {[1, 2, 3, 4, 5].map((n) => (
-        <Dot key={n} className={`stories-hope-leaf${n <= score ? ' is-filled' : ''}`} />
-      ))}
-      <span className="stories-hope-num" aria-hidden="true">
-        {score}/5
-      </span>
-    </span>
-  );
-}
-
 function storyCardId(id: string): string {
   return `story-${id}`;
 }
@@ -116,7 +87,6 @@ function StoryCard({
           {themeEmoji && <span aria-hidden="true">{themeEmoji}</span>} {story.theme}
         </span>
         {story.illustrative && <span className="stories-tag-sample">Illustrative</span>}
-        <HopeScore score={story.hopeScore} />
         <span className="stories-readtime">{story.readMins} min read</span>
       </div>
 
@@ -176,7 +146,6 @@ function ShareStory({ uid }: { uid: string | null }) {
   const [editing, setEditing] = useState(false);
   const [edited, setEdited] = useState('');
   const [theme, setTheme] = useState<string | null>(null);
-  const [hope, setHope] = useState<Story['hopeScore'] | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState<Sent | null>(null);
@@ -195,10 +164,10 @@ function ShareStory({ uid }: { uid: string | null }) {
   };
 
   const finalText = editing ? edited : (reviewed?.text ?? '');
-  const canSubmit = Boolean(theme) && hope !== null && finalText.trim().length > 0 && !pending;
+  const canSubmit = Boolean(theme) && finalText.trim().length > 0 && !pending;
 
   const submit = async () => {
-    if (!theme || hope === null) return;
+    if (!theme) return;
     setPending(true);
     setError(null);
     try {
@@ -215,7 +184,7 @@ function ShareStory({ uid }: { uid: string | null }) {
         preview: makePreview(body),
         body,
         lessons: [],
-        hopeScore: hope,
+        hopeScore: 3, // no longer asked — stories are not scored against each other (LUC-100)
         readMins: readMinsFor(safe),
         flags,
       });
@@ -237,7 +206,6 @@ function ShareStory({ uid }: { uid: string | null }) {
     setEditing(false);
     setEdited('');
     setTheme(null);
-    setHope(null);
     setSent(null);
     setError(null);
   };
@@ -371,30 +339,6 @@ function ShareStory({ uid }: { uid: string | null }) {
                 onClick={() => setTheme(t.label)}
               >
                 <span aria-hidden="true">{t.emoji}</span> {t.label}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-
-        <fieldset className="stories-fieldset" disabled={pending}>
-          <legend className="stories-label">How are you doing now?</legend>
-          <div
-            className="stories-pick"
-            role="radiogroup"
-            aria-label="How you are doing now"
-            onKeyDown={(e) => rovingKeyDown(e, '[role="radio"]')}
-          >
-            {([1, 2, 3, 4, 5] as const).map((n) => (
-              <button
-                key={n}
-                type="button"
-                role="radio"
-                aria-checked={hope === n}
-                tabIndex={hope === n || (hope === null && n === 1) ? 0 : -1}
-                className={`stories-chip stories-hope-chip${hope === n ? ' is-active' : ''}`}
-                onClick={() => setHope(n)}
-              >
-                <span className="stories-hope-chip-num">{n}</span> {HOPE_LABELS[n]}
               </button>
             ))}
           </div>

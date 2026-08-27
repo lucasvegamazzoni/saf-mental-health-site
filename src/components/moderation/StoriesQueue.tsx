@@ -59,7 +59,7 @@ function QueueCard({
           {themeEmoji && <span aria-hidden="true">{themeEmoji}</span>} {story.theme || 'No theme'}
         </span>
         <span className="sq-when">
-          {whenLabel(story.createdAt)} · doing {story.hopeScore}/5 now · {story.readMins} min
+          {whenLabel(story.createdAt)} · {story.readMins} min
         </span>
       </div>
 

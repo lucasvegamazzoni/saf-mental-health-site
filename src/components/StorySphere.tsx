@@ -27,7 +27,6 @@ const DRAG_SPEED = 0.0055; // rad / px
 const FRICTION = 0.94;
 const MIN_VELOCITY = 0.0004;
 const CLICK_SLOP = 6; // px of movement before a press becomes a drag
-const TILT_LIMIT = Math.PI / 2.4;
 const PALETTES = 5;
 
 /** Small, stable string hash (FNV-1a) → [0, 1). Replaces Math.random so layout never shuffles. */
@@ -61,18 +60,28 @@ function fibonacciPoints(ids: string[]): Point[] {
   });
 }
 
-function rotate(p: Point, rx: number, ry: number): Point {
-  // Around Y, then around X.
-  const cy = Math.cos(ry);
-  const sy = Math.sin(ry);
-  const x1 = p.x * cy + p.z * sy;
-  const z1 = -p.x * sy + p.z * cy;
-  const cx = Math.cos(rx);
-  const sx = Math.sin(rx);
-  const y2 = p.y * cx - z1 * sx;
-  const z2 = p.y * sx + z1 * cx;
-  return { x: x1, y: y2, z: z2 };
+/* Orientation is a 3×3 rotation matrix (row-major), not Euler angles — so a drag
+   in any direction rotates about the matching *screen* axis and the sphere never
+   locks at the poles (LUC-100). */
+type Mat = [number, number, number, number, number, number, number, number, number];
+const IDENTITY: Mat = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+
+function mul(a: Mat, b: Mat): Mat {
+  const o = new Array(9) as Mat;
+  for (let r = 0; r < 3; r++)
+    for (let c = 0; c < 3; c++)
+      o[r * 3 + c] = a[r * 3] * b[c] + a[r * 3 + 1] * b[3 + c] + a[r * 3 + 2] * b[6 + c];
+  return o;
 }
+const rotX = (a: number): Mat => [1, 0, 0, 0, Math.cos(a), -Math.sin(a), 0, Math.sin(a), Math.cos(a)];
+const rotY = (a: number): Mat => [Math.cos(a), 0, Math.sin(a), 0, 1, 0, -Math.sin(a), 0, Math.cos(a)];
+/** Apply a rotation about the screen X/Y axes *after* the current orientation. */
+const turn = (m: Mat, aboutX: number, aboutY: number): Mat => mul(rotX(aboutX), mul(rotY(aboutY), m));
+const apply = (m: Mat, p: Point): Point => ({
+  x: m[0] * p.x + m[1] * p.y + m[2] * p.z,
+  y: m[3] * p.x + m[4] * p.y + m[5] * p.z,
+  z: m[6] * p.x + m[7] * p.y + m[8] * p.z,
+});
 
 function useMedia(query: string): boolean {
   const [matches, setMatches] = useState(() =>
@@ -99,7 +108,7 @@ export default function StorySphere({ stories, activeTheme, onOpen }: Props) {
 function Sphere({ stories, activeTheme, onOpen, reduced }: Props & { reduced: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const rot = useRef({ x: -0.35, y: 0.6 });
+  const rot = useRef<Mat>(turn(IDENTITY, -0.35, 0.6));
   const vel = useRef({ x: 0, y: 0 });
   const hovering = useRef(false);
   const drag = useRef<{ id: number; lastX: number; lastY: number; moved: number } | null>(null);
@@ -114,11 +123,11 @@ function Sphere({ stories, activeTheme, onOpen, reduced }: Props & { reduced: bo
     const stage = stageRef.current;
     if (!stage) return;
     const radius = stage.clientWidth * 0.38;
-    const { x: rx, y: ry } = rot.current;
+    const m = rot.current;
     points.forEach((p, i) => {
       const el = nodeRefs.current[i];
       if (!el) return;
-      const q = rotate(p, rx, ry);
+      const q = apply(m, p);
       const depth = (q.z + 1) / 2; // 0 back … 1 front
       const scale = 0.55 + depth * 0.5;
       el.style.transform = `translate(-50%, -50%) translate(${(q.x * radius).toFixed(1)}px, ${(q.y * radius).toFixed(1)}px) scale(${scale.toFixed(3)})`;
@@ -136,16 +145,16 @@ function Sphere({ stories, activeTheme, onOpen, reduced }: Props & { reduced: bo
     const tick = () => {
       const dragging = drag.current !== null;
       if (!dragging) {
-        rot.current.y += vel.current.y;
-        rot.current.x += vel.current.x;
+        if (vel.current.x !== 0 || vel.current.y !== 0) {
+          rot.current = turn(rot.current, vel.current.x, vel.current.y);
+        }
         vel.current.x *= FRICTION;
         vel.current.y *= FRICTION;
         if (Math.abs(vel.current.x) < MIN_VELOCITY) vel.current.x = 0;
         if (Math.abs(vel.current.y) < MIN_VELOCITY) vel.current.y = 0;
         if (!hovering.current && vel.current.x === 0 && vel.current.y === 0) {
-          rot.current.y += AUTO_SPEED;
+          rot.current = turn(rot.current, 0, AUTO_SPEED);
         }
-        rot.current.x = Math.max(-TILT_LIMIT, Math.min(TILT_LIMIT, rot.current.x));
       }
       paint();
       raf = requestAnimationFrame(tick);
@@ -187,11 +196,7 @@ function Sphere({ stories, activeTheme, onOpen, reduced }: Props & { reduced: bo
       e.currentTarget.classList.add('is-dragging');
       e.currentTarget.setPointerCapture(e.pointerId);
     }
-    rot.current.y += dx * DRAG_SPEED;
-    rot.current.x = Math.max(
-      -TILT_LIMIT,
-      Math.min(TILT_LIMIT, rot.current.x - dy * DRAG_SPEED),
-    );
+    rot.current = turn(rot.current, -dy * DRAG_SPEED, dx * DRAG_SPEED);
     vel.current = { x: -dy * DRAG_SPEED * 0.6, y: dx * DRAG_SPEED * 0.6 };
     if (reduced) paint();
   };
