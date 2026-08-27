@@ -207,7 +207,7 @@ function ShareStory({ uid }: { uid: string | null }) {
       const safeTitle = (titleReviewed?.text ?? '').trim();
       const body = toParagraphs(safe);
       const flags = flagRisks(safe);
-      // No call sign? An anonymous Firebase session gives us a throwaway uid that is never linked to a person.
+      // No username? An anonymous Firebase session gives us a throwaway uid that is never linked to a person.
       if (!uid) await ensureAnonymousUid();
       await submitStory({
         theme,
@@ -416,7 +416,7 @@ function ShareStory({ uid }: { uid: string | null }) {
             {pending ? <Spinner size={22} fill="#fbf7ef" label="" /> : 'Send to a moderator'}
           </button>
           <span className="stories-share-note">
-            This leaves your device and goes to a moderator. No call sign is shown with it.
+            This leaves your device and goes to a moderator. No username is shown with it.
           </span>
         </div>
       </section>
@@ -433,7 +433,7 @@ function ShareStory({ uid }: { uid: string | null }) {
       </p>
       {uid === null && (
         <p className="stories-share-anon">
-          No call sign needed — your story is stored with no link to you. With a call sign you could
+          No username needed — your story is stored with no link to you. With a username you could
           edit or withdraw it later, but it is never required.
         </p>
       )}

@@ -80,8 +80,8 @@ export default function Account() {
           <h1 className="account-title">{me.callSign}</h1>
           <p className="account-sub">With us since {since}. Good to have you here.</p>
           <ul className="account-facts">
-            <li>Your check-ins, timeline and challenges live under this call sign.</li>
-            <li>No email, no real name, no unit — the call sign is all we know.</li>
+            <li>Your check-ins, timeline and challenges live under this username.</li>
+            <li>No email, no real name, no unit — the username is all we know.</li>
             <li>Anything you ever share publicly stays anonymous regardless.</li>
           </ul>
           <div className="account-actions">
@@ -93,7 +93,7 @@ export default function Account() {
             </button>
           </div>
           <p className="account-note">
-            Signing out on this phone keeps your check-ins safe under your call sign.
+            Signing out on this phone keeps your check-ins safe under your username.
           </p>
         </section>
       </div>
@@ -108,8 +108,8 @@ export default function Account() {
         <h1 className="account-title">{creating ? 'Make it yours.' : 'Welcome back.'}</h1>
         <p className="account-sub">
           {creating
-            ? 'A call sign and a password — nothing else. It follows your check-ins to any phone, and it never asks for your name.'
-            : 'Your call sign and password bring your space to this phone.'}
+            ? 'A username and a password — nothing else. It follows your check-ins to any phone, and it never asks for your name.'
+            : 'Your username and password bring your space to this phone.'}
         </p>
       </header>
 
@@ -169,7 +169,7 @@ export default function Account() {
         >
         <fieldset className="account-fields" disabled={!firebaseReady || pending}>
           <label className="account-label" htmlFor="account-callsign">
-            Call sign
+            Username
           </label>
           <input
             id="account-callsign"
@@ -178,7 +178,7 @@ export default function Account() {
             autoComplete="username"
             value={callSign}
             maxLength={CALL_SIGN_MAX}
-            placeholder={creating ? 'e.g. QuietTiger — not your real name' : 'Your call sign'}
+            placeholder={creating ? 'e.g. QuietTiger — not your real name' : 'Your username'}
             onChange={(e) => setCallSign(e.target.value)}
           />
 
@@ -258,7 +258,7 @@ export default function Account() {
         <p className="account-note">
           {creating
             ? 'Forget the password and the space is gone — there is no email to reset it with. That is the price of never asking who you are.'
-            : 'No call sign yet? Switch to “Create my space” — it takes ten seconds.'}
+            : 'No username yet? Switch to “Create my space” — it takes ten seconds.'}
         </p>
       </form>
     </div>

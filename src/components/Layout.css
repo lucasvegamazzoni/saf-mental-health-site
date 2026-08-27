@@ -294,7 +294,7 @@ a.layout-help-name:hover {
   }
 }
 
-/* Account chip (sign-in / call sign) */
+/* Account chip (sign-in / username) */
 .layout-account {
   min-height: 44px;
   display: inline-flex;

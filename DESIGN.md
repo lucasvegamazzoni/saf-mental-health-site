@@ -7,7 +7,7 @@ component and agent follows it. When in doubt: **calm, warm, honest, anonymous.*
 
 - Central message: *struggling is normal, growth is possible, no one has to face it alone.*
 - Warm, plain, second person. Short sentences. No clinical or corporate language.
-- Never ask for, display or imply a real name, rank, unit, NRIC or email. "Call sign" is
+- Never ask for, display or imply a real name, rank, unit, NRIC or email. "Username" is
   the only identity word.
 - Be honest about what is and isn't built: a stub says it's a stub; nothing is
   uploaded silently; no fake success states.
@@ -96,7 +96,7 @@ Rules
 - Local first: check-ins are written to the device before any network call.
 - Anything that leaves the device says so in plain words next to the action.
 - Public content (stories, recognitions, polls) is published only after moderation and never carries a uid in the UI.
-- Never show another user's call sign on public surfaces.
+- Never show another user's username on public surfaces.
 
 ## 10. Definition of done for any UI change
 

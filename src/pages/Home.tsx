@@ -156,7 +156,7 @@ function PollCard() {
   if (session.status === 'loading') {
     return (
       <div className="home-pulse-wait spinner-slot" aria-live="polite">
-        <Spinner size={48} label="Checking your call sign" />
+        <Spinner size={48} label="Checking your username" />
       </div>
     );
   }
@@ -353,13 +353,13 @@ function RecognitionWall() {
 
       {!uid ? (
         <p className="home-wall-signin">
-          <Link to={`/account?mode=signin&next=${encodeURIComponent('/')}`}>Sign in with a call sign</Link> to
+          <Link to={`/account?mode=signin&next=${encodeURIComponent('/')}`}>Sign in with a username</Link> to
           add a thank-you. A moderator reads every note before it goes up — never with a name attached.
         </p>
       ) : submit.status === 'sent' ? (
         <div className="home-wall-sent" role="status">
           <p className="home-wall-sent-title">Thanks — a moderator will post it shortly.</p>
-          <p className="home-wall-sent-sub">Your call sign is not shown on the wall.</p>
+          <p className="home-wall-sent-sub">Your username is not shown on the wall.</p>
           <button type="button" className="home-pulse-change" onClick={() => setSubmit({ status: 'idle' })}>
             Add another
           </button>

@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------------------
  * callsign-filter.ts — keeps slurs, profanity and derogatory terms out of
- * call signs (LUC-94). Deliberately conservative: a call sign is public-ish
+ * usernames (LUC-94). Deliberately conservative: a username is public-ish
  * (moderators see it, and the person sees it every day), so we'd rather
  * reject a borderline name than let a slur through.
  *
@@ -67,7 +67,7 @@ export interface CallSignVerdict {
   reason?: string;
 }
 
-/** Returns ok=false when the call sign contains a slur, hate term or profanity. */
+/** Returns ok=false when the username contains a slur, hate term or profanity. */
 export function checkCallSign(raw: string): CallSignVerdict {
   const flat = normalise(raw);
   if (!flat) return { ok: true };
@@ -75,7 +75,7 @@ export function checkCallSign(raw: string): CallSignVerdict {
   for (const term of HARD_BLOCK) {
     const t = term.replace(/[^a-z]/g, '');
     if (t.length >= 4 && flat.includes(t)) {
-      return { ok: false, reason: "That call sign isn't allowed here — pick something you'd be glad to see every day." };
+      return { ok: false, reason: "That username isn't allowed here — pick something you'd be glad to see every day." };
     }
   }
 
@@ -84,7 +84,7 @@ export function checkCallSign(raw: string): CallSignVerdict {
   for (const term of [...HARD_BLOCK, ...PROFANITY]) {
     const t = term.replace(/[^a-z]/g, '');
     if (flatSet.has(t)) {
-      return { ok: false, reason: "That call sign isn't allowed here — pick something you'd be glad to see every day." };
+      return { ok: false, reason: "That username isn't allowed here — pick something you'd be glad to see every day." };
     }
   }
 
@@ -92,7 +92,7 @@ export function checkCallSign(raw: string): CallSignVerdict {
   for (const term of HARD_BLOCK) {
     const t = term.replace(/[^a-z]/g, '');
     if (t.length < 4 && words.includes(t)) {
-      return { ok: false, reason: "That call sign isn't allowed here — pick something you'd be glad to see every day." };
+      return { ok: false, reason: "That username isn't allowed here — pick something you'd be glad to see every day." };
     }
   }
 

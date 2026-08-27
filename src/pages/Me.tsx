@@ -235,7 +235,7 @@ export default function Me({ initialTab }: Props) {
               good to have you here.
             </>
           ) : (
-            'Check in now. Keep it with a call sign whenever you like.'
+            'Check in now. Keep it with a username whenever you like.'
           )}
         </p>
       </header>
@@ -265,7 +265,7 @@ export default function Me({ initialTab }: Props) {
               </span>
             )}
             {t.id !== 'check-in' && gated && (
-              <span className="me-visually-hidden"> (needs a call sign)</span>
+              <span className="me-visually-hidden"> (needs a username)</span>
             )}
           </button>
         ))}
@@ -292,7 +292,7 @@ export default function Me({ initialTab }: Props) {
               next="/me?tab=timeline"
               note={
                 timeline.length > 0
-                  ? `You have ${timeline.length} check-in${timeline.length === 1 ? '' : 's'} on this phone. A call sign keeps them together — and brings them to your next phone.`
+                  ? `You have ${timeline.length} check-in${timeline.length === 1 ? '' : 's'} on this phone. A username keeps them together — and brings them to your next phone.`
                   : undefined
               }
             />
@@ -434,8 +434,8 @@ export default function Me({ initialTab }: Props) {
           <h2 className="me-privacy-title">Private by design</h2>
           <p className="me-privacy-body">
             {signedIn
-              ? 'Your check-ins and challenges are kept under your call sign only. There is no name, email or unit attached — nobody, including us, can tell who you are.'
-              : 'Check-ins are saved in this browser, on this device. Nothing is uploaded unless you choose to keep it under a call sign — and even then, no name is ever attached.'}
+              ? 'Your check-ins and challenges are kept under your username only. There is no name, email or unit attached — nobody, including us, can tell who you are.'
+              : 'Check-ins are saved in this browser, on this device. Nothing is uploaded unless you choose to keep it under a username — and even then, no name is ever attached.'}
           </p>
           {pwa.shouldShowHint && (
             <div className="me-install">

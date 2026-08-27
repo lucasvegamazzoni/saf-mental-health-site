@@ -108,7 +108,7 @@ export default function CheckIn({ embedded = false }: Props) {
           </Heading>
           <p className="checkin-finish-line">
             {signedIn
-              ? 'Noticing how you feel is already a step. This one is saved under your call sign.'
+              ? 'Noticing how you feel is already a step. This one is saved under your username.'
               : 'Noticing how you feel is already a step. This one is saved on this device.'}
           </p>
           {lowCount >= 3 && (
@@ -128,7 +128,7 @@ export default function CheckIn({ embedded = false }: Props) {
                   className="checkin-btn checkin-btn--primary"
                   to={`/account?mode=create&next=${encodeURIComponent('/me?tab=timeline')}`}
                 >
-                  Keep it with a call sign
+                  Keep it with a username
                 </Link>
                 <Link className="checkin-btn checkin-btn--ghost" to="/stories">
                   Not now — read stories
@@ -147,7 +147,7 @@ export default function CheckIn({ embedded = false }: Props) {
           </div>
           {canSave && (
             <p className="checkin-note">
-              A call sign keeps your timeline on any phone — no name, no email, ever.
+              A username keeps your timeline on any phone — no name, no email, ever.
             </p>
           )}
         </section>
@@ -262,7 +262,7 @@ export default function CheckIn({ embedded = false }: Props) {
 
       <p className="checkin-note">
         {signedIn
-          ? 'Saved under your call sign — no one else can see it.'
+          ? 'Saved under your username — no one else can see it.'
           : 'Your answers stay on this device. No one else sees them.'}
       </p>
     </div>

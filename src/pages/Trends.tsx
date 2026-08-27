@@ -75,7 +75,7 @@ export default function Trends() {
 
       {session.status === 'loading' && (
         <section className="trends-wait" aria-live="polite">
-          <Spinner size={56} label="Checking your call sign" />
+          <Spinner size={56} label="Checking your username" />
         </section>
       )}
 
@@ -83,7 +83,7 @@ export default function Trends() {
         <SignInGate
           what="the weekly picture"
           next="/trends"
-          note="Trends are only shown to people with a call sign. Signing in never links your own check-ins to this page."
+          note="Trends are only shown to people with a username. Signing in never links your own check-ins to this page."
         />
       )}
 
@@ -143,7 +143,7 @@ export default function Trends() {
 
           <p className="trends-foot">
             Each finished check-in adds one tick to this week's counts — the overall mood and any
-            reasons picked. No call sign, no scores per question, no time of day is stored here,
+            reasons picked. No username, no scores per question, no time of day is stored here,
             so there is no way to work back to a person.
           </p>
         </>

@@ -22,7 +22,7 @@ export default function SignInGate({ what, next, note }: Props) {
         <p className="gate-kicker">Almost there</p>
         <h2 className="gate-title">Accounts are being switched on.</h2>
         <p className="gate-body">
-          Soon you'll be able to keep {what} under a call sign — no name, no email. Until then,
+          Soon you'll be able to keep {what} under a username — no name, no email. Until then,
           everything you do here stays on this device.
         </p>
       </section>
@@ -31,8 +31,8 @@ export default function SignInGate({ what, next, note }: Props) {
 
   return (
     <section className="gate" aria-label="Sign in required">
-      <p className="gate-kicker">Just a call sign</p>
-      <h2 className="gate-title">Keep {what} with a call sign.</h2>
+      <p className="gate-kicker">Just a username</p>
+      <h2 className="gate-title">Keep {what} with a username.</h2>
       <p className="gate-body">
         {note ?? 'No name, no email, no unit — just something only you know, so it follows you to any phone.'}
       </p>

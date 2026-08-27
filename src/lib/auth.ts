@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------
- * auth.ts — pseudonymous accounts: a call sign + password, never a name,
+ * auth.ts — pseudonymous accounts: a username + password, never a name,
  * email, rank or unit. Firebase Auth needs an email-shaped identifier, so the
- * call sign is slugged into `<slug>@safcheckin.app`; nothing is ever sent to it.
+ * username is slugged into `<slug>@safcheckin.app`; nothing is ever sent to it.
  * ------------------------------------------------------------------------- */
 
 import { useEffect, useState } from 'react';
@@ -40,7 +40,7 @@ export const DEFAULT_MARKER = '🌱';
 
 const EMAIL_DOMAIN = 'safcheckin.app';
 
-/** Lower-cased, [a-z0-9-] only — the stable identity behind a call sign. */
+/** Lower-cased, [a-z0-9-] only — the stable identity behind a username. */
 export function callSignSlug(raw: string): string {
   return raw
     .trim()
@@ -60,10 +60,10 @@ export class AuthError extends Error {
 }
 
 const FRIENDLY: Record<string, string> = {
-  'auth/email-already-in-use': 'That call sign is already taken — try another.',
-  'auth/invalid-credential': "Call sign and password don't match.",
-  'auth/user-not-found': "Call sign and password don't match.",
-  'auth/wrong-password': "Call sign and password don't match.",
+  'auth/email-already-in-use': 'That username is already taken — try another.',
+  'auth/invalid-credential': "Username and password don't match.",
+  'auth/user-not-found': "Username and password don't match.",
+  'auth/wrong-password': "Username and password don't match.",
   'auth/weak-password': `Password needs at least ${PASSWORD_MIN} characters.`,
   'auth/too-many-requests': 'Too many tries — give it a minute and try again.',
   'auth/network-request-failed': 'No connection right now. Your check-ins are safe on this device.',
@@ -82,14 +82,14 @@ function friendly(err: unknown): AuthError {
 function validate(callSign: string, password: string): string {
   const slug = callSignSlug(callSign);
   if (slug.length < CALL_SIGN_MIN) {
-    throw new AuthError('form/call-sign', `Call sign needs at least ${CALL_SIGN_MIN} letters or numbers.`);
+    throw new AuthError('form/call-sign', `Username needs at least ${CALL_SIGN_MIN} letters or numbers.`);
   }
   if (callSign.trim().length > CALL_SIGN_MAX) {
-    throw new AuthError('form/call-sign', `Call sign can be at most ${CALL_SIGN_MAX} characters.`);
+    throw new AuthError('form/call-sign', `Username can be at most ${CALL_SIGN_MAX} characters.`);
   }
   const verdict = checkCallSign(callSign);
   if (!verdict.ok) {
-    throw new AuthError('form/call-sign', verdict.reason ?? 'That call sign is not allowed here.');
+    throw new AuthError('form/call-sign', verdict.reason ?? 'That username is not allowed here.');
   }
   if (password.length < PASSWORD_MIN) {
     throw new AuthError('form/password', `Password needs at least ${PASSWORD_MIN} characters.`);
@@ -142,7 +142,7 @@ function start() {
   started = true;
   onAuthStateChanged(auth, async (user) => {
     if (!user || user.isAnonymous) {
-      // Anonymous sessions exist only to let someone share a story without a call sign;
+      // Anonymous sessions exist only to let someone share a story without a username;
       // they are never shown as "signed in" and never sync personal data.
       setState({ status: 'out' });
       return;

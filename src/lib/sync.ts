@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------
  * sync.ts — keeps the on-device check-in cache and the account copy in step.
  * Local storage stays the source the UI reads from; Firestore is the backup
- * that follows the call sign across devices. Doc id = dateISO, so pushing the
+ * that follows the username across devices. Doc id = dateISO, so pushing the
  * same entry twice is harmless.
  * ------------------------------------------------------------------------- */
 
