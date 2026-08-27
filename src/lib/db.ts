@@ -56,8 +56,8 @@ export interface StoryDoc {
   lessons: string[];
   hopeScore: 1 | 2 | 3 | 4 | 5;
   readMins: number;
-  /** Never rendered on public surfaces. */
-  authorUid: string;
+  /** Optional and NEVER written to the public doc (security audit LUC-95). */
+  authorUid?: string;
   /** Auto-moderation flags (e.g. 'possible-name', 'crisis-language'). Empty = clean. */
   flags: string[];
   createdAt: string;
@@ -80,7 +80,7 @@ function toStory(snap: QueryDocumentSnapshot<DocumentData>): StoryDoc {
     lessons: asArray(d.lessons),
     hopeScore: (hope >= 1 && hope <= 5 ? hope : 3) as StoryDoc['hopeScore'],
     readMins: Number(d.readMins ?? 1),
-    authorUid: String(d.authorUid ?? ''),
+    authorUid: typeof d.authorUid === 'string' ? d.authorUid : undefined,
     flags: asArray(d.flags),
     createdAt: String(d.createdAt ?? ''),
     ...(typeof d.reviewedAt === 'string' ? { reviewedAt: d.reviewedAt } : {}),
@@ -91,8 +91,11 @@ function toStory(snap: QueryDocumentSnapshot<DocumentData>): StoryDoc {
 export async function submitStory(
   input: Omit<StoryDoc, 'id' | 'status' | 'createdAt' | 'reviewedAt'>,
 ): Promise<string> {
+  // Strip any author identity: published docs are world-readable and must not link to a person.
+  const { authorUid: _author, ...publicFields } = input;
+  void _author;
   const ref = await addDoc(collection(requireDb(), 'stories'), {
-    ...input,
+    ...publicFields,
     status: 'pending',
     createdAt: nowISO(),
   });
@@ -141,8 +144,8 @@ export interface RecognitionDoc {
   id: string;
   text: string;
   status: StoryStatus;
-  /** Never rendered on public surfaces. */
-  authorUid: string;
+  /** Optional and NEVER written to the public doc. */
+  authorUid?: string;
   createdAt: string;
 }
 
@@ -152,16 +155,15 @@ function toRecognition(snap: QueryDocumentSnapshot<DocumentData>): RecognitionDo
     id: snap.id,
     text: String(d.text ?? ''),
     status: (d.status as StoryStatus) ?? 'pending',
-    authorUid: String(d.authorUid ?? ''),
+    authorUid: typeof d.authorUid === 'string' ? d.authorUid : undefined,
     createdAt: String(d.createdAt ?? ''),
   };
 }
 
 /** Writes a recognition with status 'pending'. Resolves to the new document id. */
-export async function submitRecognition(text: string, authorUid: string): Promise<string> {
+export async function submitRecognition(text: string, _authorUid: string): Promise<string> {
   const ref = await addDoc(collection(requireDb(), 'recognitions'), {
     text,
-    authorUid,
     status: 'pending',
     flags: [],
     createdAt: nowISO(),

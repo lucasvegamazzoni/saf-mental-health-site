@@ -26,3 +26,6 @@ dist-ssr
 # local artifacts: keep the verification scripts, ignore screenshots/state
 verify/*
 !verify/*.cjs
+
+# firebase CLI cache
+.firebase/

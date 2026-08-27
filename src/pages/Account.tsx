@@ -22,7 +22,9 @@ export default function Account() {
   const session = useSession();
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const next = params.get('next') || '/me?tab=timeline';
+  // Only same-origin paths may be used as a return target (security audit LUC-95).
+  const rawNext = params.get('next');
+  const next = rawNext && /^\/(?!\/)/.test(rawNext) ? rawNext : '/me?tab=timeline';
 
   const [mode, setMode] = useState<Mode>(params.get('mode') === 'signin' ? 'signin' : 'create');
   const [callSign, setCallSign] = useState('');

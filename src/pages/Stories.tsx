@@ -208,7 +208,7 @@ function ShareStory({ uid }: { uid: string | null }) {
       const body = toParagraphs(safe);
       const flags = flagRisks(safe);
       // No call sign? An anonymous Firebase session gives us a throwaway uid that is never linked to a person.
-      const authorUid = uid ?? (await ensureAnonymousUid());
+      if (!uid) await ensureAnonymousUid();
       await submitStory({
         theme,
         title: safeTitle || 'An anonymous story',
@@ -217,7 +217,6 @@ function ShareStory({ uid }: { uid: string | null }) {
         lessons: [],
         hopeScore: hope,
         readMins: readMinsFor(safe),
-        authorUid,
         flags,
       });
       setSent({ flags });

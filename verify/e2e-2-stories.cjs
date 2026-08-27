@@ -51,7 +51,11 @@ async function shareStory(page, title, body, themeIndex) {
 
   // Firestore truth: both pending, flags correct
   const token = await L.oauthToken();
-  const pending = await L.fsQuery(token, 'stories', 'authorUid', 'EQUAL', { stringValue: botUid });
+  // authorUid is no longer stored on public docs (LUC-95): look the two test stories up by title.
+  const pending = [
+    ...(await L.fsQuery(token, 'stories', 'title', 'EQUAL', { stringValue: CLEAN_TITLE })),
+    ...(await L.fsQuery(token, 'stories', 'title', 'EQUAL', { stringValue: FLAG_TITLE })),
+  ];
   const clean = pending.find((d) => d.title.stringValue === CLEAN_TITLE);
   const flagged = pending.find((d) => d.title.stringValue === FLAG_TITLE);
   L.check('clean story doc pending, flag-free', clean && clean.status.stringValue === 'pending' && !(clean.flags.arrayValue.values || []).length, clean && JSON.stringify(clean.flags));
@@ -86,7 +90,10 @@ async function shareStory(page, title, body, themeIndex) {
   await flagCard.locator('.sq-reject').click();
   await flagCard.waitFor({ state: 'detached', timeout: 15000 });
   await m.waitForTimeout(1500);
-  const after = await L.fsQuery(token, 'stories', 'authorUid', 'EQUAL', { stringValue: botUid });
+  const after = [
+    ...(await L.fsQuery(token, 'stories', 'title', 'EQUAL', { stringValue: CLEAN_TITLE })),
+    ...(await L.fsQuery(token, 'stories', 'title', 'EQUAL', { stringValue: FLAG_TITLE })),
+  ];
   L.check('approve → published in Firestore', after.find((d) => d.title.stringValue === CLEAN_TITLE).status.stringValue === 'published');
   L.check('reject → rejected in Firestore', after.find((d) => d.title.stringValue === FLAG_TITLE).status.stringValue === 'rejected');
 

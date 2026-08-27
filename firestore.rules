@@ -1,65 +1,121 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ---- helpers -----------------------------------------------------------
     function signedIn() {
       return request.auth != null;
     }
+    // Anonymous sessions exist only so someone can share a story without a call sign.
+    // They are never allowed to touch personal data, votes, trends or recognitions.
+    function notAnon() {
+      return signedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
     function isModerator() {
-      return request.auth != null
+      return signedIn()
         && exists(/databases/$(database)/documents/moderators/$(request.auth.uid));
     }
+    function isTheme(t) {
+      return t in ['Field Camp', 'Burnout', 'Missing Home', 'Leadership', 'Friendship', 'Family',
+        'Feeling Alone', 'Overcoming Failure', 'National Service', 'Fitness', 'Studies'];
+    }
+    function shortString(s, max) {
+      return s is string && s.size() <= max;
+    }
+    // Follow-up reasons a check-in can carry (src/data/checkin.ts) — the only keys trends may count.
+    function isReason(r) {
+      return r in ['Work/training', 'Family', 'Relationships', 'Missing home', 'Feeling lonely', 'Other',
+        'Sleep', 'Physical training', 'Illness', 'Nutrition', 'Feeling mentally drained',
+        'Trouble falling asleep', 'Waking up during the night', 'Too little sleep', 'Night duties', 'Stress',
+        'Workload', 'Upcoming exercises', 'Performance expectations', 'Personal issues', 'Unsure why',
+        'Friends', 'Section mates', 'Commanders', "I haven't talked to anyone",
+        'No appetite', 'Busy schedule', 'Food quality', 'Skipping meals', 'Diet/health reasons',
+        'No time', 'Too tired', 'Confined in camp', 'Not in the mood',
+        'Work feels overwhelming', 'Unsure what to do', 'Lack of confidence', 'Need more guidance',
+        "Don't fit in", 'Conflict with others', 'Rarely interact', 'Prefer to keep to myself'];
+    }
 
-    // Each account owns exactly its own document tree. No public reads.
+    // ---- users: each account owns exactly its own tree; no anonymous access -------
     match /users/{uid} {
-      allow read, write: if signedIn() && request.auth.uid == uid;
+      allow read, write: if notAnon() && request.auth.uid == uid;
       match /{document=**} {
-        allow read, write: if signedIn() && request.auth.uid == uid;
+        allow read, write: if notAnon() && request.auth.uid == uid;
       }
     }
 
-    // Stories: anyone can read what moderators have published; authors submit as 'pending'.
+    // ---- stories: public only when published; anyone signed in (incl. anonymous)
+    //      may submit a pending story; no author identity is stored on the doc ------
+    function validStory(d) {
+      return d.keys().hasOnly(['status', 'theme', 'title', 'preview', 'body', 'lessons',
+          'hopeScore', 'readMins', 'flags', 'createdAt'])
+        && d.status == 'pending'
+        && isTheme(d.theme)
+        && shortString(d.title, 80)
+        && shortString(d.preview, 240)
+        && d.body is list && d.body.size() >= 1 && d.body.size() <= 40
+        && d.body[0] is string && d.body[0].size() <= 4000
+        && d.lessons is list && d.lessons.size() <= 10
+        && d.hopeScore is int && d.hopeScore >= 1 && d.hopeScore <= 5
+        && d.readMins is int && d.readMins >= 1 && d.readMins <= 30
+        && d.flags is list && d.flags.size() <= 10
+        && shortString(d.createdAt, 40);
+    }
     match /stories/{id} {
       allow read: if resource.data.status == 'published' || isModerator();
-      allow create: if signedIn()
-        && request.resource.data.authorUid == request.auth.uid
-        && request.resource.data.status == 'pending'
-        && request.resource.data.flags is list
-        && request.resource.data.body is list;
+      allow create: if signedIn() && validStory(request.resource.data);
       allow update, delete: if isModerator();
     }
 
-    // Recognitions: same pattern as stories.
+    // ---- recognitions: short, moderated, call-sign accounts only, no author stored --
     match /recognitions/{id} {
       allow read: if resource.data.status == 'published' || isModerator();
-      allow create: if signedIn()
-        && request.resource.data.authorUid == request.auth.uid
+      allow create: if notAnon()
+        && request.resource.data.keys().hasOnly(['text', 'status', 'flags', 'createdAt'])
+        && shortString(request.resource.data.text, 120)
         && request.resource.data.status == 'pending'
-        && request.resource.data.flags is list;
+        && request.resource.data.flags is list && request.resource.data.flags.size() <= 10
+        && shortString(request.resource.data.createdAt, 40);
       allow update, delete: if isModerator();
     }
 
-    // Polls: the question doc is moderator-managed; each voter owns one vote doc.
+    // ---- polls: question doc moderator-managed; a voter can read ONLY their own vote,
+    //      nobody can list votes (that would expose who voted) --------------------
     match /polls/{weekId} {
-      allow read: if signedIn();
+      allow read: if notAnon();
       allow write: if isModerator();
       match /votes/{uid} {
-        allow read: if signedIn();
-        allow create, update: if signedIn()
+        allow get: if (notAnon() && request.auth.uid == uid) || isModerator();
+        allow list: if isModerator();
+        allow create, update: if notAnon()
           && request.auth.uid == uid
-          && request.resource.data.option is string;
+          && request.resource.data.keys().hasOnly(['option', 'at'])
+          && shortString(request.resource.data.option, 60);
       }
     }
 
-    // Trends: anonymous aggregate counters only — no uid may ever be stored here.
+    // ---- trends: anonymous aggregate counters; +1 per check-in, allow-listed keys only --
     match /trends/{weekId} {
-      allow read: if signedIn();
-      allow create, update: if signedIn()
-        && request.resource.data.keys().hasOnly(['n', 'reasons', 'overall']);
+      allow read: if notAnon();
+      allow create: if notAnon()
+        && request.resource.data.keys().hasOnly(['n', 'reasons', 'overall'])
+        && request.resource.data.n == 1
+        && request.resource.data.reasons is map
+        && request.resource.data.reasons.keys().size() <= 6
+        && request.resource.data.overall is map
+        && request.resource.data.overall.keys().hasOnly(['0', '1', '2']);
+      allow update: if notAnon()
+        && request.resource.data.keys().hasOnly(['n', 'reasons', 'overall'])
+        && request.resource.data.n is int
+        && request.resource.data.n == resource.data.n + 1
+        && request.resource.data.reasons is map
+        && request.resource.data.reasons.diff(resource.data.reasons).affectedKeys().size() <= 6
+        && request.resource.data.overall is map
+        && request.resource.data.overall.keys().hasOnly(['0', '1', '2']);
     }
 
-    // Moderator allowlist: a user may check only their own entry; written from the console.
+    // ---- moderators: a user may check only their own entry; written from the console --
     match /moderators/{uid} {
-      allow read: if signedIn() && request.auth.uid == uid;
+      allow read: if notAnon() && request.auth.uid == uid;
       allow write: if false;
     }
   }

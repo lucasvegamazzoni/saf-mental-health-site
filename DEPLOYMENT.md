@@ -41,7 +41,7 @@
 `SITE_BASE` (build-time env) sets Vite's `base`; it defaults to the Pages subpath so a plain `npm run build` still works for Pages, and CI passes `/` for Firebase.
 
 ## Secrets
-- `FIREBASE_SERVICE_ACCOUNT_SAF_CHECKIN` (GitHub repo secret) — service account `github-deploy@saf-checkin.iam.gserviceaccount.com` with `firebasehosting.admin`, `run.viewer`, `serviceusage.apiKeysViewer`, `firebaseauth.viewer`. Rotate from the Google Cloud console → IAM → Service accounts → keys.
+- `FIREBASE_SERVICE_ACCOUNT_SAF_CHECKIN` (GitHub repo secret) — service account `github-deploy@saf-checkin.iam.gserviceaccount.com` with `firebasehosting.admin`, `firebaserules.admin`, `run.viewer`, `serviceusage.apiKeysViewer`, `serviceusage.serviceUsageViewer`, `datastore.viewer`, `firebaseauth.viewer`. Rotate from the Google Cloud console → IAM → Service accounts → keys.
 - The Firebase **web** config in `src/lib/firebaseConfig.ts` is public by design (not a secret).
 
 ## Manual operations (need `npx firebase login` once)
