@@ -88,7 +88,7 @@ export default function Privacy() {
         <h2 id="p-delete">How to delete</h2>
         <ul>
           <li>
-            <strong>Clear this device</strong> — on <Link to="/me">Me</Link>, under “Private by
+            <strong>Clear this device</strong> — on <Link to="/me">the Me page</Link>, under “Private by
             design”. Wipes every check-in saved in this browser. Good for a shared bunk phone.
           </li>
           <li>

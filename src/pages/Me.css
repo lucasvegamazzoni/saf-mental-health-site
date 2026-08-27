@@ -619,6 +619,9 @@
 }
 
 .me-clear-body a {
+  display: inline-block;
+  padding: 0.75rem 0.2rem;
+  margin: -0.75rem 0;
   color: var(--pine);
   font-weight: 600;
   text-decoration: underline;

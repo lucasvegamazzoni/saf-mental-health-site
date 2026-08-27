@@ -142,6 +142,10 @@
   box-shadow: 0 10px 24px rgba(192, 104, 75, 0.35);
 }
 
+.layout-help-label--short {
+  display: none;
+}
+
 .layout-help-btn:hover {
   background: #b05c40;
 }
@@ -281,6 +285,13 @@ a.layout-help-name:hover {
 @media (max-width: 480px) {
   .layout-nav {
     justify-content: center;
+    padding: 0.45rem 0.9rem 0.4rem;
+    gap: 0 0.5rem;
+  }
+
+  .layout-brand {
+    font-size: 1.15rem;
+    min-height: 44px;
   }
 
   .layout-link {
@@ -289,8 +300,16 @@ a.layout-help-name:hover {
   }
 
   .layout-help-btn {
-    font-size: 0.82rem;
-    padding: 0.7rem 1.1rem;
+    font-size: 0.86rem;
+    padding: 0.7rem 1.05rem;
+  }
+
+  .layout-help-label--long {
+    display: none;
+  }
+
+  .layout-help-label--short {
+    display: inline;
   }
 }
 
@@ -338,6 +357,6 @@ a.layout-help-name:hover {
   text-decoration: underline;
   text-underline-offset: 3px;
   display: inline-block;
-  min-height: 44px;
-  line-height: 44px;
+  padding: 0.8rem 0.3rem;
+  margin: -0.8rem 0;
 }

@@ -79,6 +79,18 @@ export default function Layout() {
   const isModerator = useIsModerator();
 
   // Escape closes the help card (non-modal, so Tab is never trapped) and hands focus back to its button.
+  // Publish the sticky nav's height as --nav-h so full-height sections (the hero)
+  // can size themselves to the space that is actually visible on phones.
+  useEffect(() => {
+    const nav = document.querySelector<HTMLElement>('.layout-nav');
+    if (!nav) return;
+    const set = () => document.documentElement.style.setProperty('--nav-h', `${nav.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, []);
+
   useEffect(() => {
     if (!helpOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -186,7 +198,14 @@ export default function Layout() {
           aria-controls="layout-help-card"
           onClick={() => setHelpOpen((open) => !open)}
         >
-          {helpOpen ? 'Close' : 'Need someone to talk to?'}
+          {helpOpen ? (
+            'Close'
+          ) : (
+            <>
+              <span className="layout-help-label--long">Need someone to talk to?</span>
+              <span className="layout-help-label--short">Need to talk?</span>
+            </>
+          )}
         </button>
       </div>
     </div>

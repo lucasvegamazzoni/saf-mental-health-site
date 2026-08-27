@@ -130,7 +130,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--pine);
   background: rgba(191, 212, 222, 0.4);
@@ -163,7 +163,7 @@
 
 .stories-readtime {
   margin-left: auto;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: rgba(46, 58, 52, 0.72);
 }
 
@@ -301,7 +301,7 @@
 }
 
 .stories-share-hint {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 500;
   color: var(--pine);
   background: var(--paper);
@@ -357,7 +357,7 @@
 }
 
 .stories-share-note {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: rgba(46, 58, 52, 0.72);
 }
 
@@ -410,13 +410,13 @@
 
 @media (max-width: 480px) {
   .stories-banner {
-    font-size: 0.76rem;
-    padding: 0.45rem 0.85rem;
+    font-size: 0.84rem;
+    padding: 0.5rem 0.9rem;
   }
 
   .stories-chip {
-    font-size: 0.8rem;
-    padding: 0.4rem 0.75rem;
+    font-size: 0.86rem;
+    padding: 0.45rem 0.8rem;
   }
 
   .stories-readtime {
@@ -526,7 +526,7 @@
 }
 
 .stories-tag-sample {
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   color: rgba(46, 58, 52, 0.72);
