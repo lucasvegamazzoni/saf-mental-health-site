@@ -19,6 +19,9 @@ const QUIET = 3; // quiet-zone modules around the code
 const ISO_ELEVATION = THREE.MathUtils.degToRad(27);
 const ISO_AZIMUTH = THREE.MathUtils.degToRad(45);
 const CAMERA_DISTANCE = 120;
+// Crown (in module units) — an ellipsoid of blossom clusters on a trunk.
+const CROWN_Y = 12.5;
+const CROWN_RY = 7;
 
 // Spring palette
 const PINKS = ['#f6b7cf', '#f2a6c4', '#ec95b8', '#e884ad'];
@@ -50,6 +53,8 @@ type Scene = {
   caps: THREE.MeshLambertMaterial;
   groundTop: THREE.MeshLambertMaterial;
   blades: THREE.MeshLambertMaterial;
+  wood: THREE.MeshLambertMaterial;
+  puffs: THREE.MeshLambertMaterial;
   petals: THREE.Points;
   petalVel: Float32Array;
   extent: number; // half-size of the ground slab in world units
@@ -143,12 +148,12 @@ function buildScene(canvas: HTMLCanvasElement): Scene {
   let gi = 0;
   let bi = 0;
 
-  // Dark modules: blossom columns -------------------------------------------
-  const columns = new THREE.InstancedMesh(
-    track(new THREE.BoxGeometry(0.9, 1, 0.9)),
-    mat(new THREE.MeshLambertMaterial({ color: PINK_SIDE })),
-    blossomCount,
-  );
+  // Dark modules: blossom clusters -------------------------------------------
+  // Each cluster = one full-cell "cap" cube (the scannable module seen from
+  // above) plus a few small puff cubes tucked inside its footprint for fluff.
+  const PUFFS = 3;
+  const puffsMat = mat(new THREE.MeshLambertMaterial({ color: '#ffffff', transparent: true }));
+  const puffs = new THREE.InstancedMesh(track(new THREE.BoxGeometry(0.5, 0.5, 0.5)), puffsMat, blossomCount * PUFFS);
   const capsMat = mat(new THREE.MeshLambertMaterial({ color: '#ffffff' }));
   const caps = new THREE.InstancedMesh(track(new THREE.BoxGeometry(0.98, 0.5, 0.98)), capsMat, blossomCount);
   // A carpet of fallen petals under every blossom module: from the side it sits
@@ -177,7 +182,9 @@ function buildScene(canvas: HTMLCanvasElement): Scene {
       }
     }
 
-  const maxR = Math.hypot(half, half);
+  const crownR = size * 0.44; // crown radius in modules — the ground code shows around it
+  const tx = toWorld(trunkX);
+  const tz = toWorld(trunkY);
   for (let y = 0; y < size; y++)
     for (let x = 0; x < size; x++) {
       if (!isDark(x, y)) continue;
@@ -201,17 +208,11 @@ function buildScene(canvas: HTMLCanvasElement): Scene {
         continue;
       }
 
-      // Canopy dome: tall in the middle, short at the edges, with a little noise.
-      const r = Math.hypot(x - half, y - half) / maxR;
-      const dome = Math.max(0, 1 - Math.pow(r / 0.92, 2));
-      const isTrunk = x === trunkX && y === trunkY;
-      // Canopy floats above the ground on a trunk; the outermost modules sit
-      // on the ground as low blossom bushes so the code still reads from above.
-      const top = isTrunk ? 14.5 : 5 + 8.5 * Math.pow(dome, 0.7) + rand() * 2.4;
-      const edge = r > 0.86;
-      const base = isTrunk || edge ? 0 : Math.max(3, top - (1.5 + 3.5 * dome + rand() * 2.5));
-      const h = edge ? 0.8 + rand() * 1.2 : top - base;
-      const y0 = edge ? 0 : base;
+      // Crown: each dark module gets ONE cluster in its own cell, at a height
+      // on the crown ellipsoid's upper shell, lower shell or interior — so from
+      // the side it reads as a round tree, and from above every cell is still
+      // exactly one solid module.
+      const rho = Math.hypot(wx - tx, wz - tz) / crownR;
 
       dummy.rotation.set(0, 0, 0);
       dummy.position.set(wx, 0.06, wz);
@@ -219,22 +220,83 @@ function buildScene(canvas: HTMLCanvasElement): Scene {
       dummy.updateMatrix();
       carpet.setMatrixAt(ci, dummy.matrix);
 
-      dummy.position.set(wx, y0 + h / 2, wz);
-      dummy.scale.set(isTrunk ? 0.7 : 1, h, isTrunk ? 0.7 : 1);
-      dummy.updateMatrix();
-      columns.setMatrixAt(ci, dummy.matrix);
-      columns.setColorAt(ci, color.set(isTrunk ? TRUNK : PINK_SIDE));
+      let cy: number;
+      if (rho >= 1) {
+        cy = 0.45; // outside the crown: a low mound of fallen blossom
+      } else {
+        const shell = Math.sqrt(1 - rho * rho) * CROWN_RY;
+        const pick = rand();
+        cy =
+          pick < 0.55
+            ? CROWN_Y + shell * (0.8 + rand() * 0.2)
+            : pick < 0.8
+              ? CROWN_Y - shell * (0.65 + rand() * 0.35)
+              : CROWN_Y + (rand() * 2 - 1) * shell * 0.7;
+      }
 
-      // Slightly uneven cap sizes read as fluffy blossom clusters from the side.
-      const puff = isTrunk ? 0.75 : 0.9 + rand() * 0.2;
-      dummy.position.set(wx, y0 + h + 0.25, wz);
-      dummy.scale.set(puff, 1 + rand() * 0.8, puff);
+      const inCrown = rho < 1;
+      const puff = 0.9 + rand() * 0.1;
+      dummy.position.set(wx, cy, wz);
+      dummy.scale.set(puff, inCrown ? 0.7 + rand() * 0.6 : 0.35, puff);
       dummy.updateMatrix();
       caps.setMatrixAt(ci, dummy.matrix);
-      caps.setColorAt(ci, color.set(isTrunk ? TRUNK : PINKS[Math.floor(rand() * PINKS.length)]));
+      caps.setColorAt(ci, color.set(PINKS[Math.floor(rand() * PINKS.length)]));
+
+      for (let k = 0; k < PUFFS; k++) {
+        const sc = inCrown ? 0.7 + rand() * 0.5 : 0; // no puffs on the ground mounds
+        dummy.position.set(wx + (rand() - 0.5) * 0.45, cy + (rand() - 0.5) * 1.1, wz + (rand() - 0.5) * 0.45);
+        dummy.rotation.set(rand() * 0.6, rand() * 0.6, rand() * 0.6);
+        dummy.scale.set(sc, sc, sc);
+        dummy.updateMatrix();
+        puffs.setMatrixAt(ci * PUFFS + k, dummy.matrix);
+        puffs.setColorAt(ci * PUFFS + k, color.set(rand() < 0.5 ? PINK_SIDE : PINKS[Math.floor(rand() * PINKS.length)]));
+      }
       ci++;
     }
-  scene.add(grassBase, blades, carpet, columns, caps);
+  scene.add(grassBase, blades, carpet, puffs, caps);
+
+  // Trunk + branches ---------------------------------------------------------
+  // Decorative wood that fades out as the crown flattens (it would otherwise
+  // draw thin dark lines across light modules from above).
+  const wood = mat(new THREE.MeshLambertMaterial({ color: TRUNK, transparent: true }));
+  const limbGeo = track(new THREE.CylinderGeometry(0.32, 0.45, 1, 7));
+  const tree = new THREE.Group();
+  const up = new THREE.Vector3(0, 1, 0);
+  const addLimb = (a: THREE.Vector3, b: THREE.Vector3, thick: number) => {
+    const d = b.clone().sub(a);
+    const len = d.length();
+    const m = new THREE.Mesh(limbGeo, wood);
+    m.position.copy(a).addScaledVector(d, 0.5);
+    m.scale.set(thick, len, thick);
+    m.quaternion.setFromUnitVectors(up, d.normalize());
+    tree.add(m);
+  };
+  // Leaning trunk in three segments, base pinned to its dark module.
+  let p = new THREE.Vector3(tx, 0, tz);
+  const trunkTop = CROWN_Y + 1.5;
+  for (let i = 0; i < 3; i++) {
+    const n = new THREE.Vector3(p.x + (rand() - 0.5) * 0.35, p.y + trunkTop / 3, p.z + (rand() - 0.5) * 0.35);
+    addLimb(p, n, 1 - i * 0.2);
+    p = n;
+  }
+  // Primary branches reaching out into the crown, each with a twig.
+  const BRANCHES = 7;
+  for (let i = 0; i < BRANCHES; i++) {
+    const ang = (i / BRANCHES) * Math.PI * 2 + rand() * 0.6;
+    const start = new THREE.Vector3(tx, 5 + rand() * 6, tz);
+    const reach = crownR * (0.45 + rand() * 0.4);
+    const end = new THREE.Vector3(
+      tx + Math.cos(ang) * reach,
+      CROWN_Y + (rand() * 0.9 - 0.15) * CROWN_RY,
+      tz + Math.sin(ang) * reach,
+    );
+    addLimb(start, end, 0.42);
+    const mid = start.clone().lerp(end, 0.55);
+    const a2 = ang + (rand() - 0.5) * 1.4;
+    const r2 = reach * 0.45;
+    addLimb(mid, new THREE.Vector3(mid.x + Math.cos(a2) * r2, mid.y + 1.5 + rand() * 2.5, mid.z + Math.sin(a2) * r2), 0.22);
+  }
+  scene.add(tree);
 
   // Falling petals -----------------------------------------------------------
   const PETALS = 160;
@@ -269,6 +331,8 @@ function buildScene(canvas: HTMLCanvasElement): Scene {
     caps: capsMat,
     groundTop,
     blades: bladesMat,
+    wood,
+    puffs: puffsMat,
     petals,
     petalVel,
     extent,
@@ -314,6 +378,10 @@ function placeCamera(s: Scene, progress: number, aspect: number) {
   s.caps.color.setRGB(1 - 0.48 * t, 1 - 0.74 * t, 1 - 0.56 * t);
   s.groundTop.color.set(GROUND).lerp(new THREE.Color(TILE), t);
   s.blades.color.set(GRASS_BLADE).lerp(new THREE.Color(GRASS), t);
+  const fade = 1 - smooth(THREE.MathUtils.clamp((t - 0.55) / 0.35, 0, 1));
+  s.wood.opacity = fade;
+  s.puffs.opacity = fade; // puffs speckle light pink inside dark modules from above
+  s.puffs.visible = fade > 0.01;
   (s.petals.material as THREE.PointsMaterial).opacity = 0.85 * (1 - smooth(Math.min(1, t * 1.6)));
 }
 

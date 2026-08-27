@@ -8,15 +8,19 @@ const OUT = '/Users/lucasdelavegamazzoni/Webdesign_SAF/saf-mental-health-site/ve
   for (const [w, h, name] of [[1280, 800, 'desktop'], [390, 844, 'mobile']]) {
     const page = await browser.newPage({ viewport: { width: w, height: h } });
     page.on('pageerror', (e) => console.log('PAGEERROR', e.message));
-    await page.goto('http://localhost:5199/', { waitUntil: 'networkidle' });
+    await page.goto('http://localhost:5199/', { waitUntil: 'load' });
     await page.waitForSelector('.qrtree__canvas');
     await page.waitForTimeout(1500);
-    const top = await page.evaluate(() => {
-      const st = document.querySelector('.pin-spacer') || document.querySelector('.qrtree');
-      return st.getBoundingClientRect().top + window.scrollY;
+    // Pin range straight from GSAP's pin-spacer: it is the section height plus the scrub distance.
+    const [top, dist] = await page.evaluate(() => {
+      const sp = document.querySelector('.pin-spacer');
+      const sec = document.querySelector('.qrtree');
+      const t = sp.getBoundingClientRect().top + window.scrollY;
+      return [t, sp.offsetHeight - sec.offsetHeight];
     });
+    console.log(name, 'pin top', Math.round(top), 'scrub distance', dist);
     for (const [p, label] of [[0, 'tree'], [0.5, 'mid'], [1, 'qr']]) {
-      await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), top + p * h * 1.5);
+      await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), top + p * (dist - 2));
       await page.waitForTimeout(2200);
       const path = `${OUT}qrtree-${label}-${name}.png`;
       await page.screenshot({ path });
