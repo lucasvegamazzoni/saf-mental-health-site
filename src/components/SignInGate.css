@@ -24,6 +24,9 @@
   font-size: clamp(1.25rem, 3vw, 1.6rem);
   color: var(--pine-deep);
   letter-spacing: -0.01em;
+  line-height: 1.25;
+  text-wrap: balance;
+  max-width: 22ch;
 }
 
 .gate-body {

@@ -187,6 +187,7 @@ export default function Companion() {
         className="companion-launch"
         aria-haspopup="dialog"
         aria-expanded={open}
+        aria-label="Talk it through"
         onClick={() => (open ? close() : setOpen(true))}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -198,7 +199,7 @@ export default function Companion() {
             strokeLinejoin="round"
           />
         </svg>
-        Talk it through
+        <span className="companion-launch-label">Talk it through</span>
       </button>
 
       {open && (

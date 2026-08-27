@@ -263,7 +263,7 @@ export default function CheckIn({ embedded = false }: Props) {
       <p className="checkin-note">
         {signedIn
           ? 'Saved under your call sign — no one else can see it.'
-          : 'Your answers stay on this device — no one else sees them.'}
+          : 'Your answers stay on this device. No one else sees them.'}
       </p>
     </div>
   );

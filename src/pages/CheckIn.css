@@ -206,7 +206,7 @@
 }
 
 .checkin-chip.is-selected {
-  color: #fdfbf6;
+  color: var(--paper);
   background: var(--pine);
   border-color: var(--pine);
 }
@@ -217,7 +217,7 @@
   font-family: var(--font-body);
   font-size: 0.92rem;
   font-weight: 600;
-  color: #fdfbf6;
+  color: var(--paper);
   background: var(--terra);
   border: none;
   border-radius: 999px;
@@ -227,13 +227,15 @@
 }
 
 .checkin-continue:hover {
-  background: #b05c40;
+  background: color-mix(in srgb, var(--terra) 90%, black);
 }
 
 .checkin-note {
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
   color: rgba(46, 58, 52, 0.72);
+  text-wrap: balance;
 }
 
 /* Finish ------------------------------------------------------------------- */
@@ -309,13 +311,13 @@
 }
 
 .checkin-btn--primary {
-  color: #fdfbf6;
+  color: var(--paper);
   background: var(--terra);
   box-shadow: 0 10px 24px rgba(192, 104, 75, 0.3);
 }
 
 .checkin-btn--primary:hover {
-  background: #b05c40;
+  background: color-mix(in srgb, var(--terra) 90%, black);
 }
 
 .checkin-btn--ghost {

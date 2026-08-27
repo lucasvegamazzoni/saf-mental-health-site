@@ -36,6 +36,33 @@
 .companion-launch svg {
   width: 1.15rem;
   height: 1.15rem;
+  flex-shrink: 0;
+}
+
+/* Phones: icon-only circle so the check-in answer row stays tappable
+   while it scrolls past the two fixed pills (DESIGN.md §7). */
+@media (max-width: 719px) {
+  .companion-launch {
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .companion-launch svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .companion-launch-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 }
 
 .companion-launch:hover {
