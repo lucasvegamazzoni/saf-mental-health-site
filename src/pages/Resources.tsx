@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useSeo } from '../lib/seo';
 import { RESOURCE_TOPICS } from '../data/content';
 import './Resources.css';
 
@@ -14,6 +15,11 @@ function Leaf({ className }: { className?: string }) {
 }
 
 export default function Resources() {
+  useSeo(
+    'Wellbeing resources for NS — stress, sleep, recovery, mental health, relationships',
+    'Practical, NS-specific tips: managing stress in camp, sleeping around night duties, recovering after field camp, staying close to people who matter.',
+    '/resources',
+  );
   return (
     <div className="resources-page">
       <header className="resources-head">

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSeo } from '../lib/seo';
 import { useSearchParams } from 'react-router-dom';
 import { EMERGENCY_CONTACTS, SEED_STORIES, STORY_THEMES } from '../data/content';
 import type { Story } from '../data/content';
@@ -468,6 +469,11 @@ function toParagraphsWithMarks(result: AnonymiseResult) {
 /* Page -------------------------------------------------------------------- */
 
 export default function Stories() {
+  useSeo(
+    'Real NS stories — anonymous, from servicemen who have been there',
+    'Anonymous stories from National Service: field camp, burnout, missing home, leadership, friendship. Read what helped others, or share your own without a name.',
+    '/stories',
+  );
   const [params, setParams] = useSearchParams();
   const activeTheme = params.get('theme');
   const [expandedId, setExpandedId] = useState<string | null>(null);

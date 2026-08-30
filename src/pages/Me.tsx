@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSeo } from '../lib/seo';
 import { useSearchParams } from 'react-router-dom';
 import SignInGate from '../components/SignInGate';
 import { CHALLENGES, CHECKIN_SCALE } from '../data/content';
@@ -172,6 +173,11 @@ interface Props {
 }
 
 export default function Me({ initialTab }: Props) {
+  useSeo(
+    '30-second check-in — how are you doing this week?',
+    'Ten quick emoji taps to notice how you are actually doing. Stays on your phone unless you choose to keep it under a username. No name, ever.',
+    '/check-in',
+  );
   const session = useSession();
   const [params, setParams] = useSearchParams();
   const pwa = usePwaInstall();

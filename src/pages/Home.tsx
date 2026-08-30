@@ -1,4 +1,5 @@
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
+import { useSeo } from '../lib/seo';
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
@@ -415,6 +416,11 @@ function RecognitionWall() {
 /* Page --------------------------------------------------------------------- */
 
 export default function Home() {
+  useSeo(
+    'SAF Check-in — anonymous mental wellbeing check-in for NSFs and SAF servicemen',
+    'A free, anonymous wellbeing check-in for NSFs and SAF servicemen. Thirty seconds a week, no name needed. Real stories from National Service, practical tips for stress and sleep, and verified helplines.',
+    '/',
+  );
   return (
     <div className="home-page">
       <Hero />

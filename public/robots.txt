@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /moderate
+Disallow: /account
+Disallow: /me
+Disallow: /trends
+
+Sitemap: https://saf-checkin.web.app/sitemap.xml

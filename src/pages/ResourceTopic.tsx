@@ -1,10 +1,16 @@
 import { Link, useParams } from 'react-router-dom';
+import { useSeo } from '../lib/seo';
 import { RESOURCE_TOPICS } from '../data/content';
 import './ResourceTopic.css';
 
 export default function ResourceTopic() {
   const { topic: slug } = useParams<{ topic: string }>();
   const topic = RESOURCE_TOPICS.find((t) => t.slug === slug);
+  useSeo(
+    topic ? `${topic.title} — wellbeing tips for NS` : 'Resource not found',
+    topic ? `${topic.blurb} Practical, NS-specific guidance from SAF Check-in.` : 'That resource is not here.',
+    `/resources/${slug ?? ''}`,
+  );
 
   if (!topic) {
     return (

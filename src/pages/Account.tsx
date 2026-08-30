@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSeo } from '../lib/seo';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import CloudFace from '../components/CloudFace';
@@ -20,6 +21,7 @@ const MARKERS = ['🌱', '🌊', '🏔️', '🌙', '🍃', '⭐', '🪨', '🔥
 type Mode = 'create' | 'signin';
 
 export default function Account() {
+  useSeo('Your space', 'A username and a password — nothing else. No email, no real name, no unit.', '/account');
   const session = useSession();
   const navigate = useNavigate();
   const [params] = useSearchParams();
