@@ -53,8 +53,10 @@ export default function Privacy() {
       <section className="privacy-card" aria-labelledby="p-where">
         <h2 id="p-where">Where it lives</h2>
         <p>
-          On Google Firebase, in the Singapore region (asia-southeast1). Traffic is encrypted, and
-          access rules mean a signed-in account can read only its own data.
+          Your check-ins, stories and counters live on Google Firebase in the Singapore region
+          (asia-southeast1). The one exception: sign-in credentials — your username and scrambled
+          password, identifying no one — are handled by Google’s global sign-in service. Traffic is
+          encrypted, and access rules mean a signed-in account can read only its own data.
         </p>
       </section>
 
