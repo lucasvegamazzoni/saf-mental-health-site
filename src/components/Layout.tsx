@@ -105,9 +105,9 @@ export default function Layout() {
   return (
     <div className="layout">
       <header className="layout-nav">
-        <NavLink to="/" className="layout-brand" aria-label="SAF Check-in — home">
+        <NavLink to="/" className="layout-brand" aria-label="Mindspace Hub — home">
           <Leaf className="layout-brand-leaf" />
-          SAF Check-in
+          Mindspace Hub
         </NavLink>
         <nav className="layout-links" aria-label="Main navigation">
           {NAV_LINKS.map((link) => (
@@ -161,7 +161,7 @@ export default function Layout() {
 
       <footer className="layout-footer">
         <Leaf className="layout-footer-leaf" />
-        <p>SAF Check-in · Anonymous by design. Nothing here necessarily needs your name.</p>
+        <p>Mindspace Hub · Anonymous by design. Nothing here necessarily needs your name.</p>
         <p className="layout-footer-meta">
           Run by {RUN_BY} — not an official SAF service.{' '}
           <NavLink to="/privacy">Privacy</NavLink> ·{' '}

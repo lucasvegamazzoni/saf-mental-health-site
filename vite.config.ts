@@ -7,7 +7,7 @@ import react from '@vitejs/plugin-react'
 const base = process.env.SITE_BASE ?? '/saf-mental-health-site/'
 
 // The GitHub Pages mirror is a duplicate of the canonical site: tell crawlers not
-// to index it, so search results point at saf-checkin.web.app only.
+// to index it, so search results point at mindspacehub.web.app only.
 const noindexMirror = () => ({
   name: 'noindex-mirror',
   transformIndexHtml(html: string) {

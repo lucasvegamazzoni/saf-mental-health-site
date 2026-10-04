@@ -1,8 +1,8 @@
-# SAF Check-in — Auditor's Guide
+# Mindspace Hub — Auditor's Guide
 
-**Package prepared:** 31 Aug 2026 · **System:** https://saf-checkin.web.app · **Repo:** github.com/lucasvegamazzoni/saf-mental-health-site (public)
+**Package prepared:** 31 Aug 2026 · **System:** https://mindspacehub.web.app · **Repo:** github.com/lucasvegamazzoni/saf-mental-health-site (public)
 
-This package contains the complete source code of the SAF Check-in wellbeing platform and the documentation needed to audit it end to end. Start here, then read `ARCHITECTURE.md` (how it works) and `SECURITY.md` (threat model, controls, known limitations).
+This package contains the complete source code of the Mindspace Hub wellbeing platform and the documentation needed to audit it end to end. Start here, then read `ARCHITECTURE.md` (how it works) and `SECURITY.md` (threat model, controls, known limitations).
 
 ## 1. Package integrity
 
@@ -50,9 +50,9 @@ The build is what CI deploys, byte-for-byte: see `.github/workflows/deploy.yml`.
 
 ```bash
 # Security headers, incl. enforced CSP:
-curl -sI https://saf-checkin.web.app/ | grep -iE 'content-security|frame|referrer|permissions'
+curl -sI https://mindspacehub.web.app/ | grep -iE 'content-security|frame|referrer|permissions'
 # robots + sitemap:
-curl -s https://saf-checkin.web.app/robots.txt
+curl -s https://mindspacehub.web.app/robots.txt
 # Firestore rules enforcement (expect PERMISSION_DENIED reading another's data):
 #   see verify/e2e-*.cjs for the full probe suite (needs a throwaway account).
 ```

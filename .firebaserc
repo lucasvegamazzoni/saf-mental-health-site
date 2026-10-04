@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "saf-checkin"
+  },
+  "targets": {
+    "saf-checkin": {
+      "hosting": {
+        "app": [
+          "mindspacehub"
+        ],
+        "legacy": [
+          "saf-checkin"
+        ]
+      }
+    }
   }
 }

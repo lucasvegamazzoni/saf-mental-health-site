@@ -5,4 +5,4 @@ Disallow: /account
 Disallow: /me
 Disallow: /trends
 
-Sitemap: https://saf-checkin.web.app/sitemap.xml
+Sitemap: https://mindspacehub.web.app/sitemap.xml

@@ -8,7 +8,7 @@ export default function ResourceTopic() {
   const topic = RESOURCE_TOPICS.find((t) => t.slug === slug);
   useSeo(
     topic ? `${topic.title} — wellbeing tips for NS` : 'Resource not found',
-    topic ? `${topic.blurb} Practical, NS-specific guidance from SAF Check-in.` : 'That resource is not here.',
+    topic ? `${topic.blurb} Practical, NS-specific guidance from Mindspace Hub.` : 'That resource is not here.',
     `/resources/${slug ?? ''}`,
   );
 

@@ -1,7 +1,8 @@
 name: Deploy
 
 # One workflow, two targets, one source of truth (main):
-#   firebase → https://saf-checkin.web.app                              (canonical: SPA rewrites, 200s on deep links)
+#   firebase → https://mindspacehub.web.app   (hosting target `app`, canonical: SPA rewrites, 200s on deep links)
+#   legacy   → https://saf-checkin.web.app    (hosting target `legacy`, 301 → mindspacehub; deployed MANUALLY, not by CI)
 #   pages    → https://lucasvegamazzoni.github.io/saf-mental-health-site/ (mirror, subpath build)
 # Firestore rules are deployed by the same run so schema + app never drift.
 # Actions are pinned to commit SHAs (security audit LUC-95); bump deliberately.
@@ -55,6 +56,7 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SAF_CHECKIN }}
           projectId: saf-checkin
           channelId: live
+          target: app
       - name: Deploy Firestore rules
         env:
           SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SAF_CHECKIN }}

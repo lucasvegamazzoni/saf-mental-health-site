@@ -417,7 +417,7 @@ function RecognitionWall() {
 
 export default function Home() {
   useSeo(
-    'SAF Check-in — anonymous mental wellbeing check-in for NSFs and SAF servicemen',
+    'Mindspace Hub — anonymous mental wellbeing check-in for NSFs and SAF servicemen',
     'A free, anonymous wellbeing check-in for NSFs and SAF servicemen. Thirty seconds a week, no name needed. Real stories from National Service, practical tips for stress and sleep, and verified helplines.',
     '/',
   );

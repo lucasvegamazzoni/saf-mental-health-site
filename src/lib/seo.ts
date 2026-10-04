@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-export const SITE_NAME = 'SAF Check-in';
-export const SITE_ORIGIN = 'https://saf-checkin.web.app';
+export const SITE_NAME = 'Mindspace Hub';
+export const SITE_ORIGIN = 'https://mindspacehub.web.app';
 
 /**
  * Per-route <title>, meta description and canonical URL. The app is a SPA, so

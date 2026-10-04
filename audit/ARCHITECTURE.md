@@ -2,7 +2,7 @@
 
 ## 1. System overview
 
-SAF Check-in is a single-page web application (SPA). There is **no application server**: the browser loads static files from Firebase Hosting and communicates directly with two Google Firebase services — Authentication (sign-in) and Cloud Firestore (database, region `asia-southeast1`, Singapore). All authorisation is enforced by Firestore Security Rules executing on Google's servers; the client is treated as untrusted.
+Mindspace Hub is a single-page web application (SPA). There is **no application server**: the browser loads static files from Firebase Hosting and communicates directly with two Google Firebase services — Authentication (sign-in) and Cloud Firestore (database, region `asia-southeast1`, Singapore). All authorisation is enforced by Firestore Security Rules executing on Google's servers; the client is treated as untrusted.
 
 ```
 Browser (React SPA, untrusted)

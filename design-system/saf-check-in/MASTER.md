@@ -1,4 +1,4 @@
-# SAF Check-in — Design System (MASTER)
+# Mindspace Hub — Design System (MASTER)
 
 > Source of truth: `/DESIGN.md` at the repo root. This file exists for the
 > ui-ux-pro-max retrieval convention; it never overrides DESIGN.md.

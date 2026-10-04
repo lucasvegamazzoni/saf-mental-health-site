@@ -1,6 +1,6 @@
 {
-  "name": "SAF Check-in",
-  "short_name": "Check-in",
+  "name": "Mindspace Hub",
+  "short_name": "Mindspace",
   "description": "A quiet, anonymous place to check in on your wellbeing.",
   "start_url": "./",
   "scope": "./",

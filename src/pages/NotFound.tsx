@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import CloudFace from '../components/CloudFace';
 import './NotFound.css';
 
-const TITLE = 'Page not found — SAF Check-in';
+const TITLE = 'Page not found — Mindspace Hub';
 
 /* 404 — "4 [cloud] 4". The two numerals slide in from the sides, the cloud settles in
    and then floats; heading, line and buttons follow in 100 ms steps. All of it is CSS

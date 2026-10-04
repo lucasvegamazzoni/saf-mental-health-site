@@ -1,4 +1,4 @@
-/* SAF Check-in service worker — offline app shell.
+/* Mindspace Hub service worker — offline app shell.
  *
  * Base-path aware: everything is resolved from `self.registration.scope`, so the
  * same file works at `/` (Firebase Hosting) and `/saf-mental-health-site/`
@@ -186,5 +186,5 @@ async function staleWhileRevalidate(request, cacheName) {
 
 /** Only reached if the shell was never cached (first visit offline). Palette from DESIGN.md. */
 function offlineFallbackHtml() {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SAF Check-in — offline</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f6eee2;color:#2e3a34;font-family:Karla,system-ui,sans-serif;padding:24px}main{max-width:28rem;text-align:center}h1{font-family:Fraunces,Georgia,serif;color:#33463c;font-weight:600;font-size:1.6rem}p{line-height:1.6}a{color:#42604f}</style></head><body><main><h1>You're offline</h1><p>SAF Check-in needs a connection the first time it opens. Once you've visited it, it will keep working without signal.</p><p><a href="./">Try again</a></p></main></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mindspace Hub — offline</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f6eee2;color:#2e3a34;font-family:Karla,system-ui,sans-serif;padding:24px}main{max-width:28rem;text-align:center}h1{font-family:Fraunces,Georgia,serif;color:#33463c;font-weight:600;font-size:1.6rem}p{line-height:1.6}a{color:#42604f}</style></head><body><main><h1>You're offline</h1><p>Mindspace Hub needs a connection the first time it opens. Once you've visited it, it will keep working without signal.</p><p><a href="./">Try again</a></p></main></body></html>`;
 }

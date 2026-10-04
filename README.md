@@ -1,14 +1,14 @@
-# SAF Check-in — "You're Not Alone."
+# Mindspace Hub — "You're Not Alone."
 
 **An anonymous wellbeing platform for Singapore Armed Forces servicemen.** A 30-second weekly check-in, a private mood timeline, real stories from people who've walked the same path, practical NS-specific resources, and verified helplines — built so that nobody, including the people who run it, can tell who you are.
 
-**Live:** https://saf-checkin.web.app
+**Live:** https://mindspacehub.web.app
 
 ![Home — parallax hero with the faceless officer](docs/screenshots/home.png)
 
 ## Why it exists
 
-National Service is hard, and it's often hardest to say so. Existing help exists (counsellors, paracounsellors, helplines) but the first step — admitting something's off — is the one people skip. SAF Check-in makes that step tiny (ten emoji taps), private (nothing leaves the phone unless you choose), and less lonely (stories from others, anonymised by design).
+National Service is hard, and it's often hardest to say so. Existing help exists (counsellors, paracounsellors, helplines) but the first step — admitting something's off — is the one people skip. Mindspace Hub makes that step tiny (ten emoji taps), private (nothing leaves the phone unless you choose), and less lonely (stories from others, anonymised by design).
 
 The faceless officer in the hero isn't a style choice alone — it's the product promise. No faces, no names, no ranks, no units. Ever.
 

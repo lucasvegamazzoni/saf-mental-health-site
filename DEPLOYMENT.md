@@ -1,4 +1,4 @@
-# SAF Check-in — Deployment structure
+# Mindspace Hub — Deployment structure
 
 ```
                  push to main
@@ -10,7 +10,7 @@
                  │          │
    ┌─────────────▼──┐   ┌───▼──────────────────────┐
    │ Firebase Hosting│   │ GitHub Pages (mirror)     │
-   │ saf-checkin.    │   │ lucasvegamazzoni.github.io│
+   │ mindspacehub.   │   │ lucasvegamazzoni.github.io│
    │ web.app         │   │ /saf-mental-health-site/  │
    │ SITE_BASE=/     │   │ SITE_BASE=/saf-mental-…/  │
    │ SPA rewrites →  │   │ 404.html trick →          │
@@ -26,7 +26,9 @@
 ```
 
 ## URLs
-- **Canonical / share this:** https://saf-checkin.web.app (also `saf-checkin.firebaseapp.com`)
+- **Canonical / share this:** https://mindspacehub.web.app (also `mindspacehub.firebaseapp.com`). Hosting site `mindspacehub` = target `app`.
+- **Old URL:** https://saf-checkin.web.app (hosting site `saf-checkin` = target `legacy`) serves a 301 to the new host so printed QR codes and old links keep working. CI deploys only `app`; redeploy the redirect by hand with `npx firebase deploy --only hosting:legacy`.
+- **Renamed 2026-10-04:** SAF Check-in → Mindspace Hub (text + URL only; Firebase project id `saf-checkin`, the `@safcheckin.app` username slug domain and the sw cache name are unchanged on purpose — changing them would break existing accounts/caches).
 - Mirror (kept for old links + the first QR prints): https://lucasvegamazzoni.github.io/saf-mental-health-site/
 - Repo: https://github.com/lucasvegamazzoni/saf-mental-health-site
 - Firebase console: https://console.firebase.google.com/project/saf-checkin

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { CONTACT_EMAIL, RUN_BY } from '../data/site';
 import './Privacy.css';
 
-const TITLE = 'Privacy — SAF Check-in';
+const TITLE = 'Privacy — Mindspace Hub';
 
 /* /privacy — plain-language answers to "what do you keep about me?" (LUC-97). */
 export default function Privacy() {
@@ -105,7 +105,7 @@ export default function Privacy() {
       <section className="privacy-card privacy-card--contact" aria-labelledby="p-contact">
         <h2 id="p-contact">Who runs this</h2>
         <p>
-          SAF Check-in is run by {RUN_BY}. It is not an official MINDEF or SAF service. Questions,
+          Mindspace Hub is run by {RUN_BY}. It is not an official MINDEF or SAF service. Questions,
           concerns, or something on the site that should not be there:{' '}
           <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
         </p>

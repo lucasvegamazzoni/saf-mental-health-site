@@ -1,4 +1,4 @@
-# SAF Check-in — Design Rules
+# Mindspace Hub — Design Rules
 
 The single source of truth for how this site looks, feels and moves. Every page,
 component and agent follows it. When in doubt: **calm, warm, honest, anonymous.**
