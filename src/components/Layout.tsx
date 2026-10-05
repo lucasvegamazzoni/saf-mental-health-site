@@ -3,7 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { CONTACT_GROUP_LABEL, EMERGENCY_CONTACTS } from '../data/contacts';
 import type { ContactGroup, EmergencyContact } from '../data/contacts';
 import { useSession } from '../lib/auth';
-import { CONTACT_EMAIL, RUN_BY } from '../data/site';
+import { CONTACT_EMAIL } from '../data/site';
 import { useIsModerator } from '../lib/db';
 import Companion from './Companion';
 import { FEATURES } from '../lib/flags';
@@ -160,10 +160,7 @@ export default function Layout() {
       </main>
 
       <footer className="layout-footer">
-        <Leaf className="layout-footer-leaf" />
-        <p>Mindspace Hub · Anonymous by design. Nothing here necessarily needs your name.</p>
         <p className="layout-footer-meta">
-          Run by {RUN_BY} — not an official SAF service.{' '}
           <NavLink to="/privacy">Privacy</NavLink> ·{' '}
           <a href={`mailto:${CONTACT_EMAIL}`}>Write to us</a>
         </p>

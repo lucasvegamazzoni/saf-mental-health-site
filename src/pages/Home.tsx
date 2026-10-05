@@ -481,15 +481,6 @@ export default function Home() {
         <RecognitionWall />
       </section>
       )}
-
-      {/* Soft footer */}
-      <section className="home-footnote" aria-label="Privacy note">
-        <p className="home-footnote-strong">Your check-ins stay on this device.</p>
-        <p className="home-footnote-sub">
-          Votes and thank-yous are shared as counts and words only — never with a name. Built with
-          care for Singapore’s servicemen, so the tough weeks feel a little less lonely.
-        </p>
-      </section>
     </div>
   );
 }
