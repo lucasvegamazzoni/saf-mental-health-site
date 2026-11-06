@@ -564,6 +564,19 @@ export default function Stories() {
         ))}
       </div>
 
+      {session.status === 'loading' ? (
+        <p className="stories-loading" role="status">
+          <Spinner size={28} label="" /> Checking your space…
+        </p>
+      ) : firebaseReady ? (
+        <ShareStory uid={uid} />
+      ) : (
+        <SignInGate
+          what="anything you share"
+          next={activeTheme ? `/stories?theme=${encodeURIComponent(activeTheme)}` : '/stories'}
+        />
+      )}
+
       <StorySphere stories={all} activeTheme={activeTheme} onOpen={openStory} />
 
       {loadState === 'loading' && (
@@ -594,19 +607,6 @@ export default function Stories() {
             />
           ))}
         </div>
-      )}
-
-      {session.status === 'loading' ? (
-        <p className="stories-loading" role="status">
-          <Spinner size={28} label="" /> Checking your space…
-        </p>
-      ) : firebaseReady ? (
-        <ShareStory uid={uid} />
-      ) : (
-        <SignInGate
-          what="anything you share"
-          next={activeTheme ? `/stories?theme=${encodeURIComponent(activeTheme)}` : '/stories'}
-        />
       )}
     </div>
   );
